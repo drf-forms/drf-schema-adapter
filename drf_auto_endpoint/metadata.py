@@ -40,7 +40,7 @@ class AutoMetadataMixin:
                 } for k, v in instance_field.choices.items()]
 
             elif type == 'foreignkey':
-                field_metadata['endpoint'] = 'diocane'
+                field_metadata['endpoint'] = field
 
             form_metadata.append(field_metadata)
 
