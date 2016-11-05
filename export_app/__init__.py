@@ -19,6 +19,8 @@ DEFAULT_SETTINGS = {
         'ListField': None,
         'DictField': None,
         'JSONField': None,
+        'PrimaryKeyRelatedField': 'belongsTo',
+        'ManyRelatedField': 'hasMany',
     }
 }
 
