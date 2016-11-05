@@ -6,7 +6,7 @@ class BaseAdapter(object):
     """
 
     def render_json(self, config):
-        return json.dumps(config)
+        return config
 
 
     def __call__(self, config):

@@ -17,7 +17,9 @@ DEFAULT_SETTINGS = {
         'DateField': 'date',
         'CharField': 'text',
         'ChoiceField': 'select',
-    }
+    },
+    'METADATA_ADAPTER' : 'drf_auto_endpoint.adapters.BaseAdapter',
+    
 }
 
 

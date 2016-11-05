@@ -14,4 +14,4 @@ class AdapterTestCase(TestCase):
         adapter = BaseAdapter()
         config = { "hello" : "world" }
         json_config = adapter(config)
-        self.assertEqual(json_config, json.dumps(config))
+        self.assertEqual(json_config, config)

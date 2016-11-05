@@ -1,6 +1,7 @@
 from rest_framework.fields import empty
 from rest_framework.metadata import SimpleMetadata, BaseMetadata
-
+from django.utils.module_loading import import_string
+from .app_settings import settings
 
 class AutoMetadataMixin:
     def determine_metadata(self, request, view):
@@ -25,6 +26,10 @@ class AutoMetadataMixin:
 
                 'ui': {
                     'label': field.title(),
+                },
+
+                'validation' : {
+                    'required' : instance_field.required
                 }
             }
 
@@ -44,9 +49,21 @@ class AutoMetadataMixin:
             if type_ == 'foreignkey':
                 field_metadata['endpoint'] = field
 
+
+            attrs_to_validation = {
+                'min_length' : 'min',
+                'max_length' : 'max',
+                'min_value' : 'min',
+                'max_value' : 'max'
+            }
+            for attr_name, validation_name in attrs_to_validation.items():
+                if getattr(instance_field, attr_name, None):
+                    field_metadata['validation'][validation_name] = getattr(instance_field, attr_name)
+
             form_metadata.append(field_metadata)
 
-        return form_metadata
+        adapter = import_string(settings.METADATA_ADAPTER)()
+        return adapter(form_metadata)
 
 
 class AutoMetadata(AutoMetadataMixin, SimpleMetadata):
