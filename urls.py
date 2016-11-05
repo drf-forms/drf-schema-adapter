@@ -4,9 +4,10 @@ from django.contrib import admin
 from drf_auto_endpoint.router import router
 from sample.views import HomepageView, ProductViewSet
 
-from sample.models import Product
+from sample.endpoints import ProductEndpoint
 
-router.register(Product, viewset=ProductViewSet)
+
+router.register(endpoint=ProductEndpoint, viewset=ProductViewSet)
 
 urlpatterns = [
     # Examples:
