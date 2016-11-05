@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
-from djember_model.views import EmberModelView
-from djember_model import settings
+from export_app import settings
+from export_app.views import EmberModelView
 
 
 urlpatterns = [

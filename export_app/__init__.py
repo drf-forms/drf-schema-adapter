@@ -7,8 +7,8 @@ DEFAULT_SETTINGS = {
     'ROUTER_PATH': 'urls.router',
     'URL_NAMESPACE': None,
     'URL_NAME': 'djember_model',
-    'EMBER_APPLICATION_NAME': 'djember',
-    'EMBER_APPLICATION_PATH': '../front',
+    'FRONT_APPLICATION_NAME': 'appName',
+    'FRONT_APPLICATION_PATH': '../front',
     'URL_FORMAT': '{app}/{model}',
     'FIELD_TYPE_MAPPING': {
         'BooleanField': 'boolean',
@@ -21,14 +21,15 @@ DEFAULT_SETTINGS = {
         'JSONField': None,
         'PrimaryKeyRelatedField': 'belongsTo',
         'ManyRelatedField': 'hasMany',
-    }
+    },
+    'ADAPTER': 'BaseAdapter'
 }
 
 
 class Settings:
 
     def __init__(self):
-        mapping = getattr(django_settings, 'DJEMBER_FIELD_TYPE_MAPPING', {})
+        mapping = getattr(django_settings, 'EXPORTER_FIELD_TYPE_MAPPING', {})
         mapping.update(DEFAULT_SETTINGS['FIELD_TYPE_MAPPING'])
         self.FIELD_TYPE_MAPPING = defaultdict(lambda: 'string')
         for k, v in mapping.items():
@@ -37,7 +38,7 @@ class Settings:
     def __getattr__(self, name):
         if name not in DEFAULT_SETTINGS:
             raise AttributeError(name)
-        return getattr(django_settings, 'DJEMBER_{}'.format(name), DEFAULT_SETTINGS[name])
+        return getattr(django_settings, 'EXPORTER_{}'.format(name), DEFAULT_SETTINGS[name])
 
 
 settings = Settings()
