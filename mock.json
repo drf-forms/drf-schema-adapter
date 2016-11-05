@@ -1,0 +1,121 @@
+[{
+    "key": "name",
+    "type": "text",
+    "ui": {
+        "label": "Name"
+    },
+    "validation": {
+        "required": true
+    },
+},
+{
+    "key": "age",
+    "type": "number",
+    "ui": {
+        "label": "Age"
+    }
+},
+{
+    "key": "email",
+    "type": "email",
+    "ui": {
+        "label": "Email"
+    },
+    "validation": {
+        "required": true
+    },
+},
+{
+    "key": "favorite_int",
+    "type": "number",
+    "default": 20,
+    "ui": {
+        "label": "Favorite integer between 10 and 100",
+    },
+    "validation": {
+        "min": 10,
+        "max": 100
+    }
+},
+{
+    "key": "favorite_float",
+    "type": "decimal",
+    "precision": 0.01,
+    "default": 0,
+    "ui": {
+        "label": "Favorite float between -10 and 10"
+    },
+    "validation": {
+        "min": -10,
+        "required": false,
+        "max": 10
+    }
+},
+{
+    "key": "favorite_color",
+    "type": "select",
+    "choices": [
+        {
+            "value": "red",
+            "name": "red"
+        },
+        {
+            "value": "blue",
+            "name": "blue"
+        }
+    ],
+    "validation": {
+        "required": true,
+    },
+    "ui": {
+        "label": "Favorite color"
+    }
+},
+{
+    "key": "is_this_form_dumb",
+    "type": "boolean",
+    "default": false,
+    "ui": {
+        "label": "Is this form dumb"
+    },
+},
+{
+    "key": "best_friend",
+    "type": "select",
+    "choices": [],
+    "ui": {
+        "label": "Best friend"
+    },
+},
+{
+    "key": "website",
+    "type": "url",
+    "ui": {
+        "label": "Website"
+    },
+},
+{
+    "key": "what_time_is_it",
+    "type": "time",
+    "default": "06:30:00",
+    "ui": {
+        "label": "What time is it"
+    },
+},
+{
+    "key": "birthday_plus_time",
+    "type": "datetime-local",
+    "default": "1990-01-02T06:30:00Z",
+    "ui": {
+        "label": "Birthday plus time"
+    }
+},
+{
+    "key": "birthday",
+    "type": "date",
+    "default": "1990-01-02T06:30:00Z",
+    "ui": {
+        "label": "Birthday"
+    },
+}
+]
