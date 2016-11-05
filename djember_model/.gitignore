@@ -1,0 +1,11 @@
+*.pyc
+*.sw?
+__pycache__/
+static/
+db.sqlite3
+environ.py
+venv/
+*/.ropeproject/
+dist/
+djember_model.egg-info/
+output/
