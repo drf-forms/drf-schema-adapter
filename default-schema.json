@@ -1,27 +1,30 @@
 "{
-    title: 'string',
+    key: 'string',
     type: 'string',
-    'properties': {
-        'default': 'default value',
-        'read_only': 'boolean',
-        'help_text': 'string',
-        'label': 'string',
-        validation: {
-            'max_length': 'number',
-            'min_length': 'number',
-            'min_value': 'number',
-            'max_value': 'number',
-            'required': 'boolean',
-            'expression': 'string',
-        },
-        'extra': {
-            'choices': [],
-            'related_endpoint': 'string',
-            'display_if': 'string',
-            'display_unless': 'string',
-        }
-    }
+    default: 'default value',
+    choices: [],
+    read_only: 'boolean',
+
+    ui: {
+        label: 'string',
+        help_text: 'string',
+        placeholder: 'placeholder',
+    },
+    validation: {
+        'min': 'number',
+        'max': 'number',
+        'expression': 'string',
+        'required': 'boolean',
+    },
+    extra: {
+        related_endpoint: 'string',
+        # 'display_if': 'string',
+        # 'display_unless': 'string',
+        ...
+    }]
+
 }"
+
 
 
 
@@ -40,4 +43,3 @@
 
 
 
-//     'placeholder'
