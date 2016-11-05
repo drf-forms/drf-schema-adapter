@@ -1,0 +1,4 @@
+include README.md
+include LICENCE.txt
+recursive-include drf_auto_endpoint/static *
+recursive-include drf_auto_endpoint/templates *

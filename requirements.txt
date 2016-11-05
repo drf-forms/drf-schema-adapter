@@ -1,0 +1,5 @@
+Django==1.9.7
+django-filter==0.13.0
+djangorestframework==3.3.3
+factory_boy==2.7.0
+Inflector==2.0.11
