@@ -15,6 +15,8 @@ DEFAULT_SETTINGS = {
         'text': 'textarea',
         'choice': 'select',
         'DateField': 'date',
+        'CharField': 'text',
+        'ChoiceField': 'select',
     }
 }
 

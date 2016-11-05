@@ -2,6 +2,7 @@ from rest_framework import filters, pagination, serializers
 from django.core.exceptions import FieldDoesNotExist
 from django.db.models.fields.reverse_related import ManyToOneRel
 
+
 def serializer_factory(endpoint):
 
     from .app_settings import settings
