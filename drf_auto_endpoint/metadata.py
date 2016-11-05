@@ -30,16 +30,18 @@ class AutoMetadataMixin:
 
             default = instance_field.default
 
+
             if default and default != empty:
                 field_metadata['default'] = default
 
-            if type_ == 'select':
+            if getattr(instance_field, 'choices', None):
                 field_metadata['choices'] = [{
                     'label': v,
                     'value': k,
                 } for k, v in instance_field.choices.items()]
 
-            elif type == 'foreignkey':
+
+            if type_ == 'foreignkey':
                 field_metadata['endpoint'] = field
 
             form_metadata.append(field_metadata)
