@@ -1,0 +1,43 @@
+"{
+    title: 'string',
+    type: 'string',
+    'properties': {
+        'default': 'default value',
+        'read_only': 'boolean',
+        'help_text': 'string',
+        'label': 'string',
+        validation: {
+            'max_length': 'number',
+            'min_length': 'number',
+            'min_value': 'number',
+            'max_value': 'number',
+            'required': 'boolean',
+            'expression': 'string',
+        },
+        'extra': {
+            'choices': [],
+            'related_endpoint': 'string',
+            'display_if': 'string',
+            'display_unless': 'string',
+        }
+    }
+}"
+
+
+
+// Adapteur Angular
+//     'type_input'
+//     'type'
+//     'templateOptions'
+
+// Adapteur ember
+//     'widget'
+//     'extra'
+//     'allowAdd'
+//     'popup'
+//     'expand'
+
+
+
+
+//     'placeholder'
