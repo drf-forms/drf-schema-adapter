@@ -1,5 +1,0 @@
-include README.md
-include LICENCE.txt
-recursive-include djember_model/static *
-recursive-include djember_model/templates *
-recursive-include djember_model/mangement *
