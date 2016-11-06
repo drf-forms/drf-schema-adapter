@@ -4,4 +4,6 @@ from .models import Product
 
 class ProductEndpoint(Endpoint):
     model = Product
-    field_annotation = {}
+    fields_annotation = {
+        'name': {'placeholder': 'Enter your name here'}
+    }

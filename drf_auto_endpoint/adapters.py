@@ -32,6 +32,9 @@ class AngularFormlyAdapter(BaseAdapter):
             "templateOptions": config['validation']
         }
 
+        if 'placeholder' in config['ui']:
+            adapted['templateOptions']['placeholder'] = config['ui']['placeholder']
+
         if 'default' in config:
             adapted['defaultValue'] = config['default']
 
