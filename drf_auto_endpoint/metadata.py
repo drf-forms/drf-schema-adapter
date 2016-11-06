@@ -19,7 +19,7 @@ class AutoMetadataMixin(object):
             metadata = {}
 
         if not hasattr(view, 'endpoint'):
-            fields_metedata = []
+            fields_metadata = []
 
             for field in view.serializer_class.Meta.fields:
                 if field in {'id', '__str__'}:
@@ -61,7 +61,7 @@ class AutoMetadataMixin(object):
                 if type_ == 'foreignkey':
                     field_metadata['related_endpoint'] = field
 
-                fields_metedata.append(field_metadata)
+                fields_metadata.append(field_metadata)
                 metadata.update({
                     'list_display': ['__str__', ],
                     'filter_fields': [],
@@ -77,7 +77,7 @@ class AutoMetadataMixin(object):
         else:
             for prop in ['fields', 'list_display', 'filter_fields', 'search_enabled', 'ordering_fields',
                          'needs', 'fieldsets']:
-                 metadata[prop] = getattr(view.endpoint, 'get_{}'.format(prop))()
+                metadata[prop] = getattr(view.endpoint, 'get_{}'.format(prop))()
 
         adapter = import_string(settings.METADATA_ADAPTER)()
         return adapter(metadata)
