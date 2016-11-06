@@ -61,7 +61,7 @@ class SerializerExporterWithFields(BaseSerializerExporter):
                 'type': settings.FIELD_TYPE_MAPPING[field.__class__.__name__]
             }
             if isinstance(field, PrimaryKeyRelatedField) or isinstance(field, ManyRelatedField):
-                model_field = model._meta.get_field_by_name(field_name)[0]
+                model_field = model._meta.get_field(field_name)
                 field_item['related_model'] = model_field.related_model._meta.model_name.lower()
                 field_item['app'] = target_app if target_app is not None else \
                     model_field.related_model._meta.app_label.lower()

@@ -22,7 +22,7 @@ DEFAULT_SETTINGS = {
         'PrimaryKeyRelatedField': 'belongsTo',
         'ManyRelatedField': 'hasMany',
     },
-    'ADAPTER': 'BaseAdapter'
+    'ADAPTER': 'export_app.adapters.EmberAdapter'
 }
 
 

@@ -16,7 +16,7 @@ class EmberModelView(SerializerExporter, TemplateView):
         context = super(EmberModelView, self).get_context_data(**kwargs)
         try:
             model, serializer_instance, context['model_name'], context['application_name'] = \
-                self.get_serializer_for_model(self.kwargs['model'])
+                self.get_serializer_for_basename(self.kwargs['model'])
         except ModelNotFoundException as e:
             raise Http404('No viewset found for {}'.format(e.model))
 

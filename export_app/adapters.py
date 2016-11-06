@@ -7,7 +7,6 @@ from export_app import settings
 
 
 class BaseAdapter(object):
-
     def __init__(self, context, application_name, model_name):
         self.context = context
         self.application_name = application_name
@@ -18,6 +17,10 @@ class BaseAdapter(object):
 
 
 class EmberAdapter(BaseAdapter):
+    base_template_name = 'export_app/ember_model_base.js'
+    template_name = 'export_app/ember_model.js'
+    test_template_name = 'export_app/ember_model_test.js'
+
     def write_to_file(self):
         base_target_dir = os.path.join(django_settings.BASE_DIR, settings.FRONT_APPLICATION_PATH,
                                        'app', 'models', 'base', self.application_name)
