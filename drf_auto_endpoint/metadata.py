@@ -3,70 +3,82 @@ from django.utils.module_loading import import_string
 from rest_framework.fields import empty
 from rest_framework.metadata import SimpleMetadata, BaseMetadata
 
+from .utils import get_validation_attrs
+
 
 class AutoMetadataMixin(object):
     def determine_metadata(self, request, view):
         from drf_auto_endpoint.app_settings import settings
 
         serializer_instance = view.serializer_class()
-        form_metadata = []
+        try:
+             metadata = super(AutoMetadataMixin, self).determine_metadata(request, view)
+        except NotImplementedError:
+            metadata = {}
 
-        for field in view.serializer_class.Meta.fields:
-            if field in {'id', '__str__'}:
-                continue
+        if not hasattr(view, 'endpoint'):
+            fields_metedata = []
 
-            instance_field = serializer_instance.fields[field]
-            type_ = settings.WIDGET_MAPPING.get(instance_field.__class__.__name__)
+            for field in view.serializer_class.Meta.fields:
+                if field in {'id', '__str__'}:
+                    continue
 
-            if type_ is None:
-                raise NotImplementedError()
+                instance_field = serializer_instance.fields[field]
+                type_ = settings.WIDGET_MAPPING.get(instance_field.__class__.__name__)
 
-            field_metadata = {
-                'key': field,
-                'type': type_,
+                if type_ is None:
+                    raise NotImplementedError()
 
-                'ui': {
-                    'label': field.title(),
-                },
+                field_metadata = {
+                    'key': field,
+                    'type': type_,
+                    'read_only': False,
+                    'ui': {
+                        'label': field.title(),
+                    },
 
-                'validation': {
-                    'required': instance_field.required
+                    'validation': {
+                        'required': instance_field.required,
+                    },
+                    'extra': {}
                 }
-            }
 
-            default = instance_field.default
+                default = instance_field.default
 
-            if default and default != empty:
-                field_metadata['default'] = default
+                if default and default != empty:
+                    field_metadata['default'] = default
 
-            if getattr(instance_field, 'choices', None):
-                field_metadata['choices'] = [{
-                    'label': v,
-                    'value': k,
-                } for k, v in instance_field.choices.items()]
+                if getattr(instance_field, 'choices', None):
+                    field_metadata['choices'] = [{
+                        'label': v,
+                        'value': k,
+                    } for k, v in instance_field.choices.items()]
 
-            if type_ == 'foreignkey':
-                field_metadata['endpoint'] = field
+                field_metadata['validation'].update(get_validation_attrs(instance_field))
 
-            attrs_to_validation = {
-                'min_length': 'min',
-                'max_length': 'max',
-                'min_value': 'min',
-                'max_value': 'max'
-            }
-            for attr_name, validation_name in attrs_to_validation.items():
-                if getattr(instance_field, attr_name, None):
-                    field_metadata['validation'][validation_name] = getattr(instance_field, attr_name)
+                if type_ == 'foreignkey':
+                    field_metadata['related_endpoint'] = field
 
-            if hasattr(view, 'endpoint'):
-                annotation = view.endpoint.fields_annotation
-                if field in annotation and 'placeholder' in annotation[field]:
-                    field_metadata['ui']['placeholder'] = annotation[field]['placeholder']
-
-            form_metadata.append(field_metadata)
+                fields_metedata.append(field_metadata)
+                metadata.update({
+                    'list_display': ['__str__', ],
+                    'filter_fields': [],
+                    'search_fields': [],
+                    'ordering_fields': [],
+                    'fields': fields_metadata,
+                    'fieldsets': [{'title': None, 'fields': [
+                        field
+                        for field in view.serializer_class.Meta.fields
+                        if field != 'id' and field != '__str__'
+                    ]}]
+                })
+        else:
+            for prop in ['fields', 'list_display', 'filter_fields', 'search_enabled', 'ordering_fields',
+                         'needs', 'fieldsets']:
+                 metadata[prop] = getattr(view.endpoint, 'get_{}'.format(prop))()
 
         adapter = import_string(settings.METADATA_ADAPTER)()
-        return adapter(form_metadata)
+        return adapter(metadata)
 
 
 class AutoMetadata(AutoMetadataMixin, SimpleMetadata):

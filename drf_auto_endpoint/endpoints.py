@@ -1,8 +1,10 @@
 from rest_framework import serializers, viewsets, relations
+from rest_framework.fields import empty
 
 from inflector import Inflector, English
 
 from .factories import serializer_factory, viewset_factory
+from .utils import get_validation_attrs
 
 
 def get_all_field_names(model):
@@ -132,30 +134,45 @@ class Endpoint(object):
         name = field['name'] if isinstance(field, dict) else field
         field_instance = serializer_instance.fields[name]
         rv = {
-            'name': name,
-            'label': name.title().replace('_', ' ') if name != '__str__' else \
-                serializer_instance.Meta.model.__name__,
-            'widget': settings.WIDGET_MAPPING[field_instance.__class__.__name__],
+            'key': name,
+            'type': settings.WIDGET_MAPPING[field_instance.__class__.__name__],
             'read_only': field_instance.read_only or name == '__str__',
+            'ui': {
+                'label': name.title().replace('_', ' ') if name != '__str__' else \
+                    serializer_instance.Meta.model.__name__,
+            },
+            'validation': {
+                'required': field_instance.required,
+            },
             'extra': {},
         }
+
+        default = field_instance.default
+
+        if self.fields_annotation and name in self.fields_annotation and 'placeholder' in self.fields_annotation[name]:
+            rv['ui']['placeholder'] = self.fields_annotation[name]['placeholder']
+
+        if default and default != empty:
+            rv['default'] = default
 
         if getattr(field_instance, 'choices', None) is not None:
             if isinstance(field_instance, (relations.PrimaryKeyRelatedField, relations.ManyRelatedField)):
                 model_field = self.model._meta.get_field(field_instance.source)
                 related_model = model_field.related_model
-                rv['extra']['related_model'] = '{}/{}'.format(
+                rv['related_endpoint'] = '{}/{}'.format(
                     related_model._meta.app_label,
                     related_model._meta.model_name.lower()
                 )
             else:
-                rv['widget'] = settings.WIDGET_MAPPING['choice']
-                rv['extra']['choices'] = [
+                rv['type'] = settings.WIDGET_MAPPING['choice']
+                rv['choices'] = [
                     {
                         'label': v,
                         'value': k,
                     } for k, v in field_instance.choices.items()
                 ]
+
+        rv['validation'].update(get_validation_attrs(field_instance))
 
         if isinstance(field, dict):
             extra = rv['extra']
