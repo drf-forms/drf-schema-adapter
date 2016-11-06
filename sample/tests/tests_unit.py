@@ -57,16 +57,16 @@ class EndpointTestCase(TestCase):
 
         for field, expected_widget in data.items():
             field_dict = self.endpoint._get_field_dict(field)
-            self.assertIn('widget', field_dict)
-            self.assertEqual(field_dict['widget'], expected_widget)
+            self.assertIn('type', field_dict)
+            self.assertEqual(field_dict['type'], expected_widget)
             self.assertIn('extra', field_dict)
             if field == 'category':
-                self.assertIn('related_model', field_dict['extra'])
-                self.assertEqual(field_dict['extra']['related_model'], 'sample/category')
-                self.assertNotIn('choices', field_dict['extra'])
+                self.assertIn('related_endpoint', field_dict)
+                self.assertEqual(field_dict['related_endpoint'], 'sample/category')
+                self.assertNotIn('choices', field_dict)
             elif field == 'product_type':
-                self.assertIn('choices', field_dict['extra'])
-                self.assertEqual(len(field_dict['extra']['choices']), len(PRODUCT_TYPES))
+                self.assertIn('choices', field_dict)
+                self.assertEqual(len(field_dict['choices']), len(PRODUCT_TYPES))
 
     def test_model(self):
         self.assertEqual(self.endpoint.model, Product)
