@@ -18,8 +18,7 @@ DEFAULT_SETTINGS = {
         'CharField': 'text',
         'ChoiceField': 'select',
     },
-    'METADATA_ADAPTER' : 'drf_auto_endpoint.adapters.BaseAdapter',
-    
+    'METADATA_ADAPTER': 'drf_auto_endpoint.adapters.BaseAdapter',
 }
 
 

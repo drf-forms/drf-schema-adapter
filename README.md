@@ -34,7 +34,7 @@ urlpatterns = [
     url(r'^api/', include(router.urls)),
     ...
 ]
-``` 
+```
 
 ### Prototyping
 
@@ -69,7 +69,7 @@ a `title` and a list of `fields` (by default, every field from the model will be
 - `permission_classes`: a tuple containing the list of DRF permission classes to use
 - `url`: the base url for the viewset
 - `viewset`: the viewset class to use instead of the auto-generated one
-- `base_viewset`: a base viewset class to use instead of the defaults (`ModelViewSet` or 
+- `base_viewset`: a base viewset class to use instead of the defaults (`ModelViewSet` or
 `ReadOnlyModelViewSet`)
 
 ### Custom Enpoint's
@@ -94,7 +94,7 @@ class MyModelEndpoint(Endpoint):
 from drf_auto_endpoint.router import router
 from my_app.endpoints import MyModelEndpoint
 
-router.register(endpoint=MyModelEndpoint)
+router.register(endpoint=MyModelEndpoint())
 
 urlpatterns = [
     url(r'^api/', include(router.urls)),
@@ -103,7 +103,7 @@ urlpatterns = [
 
 ## MetaData
 
-This package also provides an `AutoMetadata` and a `MinimalAutoMetadata` class. Those 
+This package also provides an `AutoMetadata` and a `MinimalAutoMetadata` class. Those
 classes can be used in place of the default DRF metadata class.
 
 To use it, change you DRF settings to include
