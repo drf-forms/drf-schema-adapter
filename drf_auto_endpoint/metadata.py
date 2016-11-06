@@ -60,7 +60,7 @@ class AutoMetadataMixin(object):
 
             if hasattr(view, 'endpoint'):
                 annotation = view.endpoint.fields_annotation
-                if field in annotation and 'placeholder' in annotation[field]:
+                if annotation and field in annotation and 'placeholder' in annotation[field]:
                     field_metadata['ui']['placeholder'] = annotation[field]['placeholder']
 
             form_metadata.append(field_metadata)
