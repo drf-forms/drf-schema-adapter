@@ -9,7 +9,7 @@ def get_all_field_names(model):
     return [field.name for field in model._meta.get_fields()]
 
 
-class Endpoint:
+class Endpoint(object):
 
     base_serializer = serializers.ModelSerializer
     base_viewset = viewsets.ModelViewSet

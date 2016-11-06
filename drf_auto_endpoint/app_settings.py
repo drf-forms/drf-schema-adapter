@@ -22,7 +22,7 @@ DEFAULT_SETTINGS = {
 }
 
 
-class Settings:
+class Settings(object):
 
     def __init__(self):
         mapping = getattr(django_settings, 'DRF_AUTO_WIDGET_MAPPING', {})

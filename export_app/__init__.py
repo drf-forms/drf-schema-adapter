@@ -26,7 +26,7 @@ DEFAULT_SETTINGS = {
 }
 
 
-class Settings:
+class Settings(object):
 
     def __init__(self):
         mapping = getattr(django_settings, 'EXPORTER_FIELD_TYPE_MAPPING', {})

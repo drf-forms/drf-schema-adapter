@@ -4,7 +4,7 @@ from rest_framework.fields import empty
 from rest_framework.metadata import SimpleMetadata, BaseMetadata
 
 
-class AutoMetadataMixin:
+class AutoMetadataMixin(object):
     def determine_metadata(self, request, view):
         from drf_auto_endpoint.app_settings import settings
 
@@ -57,6 +57,11 @@ class AutoMetadataMixin:
             for attr_name, validation_name in attrs_to_validation.items():
                 if getattr(instance_field, attr_name, None):
                     field_metadata['validation'][validation_name] = getattr(instance_field, attr_name)
+
+            if hasattr(view, 'endpoint'):
+                annotation = view.endpoint.fields_annotation
+                if field in annotation and 'placeholder' in annotation[field]:
+                    field_metadata['ui']['placeholder'] = annotation[field]['placeholder']
 
             form_metadata.append(field_metadata)
 
