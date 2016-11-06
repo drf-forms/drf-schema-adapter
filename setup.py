@@ -10,7 +10,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 setup(
     name='drf_auto_endpoint',
     version='0.9.9',
-    packages=['drf_auto_endpoint'],
+    packages=['drf_auto_endpoint', 'export_app'],
     include_package_data=True,
     license='MIT License',
     description='Package description',
@@ -32,8 +32,8 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
     install_requires=[
-        'Django>=1.9,<1.10',
-        'djangorestframework>=3.3.3,<4.0.0',
+        'Django>=1.9',
+        'djangorestframework<4.0.0',
         'django-filter>=0.13.0',
         'Inflector>=2.0.11',
     ]
