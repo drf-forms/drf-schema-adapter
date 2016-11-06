@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'rest_framework',
 
     'drf_auto_endpoint',
+    'export_app',
 )
 
 MIDDLEWARE_CLASSES = (
