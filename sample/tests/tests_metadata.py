@@ -18,4 +18,4 @@ class TestMetadata(TestCase):
 
         view = MockView()
         metadata = metadata_mixin.determine_metadata(request, view)
-        self.assertIn('placeholder', metadata['fields'][0]['ui'])
+        self.assertIn('placeholder', metadata[0]['ui'])

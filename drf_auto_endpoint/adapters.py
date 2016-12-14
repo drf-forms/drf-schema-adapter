@@ -4,7 +4,7 @@ class BaseAdapter(object):
     """
 
     def render(self, config):
-        return config
+        return config['fields']
 
     def __call__(self, config):
         return self.render(config)
