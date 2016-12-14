@@ -21,23 +21,28 @@ def to_html_tag(widget_type):
 class AngularFormlyAdapter(BaseAdapter):
 
     def render(self, config):
-        config["validation"].update({
-            "label": config["ui"]["label"],
-            "type": config["type"],
-        })
+        fields = config['fields'];
+        adapted = []
+        for field in fields:
+            field["validation"].update({
+                "label": field["ui"]["label"],
+                "type": field["type"],
+            })
 
-        adapted = {
-            "key": config["key"],
-            "read_only": config["read_only"],
-            "type": to_html_tag(config["type"]),
-            "templateOptions": config["validation"]
-        }
+            new_field = {
+                "key": field["key"],
+                "read_only": field["read_only"],
+                "type": to_html_tag(field["type"]),
+                "templateOptions": field["validation"]
+            }
 
-        if "placeholder" in config["ui"]:
-            adapted["templateOptions"]["placeholder"] = config["ui"]["placeholder"]
+            if "placeholder" in field["ui"]:
+                new_field["templateOptions"]["placeholder"] = field["ui"]["placeholder"]
 
-        if "default" in config:
-            adapted["defaultValue"] = config["default"]
+            if "default" in field:
+                new_field["defaultValue"] = field["default"]
+
+            adapted.append(new_field)
 
         return adapted
 
