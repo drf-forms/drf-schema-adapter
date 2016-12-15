@@ -44,7 +44,7 @@ class Endpoint(object):
 
         arg_names = ('fields', 'serializer', 'permission_classes', 'filter_fields', 'search_fields',
                      'viewset', 'read_only', 'include_str', 'ordering_fields', 'page_size',
-                     'base_viewset', 'fields_annotation', 'fielsets', 'base_serializer')
+                     'base_viewset', 'fields_annotation', 'fieldsets', 'base_serializer')
         for arg_name in arg_names:
             setattr(self, arg_name, kwargs.pop(arg_name, getattr(self, arg_name, None)))
 

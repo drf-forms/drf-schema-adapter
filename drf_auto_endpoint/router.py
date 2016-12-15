@@ -23,13 +23,14 @@ class EndpointRouter(DefaultRouter):
             extra = {}
             if base_viewset is not None:
                 extra['base_viewset'] = base_viewset
+            if base_serializer is not None:
+                extra['base_serializer'] = base_serializer
 
             endpoint = self.base_endpoint_class(model=model, fields=fields, fieldsets=fielsets,
                                                 permission_classes=permission_classes,
                                                 serializer=serializer, filter_fields=filter_fields,
                                                 read_only=read_only, viewset=viewset,
                                                 search_fields=search_fields,
-                                                base_serializer=base_serializer,
                                                 ordering_fields=ordering_fields,
                                                 fields_annotation=fields_annotation, **extra)
 
