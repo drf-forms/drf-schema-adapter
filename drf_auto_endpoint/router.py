@@ -16,18 +16,20 @@ class EndpointRouter(DefaultRouter):
     def register(self, model=None, endpoint=None, fields=None, permission_classes=None,
                  serializer=None, filter_fields=None, read_only=False, viewset=None,
                  search_fields=None, ordering_fields=None, page_size=None, base_viewset=None,
-                 base_name=None, fields_annotation=None, **kwargs):
+                 base_name=None, fields_annotation=None, fielsets=None, base_serializer=None,
+                 **kwargs):
 
         if endpoint is None:
             extra = {}
             if base_viewset is not None:
                 extra['base_viewset'] = base_viewset
 
-            endpoint = self.base_endpoint_class(model=model, fields=fields,
+            endpoint = self.base_endpoint_class(model=model, fields=fields, fieldsets=fielsets,
                                                 permission_classes=permission_classes,
                                                 serializer=serializer, filter_fields=filter_fields,
                                                 read_only=read_only, viewset=viewset,
                                                 search_fields=search_fields,
+                                                base_serializer=base_serializer,
                                                 ordering_fields=ordering_fields,
                                                 fields_annotation=fields_annotation, **extra)
 
