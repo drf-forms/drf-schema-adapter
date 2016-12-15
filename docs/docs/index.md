@@ -41,7 +41,7 @@ urlpatterns = [
 
 ```
 
-For more information on `drf_auto_endpoint`'s router and how to customize endpoints, see [this section](drf_auto_endpoint/endpoint.md).
+For more information on `drf_auto_endpoint`'s router and how to customize endpoints, see [this section](drf_auto_endpoint/index.md).
 
 ### Metadata
 
