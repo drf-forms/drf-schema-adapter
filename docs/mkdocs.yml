@@ -5,9 +5,6 @@ pages:
     - 'General': drf_auto_endpoint/index.md
     - 'Endpoint': drf_auto_endpoint/endpoint.md
     - 'Metadata': drf_auto_endpoint/metadata.md
-  - 'Export-app':
-    - 'General': export_app/index.md
-    - 'Exporting models': export_app/models.md
-    - 'Exporting forms/fieldsets': export_app/fieldsets.md
+  - 'Export-app': export_app/index.md
   - License: LICENSE.md
   - 'Code of conduct': COC.md
