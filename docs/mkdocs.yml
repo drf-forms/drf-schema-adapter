@@ -1,1 +1,13 @@
-site_name: My Docs
+site_name: DRF-schema-adapter documentation
+pages:
+  - Home: index.md
+  - 'DRF-auto-endpoint': 
+    - 'General': drf_auto_endpoint/index.md
+    - 'Endpoint': drf_auto_endpoint/endpoint.md
+    - 'Metadata': drf_auto_endpoint/metadata.md
+  - 'Export-app':
+    - 'General': export_app/index.md
+    - 'Exporting models': export_app/models.md
+    - 'Exporting forms/fieldsets': export_app/fieldsets.md
+  - License: LICENSE.md
+  - 'Code of conduct': COC.md
