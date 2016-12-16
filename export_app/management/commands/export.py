@@ -16,6 +16,12 @@ class Command(BaseSerializerExporter, BaseCommand):
 
     def handle(self, *args, **options):
         target_app = options['target_app']
+        adapter_name = options['adapter_name']
+        if '.' not in adapter_name:
+            adapter_name = 'exporter_app.adapters.{}'.format(adapter_name)
+        Adapter = import_string(options)
+        adapter = Adapter(context, application_name, model_name)
+
         for endpoint in options['model_endpoint']:
             try:
                 model, serializer_instance, model_name, application_name = \
@@ -23,7 +29,7 @@ class Command(BaseSerializerExporter, BaseCommand):
             except ModelNotFoundException as e:
                 raise CommandError('No viewset found for {}'.format(e.model))
 
-            fields, rels = self.get_fields_for_model(model, serializer_instance, target_app)
+            fields, rels = self.get_fields_for_model(model, serializer_instance, adapter, target_app)
 
             belongsTo = False
             hasMany = False
@@ -48,6 +54,4 @@ class Command(BaseSerializerExporter, BaseCommand):
                 'hasMany': hasMany
             }
 
-            Adapter = import_string(settings.ADAPTER)
-            adapter = Adapter(context, application_name, model_name)
             adapter.write_to_file()

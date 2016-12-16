@@ -10,30 +10,13 @@ DEFAULT_SETTINGS = {
     'FRONT_APPLICATION_NAME': 'appName',
     'FRONT_APPLICATION_PATH': '../front',
     'URL_FORMAT': '{app}/{model}',
-    'FIELD_TYPE_MAPPING': {
-        'BooleanField': 'boolean',
-        'NullBooleanField': 'boolean',
-        'IntegerField': 'number',
-        'FloatField': 'number',
-        'DecimalField': 'number',
-        'ListField': None,
-        'DictField': None,
-        'JSONField': None,
-        'PrimaryKeyRelatedField': 'belongsTo',
-        'ManyRelatedField': 'hasMany',
-    },
+    'FIELD_TYPE_MAPPING': {},
+    'DEFAULT_MAPPING': None,
     'ADAPTER': 'export_app.adapters.EmberAdapter'
 }
 
 
 class Settings(object):
-
-    def __init__(self):
-        mapping = getattr(django_settings, 'EXPORTER_FIELD_TYPE_MAPPING', {})
-        mapping.update(DEFAULT_SETTINGS['FIELD_TYPE_MAPPING'])
-        self.FIELD_TYPE_MAPPING = defaultdict(lambda: 'string')
-        for k, v in mapping.items():
-            self.FIELD_TYPE_MAPPING[k] = v
 
     def __getattr__(self, name):
         if name not in DEFAULT_SETTINGS:

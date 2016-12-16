@@ -47,7 +47,7 @@ class BaseSerializerExporter(object):
 
 class SerializerExporterWithFields(BaseSerializerExporter):
 
-    def get_fields_for_model(self, model, serializer_instance, target_app=None):
+    def get_fields_for_model(self, model, serializer_instance, adapter, target_app=None):
 
         fields = []
         relationships = []
@@ -58,7 +58,7 @@ class SerializerExporterWithFields(BaseSerializerExporter):
                 continue
             field_item = {
                 'name': field_name,
-                'type': settings.FIELD_TYPE_MAPPING[field.__class__.__name__]
+                'type': adapter.field_type_mapping[field.__class__.__name__]
             }
             if isinstance(field, PrimaryKeyRelatedField) or isinstance(field, ManyRelatedField):
                 model_field = model._meta.get_field(field_name)

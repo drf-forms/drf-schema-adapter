@@ -7,10 +7,30 @@ from export_app import settings
 
 
 class BaseAdapter(object):
+
+    FIELD_TYPE_MAPPING: {}
+    DEFAULT_MAPPING: None
+
     def __init__(self, context, application_name, model_name):
         self.context = context
         self.application_name = application_name
         self.model_name = model_name
+
+    @property
+    def field_type_mapping(self):
+        default = self.FIELD_TYPE_MAPPING
+        default.update(settings.FIELD_TYPE_MAPPING)
+        rv = defaultdict(lambda: self.default_mapping)
+        for k, v in default.items():
+            rv[k] = v
+        return rv
+
+    @property
+    def default_mapping(self):
+        rv = settings.DEFAULT_MAPPING
+        if rv is None:
+            return self.DEFAULT_MAPPING
+        return rv
 
     def write_to_file(self, context):
         raise NotImplemented("You need to implement your Adapter")
