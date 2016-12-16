@@ -1,0 +1,7 @@
+test:
+  script:
+    - ./test.sh
+  tags:
+    - python 3.5
+    - local
+
