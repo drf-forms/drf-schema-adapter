@@ -3,6 +3,7 @@ python:
   - "2.7"
   - "3.5"
 env:
+  - DJANGOVER=django18
   - DJANGOVER=django19
   - DJANGOVER=django110
 # command to install dependencies

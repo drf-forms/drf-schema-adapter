@@ -1,6 +1,10 @@
 from rest_framework import filters, pagination, serializers
 from django.core.exceptions import FieldDoesNotExist
-from django.db.models.fields.reverse_related import ManyToOneRel
+try:
+    from django.db.models.fields.reverse_related import ManyToOneRel
+except ImportError:
+    # Django 1.8
+    from django.db.models.fields.related import ManyToOneRel
 
 
 def serializer_factory(endpoint):
