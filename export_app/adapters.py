@@ -8,8 +8,8 @@ from export_app import settings
 
 class BaseAdapter(object):
 
-    FIELD_TYPE_MAPPING: {}
-    DEFAULT_MAPPING: None
+    FIELD_TYPE_MAPPING = {}
+    DEFAULT_MAPPING = None
 
     def __init__(self, context, application_name, model_name):
         self.context = context
@@ -37,6 +37,21 @@ class BaseAdapter(object):
 
 
 class EmberAdapter(BaseAdapter):
+
+    FIELD_TYPE_MAPPING = {
+        'BooleanField': 'boolean',
+        'NullBooleanField': 'boolean',
+        'IntegerField': 'number',
+        'FloatField': 'number',
+        'DecimalField': 'number',
+        'ListField': None,
+        'DictField': None,
+        'JSONField': None,
+        'PrimaryKeyRelatedField': 'belongsTo',
+        'ManyRelatedField': 'hasMany',
+    }
+    DEFAULT_MAPPING = 'string'
+
     base_template_name = 'export_app/ember_model_base.js'
     template_name = 'export_app/ember_model.js'
     test_template_name = 'export_app/ember_model_test.js'
