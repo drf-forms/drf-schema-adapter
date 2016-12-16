@@ -22,6 +22,8 @@ class BaseAdapter(object):
     FIELD_TYPE_MAPPING = {}
     DEFAULT_MAPPING = None
 
+    requires_fields = False
+
     @classproperty
     def field_type_mapping(cls):
         default = cls.FIELD_TYPE_MAPPING
@@ -58,6 +60,8 @@ class EmberAdapter(BaseAdapter):
     }
     DEFAULT_MAPPING = 'string'
 
+    requires_fields = True
+
     base_template_name = 'export_app/ember_model_base.js'
     template_name = 'export_app/ember_model.js'
     test_template_name = 'export_app/ember_model_test.js'
@@ -92,3 +96,19 @@ class EmberAdapter(BaseAdapter):
             with open(os.path.join(test_target_dir, test_filename), 'w') as f:
                 output = render_to_string(self.test_template_name, context)
                 f.write(output)
+
+
+class AngularAdapter(BaseAdapter):
+    template_name = 'export_app/angular_resource.js'
+
+    def write_to_file(self, application_name, model_name, context):
+        target_dir = os.path.join(django_settings.BASE_DIR, settings.FRONT_APPLICATION_PATH,
+                                  'modules', 'resources')
+        if not os.path.exists(target_dir):
+            os.makedirs(target_dir)
+
+        filename = '{}-{}.js'.format(context['application_name'], context['model_name'])
+
+        with open(os.path.join(target_dir, filename), 'w') as f:
+            output = render_to_string(self.template_name, context)
+            f.write(output)
