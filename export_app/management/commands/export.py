@@ -18,7 +18,7 @@ class Command(SerializerExporterWithFields, BaseCommand):
         target_app = options['target_app']
         adapter_name = options['adapter_name']
         if '.' not in adapter_name:
-            adapter_name = 'exporter_app.adapters.{}'.format(adapter_name)
+            adapter_name = 'export_app.adapters.{}'.format(adapter_name)
         Adapter = import_string(adapter_name)
         adapter = Adapter()
 
@@ -29,7 +29,11 @@ class Command(SerializerExporterWithFields, BaseCommand):
             except ModelNotFoundException as e:
                 raise CommandError('No viewset found for {}'.format(e.model))
 
-            fields, rels = self.get_fields_for_model(model, serializer_instance, adapter, target_app)
+            fields, rels = [], []
+
+            if adapter.requires_fields:
+                fields, rels = self.get_fields_for_model(model, serializer_instance, adapter,
+                                                         target_app)
 
             belongsTo = False
             hasMany = False
@@ -51,7 +55,9 @@ class Command(SerializerExporterWithFields, BaseCommand):
                 'fields': fields,
                 'rels': rels,
                 'belongsTo': belongsTo,
-                'hasMany': hasMany
+                'hasMany': hasMany,
+                'target_app': target_app,
+                'api_base': settings.BACK_API_BASE,
             }
 
             adapter.write_to_file(application_name, model_name, context)

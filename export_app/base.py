@@ -1,5 +1,5 @@
 from django.utils.module_loading import import_string
-from rest_framework.serializers import PrimaryKeyRelatedField, ManyRelatedField
+from rest_framework.serializers import PrimaryKeyRelatedField, ManyRelatedField, ModelSerializer
 
 from export_app import settings
 
@@ -60,12 +60,18 @@ class SerializerExporterWithFields(BaseSerializerExporter):
                 'name': field_name,
                 'type': adapter.field_type_mapping[field.__class__.__name__]
             }
-            if isinstance(field, PrimaryKeyRelatedField) or isinstance(field, ManyRelatedField):
+            if isinstance(field, PrimaryKeyRelatedField) or isinstance(field, ManyRelatedField) \
+                    or isinstance(field, ModelSerializer):
                 model_field = model._meta.get_field(field_name)
                 field_item['related_model'] = model_field.related_model._meta.model_name.lower()
                 field_item['app'] = target_app if target_app is not None else \
                     model_field.related_model._meta.app_label.lower()
                 relationships.append(field_item)
+                if isinstance(field, ModelSerializer):
+                    if field.many:
+                        field_item[type] = adapter.field_type_mapping['ManyRelatedField']
+                    else:
+                        field_item[type] = adapter.field_type_mapping['PrimaryKeyRelatedField']
             else:
                 fields.append(field_item)
 
