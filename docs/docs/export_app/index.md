@@ -21,7 +21,13 @@ INSTALLED_APPS = (
 
 ## Configuration
 
-The default adapter is `export_app.adapters.EmberAdapter`, if you wish to use another adapter, you'll
+### `EXPORTER_ADAPTER`
+
+*Default:* `export_app.adapters.EmberAdapter``
+
+*Used by*: Dynamic & on-disk generation
+
+If you wish to use another adapter, you'll
 have to configure it in your `settings.py` as well:
 
 ```
@@ -39,6 +45,49 @@ If you are using one of the provided adapter, you can simply specify them using 
 If you are using a third-party adapter, you'll have to specify the full dotted path to the adapapter eg:
 
 `./manage.py export --adapter third_party.very_cool.Adapter sample/categories`
+
+### `EXPORTER_ROUTER_PATH`
+
+*Default:* ``'urls.router'`
+
+*Used by*: Dynamic & on-disk generation
+
+
+The python path to the router on which you registered your `ViewSet`'s
+
+### `EXPORTER_FRONT_APPLICATION_NAME`
+
+*Default:* `'djember'`
+
+*Used by*: Dynamic generation only
+
+
+The name of your frontend application or `modulePrefix` (eg: found in `config/environment.js` of an ember app folder)
+
+### `EXPORTER_FRONT_APPLICATION_PATH`
+
+*Default:* `'../front'`
+
+*Used by*: On-disk generation only
+
+
+Relative path from your Django project base to your frontend application base directory.
+
+### `EXPORTER_FIELD_TYPE_MAPPING`
+
+*Default:* determined by the adapter
+
+*Used by*: Dynamy & on-disk generation
+
+A dictionary mapping DRF field serializer class names to frontend property types. An mapping you declare in this dictionnary will either override the default one or be added to it.
+
+### `EXPORTER_FIELD_DEFAULT_MAPPING`
+
+*Default:* determined by the adapter
+
+*Used by*: Dynamy & on-disk generation
+
+ string repesenting the frontend property type the exporter should default to when the DRF field serializer in not found in `EXPORTER_FIELD_TYPE_MAPPING`
 
 ## Usage
 
