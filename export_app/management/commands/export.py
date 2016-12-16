@@ -2,10 +2,10 @@ from django.core.management.base import BaseCommand, CommandError
 from django.utils.module_loading import import_string
 
 from export_app import settings
-from export_app.base import BaseSerializerExporter, ModelNotFoundException
+from export_app.base import SerializerExporterWithFields, ModelNotFoundException
 
 
-class Command(BaseSerializerExporter, BaseCommand):
+class Command(SerializerExporterWithFields, BaseCommand):
     help = 'Export DRF serializer definition to an EmberJS model definition'
 
     def add_arguments(self, parser):
@@ -19,8 +19,8 @@ class Command(BaseSerializerExporter, BaseCommand):
         adapter_name = options['adapter_name']
         if '.' not in adapter_name:
             adapter_name = 'exporter_app.adapters.{}'.format(adapter_name)
-        Adapter = import_string(options)
-        adapter = Adapter(context, application_name, model_name)
+        Adapter = import_string(adapter_name)
+        adapter = Adapter()
 
         for endpoint in options['model_endpoint']:
             try:
@@ -54,4 +54,4 @@ class Command(BaseSerializerExporter, BaseCommand):
                 'hasMany': hasMany
             }
 
-            adapter.write_to_file()
+            adapter.write_to_file(application_name, model_name, context)

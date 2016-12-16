@@ -7,7 +7,7 @@ This can be done in 2 different ways:
 - on-the-fly generation
 - on-disk files generation
 
-Before you are able to use any of these features, you'll have to enable `exporter-app` in your `setting.py`
+Before you are able to use any of these features, you'll have to enable `export-app` in your `setting.py`
 
 ```
 ## settings.py
@@ -15,7 +15,7 @@ Before you are able to use any of these features, you'll have to enable `exporte
 ...
 INSTALLED_APPS = (
     ...
-    'exporter_app',
+    'export_app',
 )
 ```
 
@@ -87,7 +87,7 @@ A dictionary mapping DRF field serializer class names to frontend property types
 
 *Used by*: Dynamy & on-disk generation
 
- string repesenting the frontend property type the exporter should default to when the DRF field serializer in not found in `EXPORTER_FIELD_TYPE_MAPPING`
+ string repesenting the frontend property type the export should default to when the DRF field serializer in not found in `EXPORTER_FIELD_TYPE_MAPPING`
 
 ## Usage
 
@@ -99,12 +99,12 @@ to your urlpatterns.
 ```
 # urls.py
 
-from exporter_app import urls as exporter_urls, settings as exporter_settings
+from export_app import urls as export_urls, settings as export_settings
 ...
 
 urlpatterns = [
     ...
-    url(r'^models/', include(exporter_urls, namespace=exporter_settings.URL_NAMESPACE)),
+    url(r'^models/', include(export_urls, namespace=export_settings.URL_NAMESPACE)),
 ]
 ```
 
@@ -127,7 +127,7 @@ capabilities with `Model`'s or `Endpoint`'s)
 
 ### On-disk files generation
 
-`exporter_app` also provides a management command to generate (ES5 or ES6 depending on the adapter)
+`export_app` also provides a management command to generate (ES5, ES6 or ES7 depending on the adapter)
 models on disk:
 
 ```./manage.py export route_registered_with_the_router```
