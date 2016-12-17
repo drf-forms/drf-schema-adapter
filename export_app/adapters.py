@@ -98,6 +98,22 @@ class EmberAdapter(BaseAdapter):
                 f.write(output)
 
 
+class AngularAdapter(BaseAdapter):
+    template_name = 'export_app/angular_resource.js'
+
+    def write_to_file(self, application_name, model_name, context):
+        target_dir = os.path.join(django_settings.BASE_DIR, settings.FRONT_APPLICATION_PATH,
+                                  'modules', 'resources')
+        if not os.path.exists(target_dir):
+            os.makedirs(target_dir)
+
+        filename = '{}-{}.js'.format(context['application_name'], context['model_name'])
+
+        with open(os.path.join(target_dir, filename), 'w') as f:
+            output = render_to_string(self.template_name, context)
+            f.write(output)
+
+
 class MetadataAdapter(BaseAdapter):
 
     works_with = 'viewset'
