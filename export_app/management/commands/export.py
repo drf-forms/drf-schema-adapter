@@ -24,8 +24,11 @@ class Command(SerializerExporterWithFields, BaseCommand):
 
         for endpoint in options['model_endpoint']:
             try:
-                model, serializer_instance, model_name, application_name = \
-                    self.get_serializer_for_basename(endpoint)
+                if adapter.works_with == 'serializer':
+                    model, serializer_instance, model_name, application_name = \
+                        self.get_serializer_for_basename(endpoint)
+                else:
+                    viewset, model_name, application_name = self.get_viewset_for_basename(endpoint)
             except ModelNotFoundException as e:
                 raise CommandError('No viewset found for {}'.format(e.model))
 
@@ -48,16 +51,19 @@ class Command(SerializerExporterWithFields, BaseCommand):
                     if belongsTo:
                         break
 
-            context = {
-                'endpoint': endpoint,
-                'model_name': model_name,
-                'application_name': application_name,
-                'fields': fields,
-                'rels': rels,
-                'belongsTo': belongsTo,
-                'hasMany': hasMany,
-                'target_app': target_app,
-                'api_base': settings.BACK_API_BASE,
-            }
+            if adapter.works_with == 'serializer':
+                context = {
+                    'endpoint': endpoint,
+                    'model_name': model_name,
+                    'application_name': application_name,
+                    'fields': fields,
+                    'rels': rels,
+                    'belongsTo': belongsTo,
+                    'hasMany': hasMany,
+                    'target_app': target_app,
+                    'api_base': settings.BACK_API_BASE,
+                }
 
-            adapter.write_to_file(application_name, model_name, context)
+                adapter.write_to_file(application_name, model_name, context)
+            else:
+                adapter.write_to_file(application_name, model_name, viewset)

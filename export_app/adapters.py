@@ -23,6 +23,7 @@ class BaseAdapter(object):
     DEFAULT_MAPPING = None
 
     requires_fields = False
+    works_with = 'serializer'
 
     @classproperty
     def field_type_mapping(cls):
@@ -59,7 +60,6 @@ class EmberAdapter(BaseAdapter):
         'ManyRelatedField': 'hasMany',
     }
     DEFAULT_MAPPING = 'string'
-
     requires_fields = True
 
     base_template_name = 'export_app/ember_model_base.js'
@@ -112,3 +112,23 @@ class AngularAdapter(BaseAdapter):
         with open(os.path.join(target_dir, filename), 'w') as f:
             output = render_to_string(self.template_name, context)
             f.write(output)
+
+
+class MetadataAdapter(BaseAdapter):
+
+    works_with = 'viewset'
+
+    def write_to_file(self, application_name, model_name, viewset):
+        import json
+        from drf_auto_endpoint.metadata import MinimalAutoMetadata
+
+        target_dir = os.path.join(django_settings.BASE_DIR, settings.FRONT_APPLICATION_PATH,
+                                  'data')
+        if not os.path.exists(target_dir):
+            os.makedirs(target_dir)
+
+        filename = '{}-{}.json'.format(application_name, model_name)
+
+        with open(os.path.join(target_dir, filename), 'w') as f:
+            output = MinimalAutoMetadata().determine_metadata(None, viewset)
+            json.dump(output, f, indent=2)

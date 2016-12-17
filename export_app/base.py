@@ -19,14 +19,18 @@ class BaseSerializerExporter(object):
         self.router = import_string(settings.ROUTER_PATH)
         super(BaseSerializerExporter, self).__init__(*args, **kwargs)
 
-    def get_serializer_for_basename(self, basename):
-        viewset = None
+    def get_endpoint_for_basename(self, basename):
         if hasattr(self.router, '_endpoints') and basename in self.router._endpoints:
-            endpoint = self.router._endpoints[basename]
-            model = endpoint.model
-            serializer_instance = endpoint.serializer()
+            return self.router._endpoints[basename]
+        return None
+
+    def get_viewset_for_basename(self, basename, with_endpoint=False):
+        viewset = None
+        endpoint = self.get_endpoint_for_basename(basename)
+        if endpoint is not None:
             model_name = endpoint.singular_model_name
             application_name = endpoint.application_name
+            viewset = endpoint.viewset
         else:
             for item in self.router.registry:
                 if item[0] == basename:
@@ -34,10 +38,25 @@ class BaseSerializerExporter(object):
                     break
             if viewset is None:
                 raise ModelNotFoundException(basename)
+
             model = viewset.serializer_class.Meta.model
-            serializer_instance = viewset.serializer_class()
             model_name = model._meta.model_name.lower()
             application_name = model._meta.app_label.lower()
+
+        if with_endpoint:
+            return viewset, model_name, application_name, endpoint
+        return viewset, model_name, application_name
+
+    def get_serializer_for_basename(self, basename):
+        viewset, model_name, application_name, endpoint = \
+            self.get_viewset_for_basename(basename, True)
+
+        if endpoint is not None:
+            model = endpoint.model
+            serializer_instance = endpoint.serializer()
+        else:
+            model = viewset.serializer_class.Meta.model
+            serializer_instance = viewset.serializer_class()
 
         return model, serializer_instance, model_name, application_name
 
