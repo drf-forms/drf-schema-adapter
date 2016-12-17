@@ -148,13 +148,32 @@ in you frontend application.
 
 ### `EmberAdapter`
 
+Using the `EmberAdapter` will export the definition of the serializer linked to an endpoint to an
+Ember.data model definition.
+
+Since you might want to add computed properties or other features to an Ember model, this is done using
+3 files:
+
+- `models/base/&lt;app_name&gt;/&ltmodel_name&gt;.js` &lt;- always overwritten
+- `models/&lt;app_name&gt;/&lt;model_name&gt;.js` &lt; inherits from the base model, never overwritten
+- `tests/unit/models/&lt;app_name&gt;/&lt;model_name&gt;-test.js` &lt; never overwritten
+
+### `AngularAdapter`
+
+Using the `AngularAdapter` will export an Angular1 resource definition file into
+`modules/resources/&lt;application_name&gt;-&lt;model_name&gt;.js`.
+
 ### `AngularAdapter`
 
 *coming soon*
 
-### `FormlyAdapter`
+### `MetadataAdapter`
 
-*coming soon*
+Using this adapter you'll be able to dump the content of the Metadata (`OPTIONS` call) of an endpoint
+into your frontend application in a file named `data/&lt;application_name&gt;-&lt;model_name&gt;.json`.
+
+The created output will depend on the adapter you chose for `drf_auto_endpoint` using the
+[`DRF_AUTO_METADATA_ADAPTER`](../drf_auto_endpoint/metadata.md#adapters)
 
 ### `MobXAdapter`
 
