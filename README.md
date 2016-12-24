@@ -1,17 +1,16 @@
-# LevIT's DRF Auto-endpoint
+# DRF-schema-adapter
 
-`drf_auto_endpoint` is a library used to make it as straight-forward to declare an API endpoint
-as it is to declare a new `ModelAdmin` in Django.
+`drf-schema-adapter` is a set of tools used to make it as straight-forward to declare an API endpoint
+as it is to declare a new `ModelAdmin` in Django and export the corresponding definition to frontend
+frameworks and libraries
 
 ## Installation
 
-So far, `drf_auto_endpoint` is only compatible with python 3.5, Django 1.9 and DRF 3.3.
-It probably also works with other version of python 3.3+ and Django 1.8+, it just hasn't been
-tested with those yet.
+`drf-schema-adapter` is compatible with python 2.7 and 3.4+, Django 1.8 and DRF 3.3+
 
 ### With pip
 
-`pip install drf_auto_endpoint`
+`pip install drf-schema-adapter`
 
 ### From source
 
@@ -19,7 +18,7 @@ Within the source directory:
 
 `python setup.py install`
 
-## Usage
+## Basic sage
 
 First of all you'll need to import the default EndpointRouter in your urls.py file.
 
@@ -54,164 +53,54 @@ urlpatterns = [
 ]
 ```
 
-#### Options
+### Exporting to the frontend
 
-When registering a Model with the router, you can also pass several keyword arguments:
+First add `'export_app'` to your setting's `INSTALLED_APPS`, then run:
 
-- `read_only`: Boolean, indicates whether this endpoint should be read_only or not
-- `fieldsets`: a tuple containing the list of fieldsets to use. A fieldset has 2 properties,
-a `title` and a list of `fields` (by default, every field from the model will be used).
-- `filter_fields`: a tuple containing a list of fields on which the endpoint will accept filtering
-- `search_fields`: a tuple containing a list of fields on which the endpoint will accept searching
-(text fields only)
-- `ordering_fields`: a tuple containing a list of fields on which the endpoint will accept ordering
-- `page_size`: the number of records to render at once (automatically activates pagination)
-- `permission_classes`: a tuple containing the list of DRF permission classes to use
-- `url`: the base url for the viewset
-- `viewset`: the viewset class to use instead of the auto-generated one
-- `base_viewset`: a base viewset class to use instead of the defaults (`ModelViewSet` or
-`ReadOnlyModelViewSet`)
+`./manage.py export --adapter_name EmberAdapter samples/products`
 
-### Custom Enpoint's
+## Full documentation
 
-As with Django's `ModelAdmin` class you can also define your own `Endpoint` class and register it
-with the router instead of registering a model.
+For a (way) more complete documentation, please see http://drf-schema-adapter.readthedocs.io
 
-```
-# my_app/endpoints.py
-from drf_auto_endpoint.endpoints import Endpoint
-from .models import MyModel
+## Related projects
 
-class MyModelEndpoint(Endpoint):
+- Django:
+  - [Django Rest Framework](http://www.django-rest-framework.org/)
+  - [DRF-Base64](https://bitbucket.org/levit_scs/drf_base64)
+- Ember:
+  - [ember-cli-dynamic-model](https://bitbucket.org/levit_scs/ember-cli-dynamic-model)
+  - [ember-cli-crudities](https://bitbucket.org/levit_scs/ember-cli-crudities)
+- Angular:
+  - [angular-formly](http://angular-formly.com/)
+- React:
+  _nothing so far_
+- Third-party adapters:
+  _nothing so far_
 
-    model = MyModel
-    read_only = True
-    fields = ('id', 'name', 'category')
-```
+## Contibuting guide-lines
 
-```
-# urls.py
-from drf_auto_endpoint.router import router
-from my_app.endpoints import MyModelEndpoint
+If you'd like to contibute to *DRF-schema-adapter**, you are more than welcome to do so. In order to
+make contributing to this project a rich experience for everyone, please follow these guide-lines:
 
-router.register(endpoint=MyModelEndpoint())
-
-urlpatterns = [
-    url(r'^api/', include(router.urls)),
-]
-```
-
-## MetaData
-
-This package also provides an `AutoMetadata` and a `MinimalAutoMetadata` class. Those
-classes can be used in place of the default DRF metadata class.
-
-To use it, change you DRF settings to include
-
-```
-REST_FRAMEWORK = {
-    'DEFAULT_METADATA_CLASS': 'drf_auto_endpoint.metadata.AutoMetadata',
-}
-```
-
-Those MetaData classes will provide extra information about the fields provided by the
-serializer and hint the client application on how to use and display those fields.
-
-As an example, see the extra output these classes provide for the sample model `Product`.
-
-```
-  "fields": [
-    {
-      "read_only": true,
-      "name": "id",
-      "label": "Id",
-      "widget": "number",
-      "extra": {}
-    },
-    {
-      "read_only": false,
-      "name": "name",
-      "label": "Name",
-      "widget": "text",
-      "extra": {}
-    },
-    {
-      "read_only": false,
-      "name": "category",
-      "label": "Category",
-      "widget": "foreignkey",
-      "extra": {
-        "related_model": "sample/category"
-      }
-    },
-    {
-      "read_only": false,
-      "name": "product_type",
-      "label": "Product_Type",
-      "widget": "select",
-      "extra": {
-        "choices": [
-          {
-            "value": "s",
-            "label": "Sellable"
-          },
-          {
-            "value": "r",
-            "label": "Rentable"
-          }
-        ]
-      }
-    },
-    {
-      "read_only": true,
-      "name": "__str__",
-      "label": "Product",
-      "widget": "text",
-      "extra": {}
-    }
-  ],
-  "list_display": [
-    "__str__"
-  ],
-  "filter_fields": [],
-  "search_enabled": false,
-  "ordering_fields": [],
-  "needs": [
-    {
-      "singular": "category",
-      "app": "sample",
-      "plural": "categories"
-    }
-  ],
-  "fieldsets": [
-    {
-      "title": null,
-      "fields": [
-        {
-          "name": "name"
-        },
-        {
-          "name": "category"
-        },
-        {
-          "name": "product_type"
-        }
-      ]
-    }
-  ]
-```
+- First, fork the project with your own github account, build your code on your own repository and
+submit a pull-request once your contribution is ready
+- Before contributing a bug-fix or new feature, create an issue explaining what the problem/need is
+first. When submitting your pull-request, make sure to reference the original issue
+- For any code you contribute, make sure to follow PEP8 recommendation (soft line-limit 100, hard
+limit 120)
+- For bug-fixes, please first write a test that will fail with the current code and passes using your
+patch. For easier evaluation, please do so in 2 separate commits
+- For new features, if your feature can be implemented as a third-party app (like new adapters), please
+don't contribute them to this repo, publish your own application and open an issue telling us about it.
+We will make sure to add a link to your application in this README.
+- Read and respect the [Code Of Conduct](./COC.md)
 
 ## ToDo
 
-- [ ] Python 2.7 compatibility
-- [x] Python 3.4 compatibility
-- [ ] Django 1.10 compatibility
 - [ ] Write better documentation
-- [x] Provide a wrapper for `ModelSerializer` and `ModelViewSet`
-- [x] Add custom options for filter, search and order
+- [ ] Write more/better tests
 - [ ] Enable admin-like registration mechanism
-- [x] Provide a `Metadata` class to provide meta-information (like list_display) on `OPTION` calls
-- [x] Add `choices` (only for non-foreign-keys) and `related_model` to the `Metadata` class
 - [ ] Add languages information when django-model-translation is installed
 
 ---
