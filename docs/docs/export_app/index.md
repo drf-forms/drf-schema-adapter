@@ -1,7 +1,8 @@
 # Exporter-app
 
 **DRF-schema-adapters** also allows you to export your endpoint ('s serialier definition) to frontend
-frameworks model (Ember.data models, Angular modules, angular-formly json files, Mobx definitions, ...).
+frameworks models (Ember.data models, Angular modules, angular-formly json files, Mobx+Axios models and
+stores definitions, ...).
 This can be done in 2 different ways:
 
 - on-the-fly generation
@@ -33,7 +34,7 @@ have to configure it in your `settings.py` as well:
 ```
 ## settings.py
 
-EXPORTER_ADAPTER = 'export_app.adapters.MobXAdapter'
+EXPORTER_ADAPTER = 'export_app.adapters.MobxAxiosAdapter'
 ```
 
 or specify it on the command-line with `--adapter &lt;adapter_name&gt;`.
@@ -70,6 +71,11 @@ The name of your frontend application or `modulePrefix` (eg: found in `config/en
 
 *Used by*: On-disk generation only
 
+### `EXPORTER_APP_BACK_API_BASE`
+
+*Default:* `'/api'`
+
+*Used by* On-disk generation only (AngularAdapter and MobxAxiosAdapter)
 
 Relative path from your Django project base to your frontend application base directory.
 
@@ -77,7 +83,7 @@ Relative path from your Django project base to your frontend application base di
 
 *Default:* determined by the adapter
 
-*Used by*: Dynamy & on-disk generation
+*Used by*: Dynamic & on-disk generation
 
 A dictionary mapping DRF field serializer class names to frontend property types. An mapping you declare in this dictionnary will either override the default one or be added to it.
 
@@ -85,7 +91,7 @@ A dictionary mapping DRF field serializer class names to frontend property types
 
 *Default:* determined by the adapter
 
-*Used by*: Dynamy & on-disk generation
+*Used by*: Dynamic & on-disk generation
 
  string repesenting the frontend property type the export should default to when the DRF field serializer in not found in `EXPORTER_FIELD_TYPE_MAPPING`
 
@@ -156,14 +162,14 @@ Since you might want to add computed properties or other features to an Ember mo
 
 - `models/base/&lt;app_name&gt;/&ltmodel_name&gt;.js` &lt;- always overwritten
 - `models/&lt;app_name&gt;/&lt;model_name&gt;.js` &lt; inherits from the base model, never overwritten
-- `tests/unit/models/&lt;app_name&gt;/&lt;model_name&gt;-test.js` &lt; never overwritten
+- `tests/unit/models/&lt;app_name&gt;/&lt;model_name&gt;-test.js` &lt; overwritten on confirmation
 
 ### `AngularAdapter`
 
 Using the `AngularAdapter` will export an Angular1 resource definition file into
 `modules/resources/&lt;application_name&gt;-&lt;model_name&gt;.js`.
 
-### `AngularAdapter`
+### `Angular2Adapter`
 
 *coming soon*
 
@@ -175,6 +181,20 @@ into your frontend application in a file named `data/&lt;application_name&gt;-&l
 The created output will depend on the adapter you chose for `drf_auto_endpoint` using the
 [`DRF_AUTO_METADATA_ADAPTER`](../drf_auto_endpoint/metadata.md#adapters)
 
-### `MobXAdapter`
+### `MobxAxiosAdapter` (for use with React or standalone)
 
-*coming soon*
+Using the `MobxAxiosAdapter` will export the definition of the serializer linked to an endpoint to a
+set of mobx "model" and mobx+axios "store".
+
+Since you might want to ass computed value or other features to a mobx model, this will yield up to 6
+different files:
+
+- `config/axios-config.js` &lt;- configuration of the endpoint base and CSRF settings: never overwritten
+- `stores/_base.js` &lt;- a base definition of how stores work: never overwritten
+- `stores/&lt;app_name&gt;&lt;model_name&gt;` &lt;- specific definition for this store: overwritten on
+confirmation
+- `models/base/_base.js` &lt;- a base definition of how models work: never overwritten
+- `models/base/&lt;app_name&gt;&lt;model_name&gt;` &lt;- a model containing the same list of fields as
+the serializer: always overwritten
+- `models/&lt;app_name&gt;&lt;model_name&gt;` &lt; a enpty model that inherits from it base counterpart:
+never overwritten

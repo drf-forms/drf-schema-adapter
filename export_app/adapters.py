@@ -44,6 +44,33 @@ class BaseAdapter(object):
     def write_to_file(self, application_name, model_name, context):
         raise NotImplemented("You need to implement your Adapter")
 
+    def create_dirs(self, *args):
+        for directory in args:
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+
+    def write_file(self, context, target_dir, filename, template, overwrite='confirm'):
+        target_file = os.path.join(target_dir, filename)
+        if os.path.exists(target_file):
+            if not overwrite:
+                return
+            if overwrite == 'confirm':
+                answer = 'anything else'
+                while answer.lower() not in ('', 'yes', 'y', 'no', 'n'):
+                    answer = input('{} already exists, do you want to overwrite it? [y/N] '.format(
+                        target_file
+                    ))
+                    if answer.lower in ('', 'no', 'n'):
+                        return
+        with open(target_file, 'w') as f:
+            output = render_to_string(template, context)
+            f.write(output)
+
+    def write_files(self, context, files):
+        self.create_dirs(*[file[0] for file in files])
+        for file in files:
+            self.write_file(context, *file)
+
 
 class EmberAdapter(BaseAdapter):
 
@@ -78,24 +105,12 @@ class EmberAdapter(BaseAdapter):
         filename = '{}.js'.format(model_name)
         test_filename = '{}-test.js'.format(model_name)
 
-        for directory in (base_target_dir, target_dir, test_target_dir):
-            if not os.path.exists(directory):
-                os.makedirs(directory)
-
-        with open(os.path.join(base_target_dir, filename), 'w') as f:
-            output = render_to_string(self.base_template_name, context)
-            f.write(output)
-
-        if not os.path.exists(os.path.join(target_dir, filename)):
-            with open(os.path.join(target_dir, filename), 'w') as f:
-                output = render_to_string(self.template_name, context)
-                f.write(output)
-
-            # if the actual model doesn't exist we assume the test doesn't exist either
-            # and vice-versa
-            with open(os.path.join(test_target_dir, test_filename), 'w') as f:
-                output = render_to_string(self.test_template_name, context)
-                f.write(output)
+        files = [
+            (base_target_dir, filename, self.base_template_name, True),
+            (target_dir, filename, self.template_name, False),
+            (test_target_dir, test_filename, self.test_template_name)
+        ]
+        self.write_files(context, files)
 
 
 class MetadataAdapter(BaseAdapter):
@@ -116,3 +131,35 @@ class MetadataAdapter(BaseAdapter):
         with open(os.path.join(target_dir, filename), 'w') as f:
             output = MinimalAutoMetadata().determine_metadata(None, viewset)
             json.dump(output, f, indent=2)
+
+
+class MobxAxiosAdapter(BaseAdapter):
+
+    works_with = 'both'
+    requires_fields = True
+
+    config_template_name = 'export_app/mobxaxios_config.js'
+    base_model_template_name = 'export_app/mobxaxios_base_model.js'
+    model_base_template_name = 'export_app/mobxaxios_model_base.js'
+    model_template_name = 'export_app/mobxaxios_model.js'
+    base_store_template_name = 'export_app/mobxaxios_base_store.js'
+    store_template_name = 'export_app/mobxaxios_store.js'
+
+    def write_to_file(self, application_name, model_name, context):
+        base_target_dir = os.path.join(django_settings.BASE_DIR, settings.FRONT_APPLICATION_PATH)
+        config_target_dir = os.path.join(base_target_dir, 'config')
+        model_target_dir = os.path.join(base_target_dir, 'models')
+        model_base_target_dir = os.path.join(model_target_dir, 'base')
+        store_target_dir = os.path.join(base_target_dir, 'stores')
+
+        filename = '{}{}.js'.format(application_name, model_name)
+
+        files = [
+            (config_target_dir, 'axios-config.js', self.config_template_name, False),
+            (store_target_dir, '_base.js', self.base_store_template_name, True),
+            (store_target_dir, filename, self.store_template_name),
+            (model_base_target_dir, '_base.js', self.base_model_template_name, True),
+            (model_base_target_dir, filename, self.model_base_template_name, True),
+            (model_target_dir, filename, self.model_template_name, False)
+        ]
+        self.write_files(context, files)
