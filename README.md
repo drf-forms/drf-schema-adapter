@@ -53,6 +53,23 @@ urlpatterns = [
 ]
 ```
 
+### Adding schema information to your `OPTIONS` calls
+
+Django REST framework provides the ability to customize thos calls thanks to
+[metadata classes](http://www.django-rest-framework.org/api-guide/metadata/).
+
+Setup DRF to use one of **DRF-schema-adapter**'s metadata classes to get shcema information:
+
+```
+## settings.py
+
+...
+REST_FRAMEWORK = {
+    'DEFAULT_METADATA_CLASS': 'drf_auto_endpoint.metadata.AutoMetadata',
+}
+```
+
+
 ### Exporting to the frontend
 
 First add `'export_app'` to your setting's `INSTALLED_APPS`, then run:
