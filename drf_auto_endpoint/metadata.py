@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from django.utils.module_loading import import_string
 
 from rest_framework.fields import empty
@@ -7,10 +9,33 @@ from .utils import get_validation_attrs
 
 
 class AutoMetadataMixin(object):
+
+    def root_metadata(self, metadata, view):
+        from .router import router
+        rv = {
+            'endpoints': [k for k in router._endpoints.keys()]
+        }
+
+        applications = defaultdict(lambda: [])
+        for url, endpoint in router._endpoints.items():
+            applications[endpoint.application_name].append({
+                'name': endpoint.model_name,
+                'endpoint': url
+            })
+        rv['applications'] = [
+            {
+                'name': k,
+                'models': v
+            } for k, v in applications.items()
+
+        ]
+
+        metadata.update(rv)
+        return metadata
+
     def determine_metadata(self, request, view):
         from drf_auto_endpoint.app_settings import settings
 
-        serializer_instance = view.serializer_class()
         try:
              metadata = super(AutoMetadataMixin, self).determine_metadata(request, view)
         except NotImplementedError:
@@ -18,6 +43,11 @@ class AutoMetadataMixin(object):
         except AttributeError:
             metadata = {}
 
+        if view.__class__.__name__ == 'APIRootView':
+            return self.root_metadata(metadata, view)
+
+
+        serializer_instance = view.serializer_class()
         if not hasattr(view, 'endpoint'):
             fields_metadata = []
 
@@ -88,4 +118,7 @@ class AutoMetadata(AutoMetadataMixin, SimpleMetadata):
 
 
 class MinimalAutoMetadata(AutoMetadataMixin, BaseMetadata):
+    pass
+
+class RootViewMetadata(SimpleMetadata):
     pass
