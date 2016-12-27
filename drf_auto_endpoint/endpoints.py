@@ -189,6 +189,8 @@ class Endpoint(object):
         ]
 
     def get_fieldsets(self):
+        from drf_auto_endpoint.app_settings import settings
+
         if self.fieldsets is not None:
             return [
                 {
@@ -207,7 +209,8 @@ class Endpoint(object):
                     'key': field
                 }
                 for field in self.get_fields_for_serializer()
-                if field != 'id' and field != '__str__' ]
+                if field != 'id' and field != '__str__'  and \
+                    self._get_field_dict(field)['type'] != settings.WIDGET_MAPPING['ManyRelatedField']]
             }
         ]
 
