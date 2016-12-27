@@ -89,5 +89,12 @@ class EmberAdapter(BaseAdapter):
             adapted.append(new_field)
 
         config['fields'] =  adapted
+        for i, fs in enumerate(config['fieldsets']):
+            for j, f in enumerate(fs['fields']):
+                new_field = {
+                    'name': f['key'] if 'key' in f else f['name']
+                }
+                fs['fields'][j] = new_field
+            config['fieldsets'][i] = fs
 
         return config
