@@ -6,7 +6,7 @@ define('{{ember_app}}/models/{{application_name}}/{{model_name}}',
       {{field.name}}: (0, _emberDataAttr['default'])({%if field.type %}'{{field.type}}'{%endif%}),
     {%endfor%}
     {%for field in rels%}
-      {{field.name}}: (0, _emberDataRelationships['{{field.type}}'])('{{field.app}}/{{field.related_model}}', {async: true}),
+      {{field.name}}: (0, _emberDataRelationships['{{field.type}}'])('{{field.app}}/{{field.related_model}}', {async: true{%if field.inverse %}, inverse: '{{field.inverse}}'{% endif %}}),
     {%endfor%}
   });
 });
