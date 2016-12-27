@@ -20,6 +20,7 @@ class AutoMetadataMixin(object):
         for url, endpoint in router._endpoints.items():
             applications[endpoint.application_name].append({
                 'name': endpoint.model_name,
+                'singular': endpoint.singular_model_name,
                 'endpoint': url
             })
         rv['applications'] = [
