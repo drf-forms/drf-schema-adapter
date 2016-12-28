@@ -17,7 +17,7 @@ class EndpointRouter(DefaultRouter):
                  serializer=None, filter_fields=None, read_only=False, viewset=None,
                  search_fields=None, ordering_fields=None, page_size=None, base_viewset=None,
                  base_name=None, fields_annotation=None, fielsets=None, base_serializer=None,
-                 **kwargs):
+                 list_me=True, **kwargs):
 
         if endpoint is None:
             extra = {}
@@ -32,7 +32,8 @@ class EndpointRouter(DefaultRouter):
                                                 read_only=read_only, viewset=viewset,
                                                 search_fields=search_fields,
                                                 ordering_fields=ordering_fields,
-                                                fields_annotation=fields_annotation, **extra)
+                                                fields_annotation=fields_annotation,
+                                                list_me=list_me, **extra)
 
         url = endpoint.get_url() if 'url' not in kwargs else kwargs.pop('url')
         self._endpoints[url] = endpoint

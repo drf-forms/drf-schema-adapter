@@ -23,6 +23,7 @@ class Endpoint(object):
 
     fieldsets = None
     list_display = None
+    list_editable = None
 
     permission_classes = None
     filter_fields = None
@@ -33,6 +34,7 @@ class Endpoint(object):
 
     read_only = False
     include_str = True
+    list_me = True
 
     inflector_language = English
 
@@ -44,7 +46,7 @@ class Endpoint(object):
 
         arg_names = ('fields', 'serializer', 'permission_classes', 'filter_fields', 'search_fields',
                      'viewset', 'read_only', 'include_str', 'ordering_fields', 'page_size',
-                     'base_viewset', 'fields_annotation', 'fieldsets', 'base_serializer')
+                     'base_viewset', 'fields_annotation', 'fieldsets', 'base_serializer', 'list_me')
         for arg_name in arg_names:
             setattr(self, arg_name, kwargs.pop(arg_name, getattr(self, arg_name, None)))
 
@@ -256,4 +258,9 @@ class Endpoint(object):
                 'plural': self.inflector.pluralize(model._meta.model_name.lower()),
             } for model in related_models
         ]
+
+    def get_list_editable(self):
+        if self.list_editable is None:
+            return []
+        return self.list_editable
 

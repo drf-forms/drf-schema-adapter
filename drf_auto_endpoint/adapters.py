@@ -71,7 +71,7 @@ class EmberAdapter(BaseAdapter):
         for field in fields:
             new_field = {
                 "label": field["ui"]["label"],
-                "read_only": field["read_only"],
+                "readonly": field["read_only"],
                 "extra": {},
                 "name": field["key"],
                 "widget": field["type"],

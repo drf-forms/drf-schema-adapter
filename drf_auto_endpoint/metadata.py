@@ -19,11 +19,12 @@ class AutoMetadataMixin(object):
 
         applications = defaultdict(lambda: [])
         for url, endpoint in router._endpoints.items():
-            applications[endpoint.application_name].append({
-                'name': endpoint.model_name,
-                'singular': endpoint.singular_model_name,
-                'endpoint': url
-            })
+            if endpoint.list_me:
+                applications[endpoint.application_name].append({
+                    'name': endpoint.model_name,
+                    'singular': endpoint.singular_model_name,
+                    'endpoint': url
+                })
         rv['applications'] = [
             {
                 'name': k,
@@ -96,6 +97,7 @@ class AutoMetadataMixin(object):
                 fields_metadata.append(field_metadata)
                 metadata.update({
                     'list_display': ['__str__', ],
+                    'list_editable': [],
                     'filter_fields': [],
                     'search_fields': [],
                     'ordering_fields': [],
@@ -108,7 +110,7 @@ class AutoMetadataMixin(object):
                 })
         else:
             for prop in ['fields', 'list_display', 'filter_fields', 'search_enabled', 'ordering_fields',
-                         'needs', 'fieldsets']:
+                         'needs', 'fieldsets', 'list_editable']:
                 metadata[prop] = getattr(view.endpoint, 'get_{}'.format(prop))()
 
         adapter = import_string(settings.METADATA_ADAPTER)()
