@@ -25,6 +25,12 @@ class AdapterTestCase(TestCase):
                     "max": 100,
                 },
                 "extra": {}
+            }],
+            'fieldsets': [{
+                'title': None,
+                'fields': [{
+                    'key': '__str__'
+                }]
             }]
         }
 
@@ -69,6 +75,12 @@ class AdapterTestCase(TestCase):
                 "name": "age",
                 "label": "Age",
                 "widget": "number"
+            }],
+            "fieldsets": [{
+                "title": None,
+                "fields": [{
+                    "name": "__str__"
+                }]
             }]
         }
 
