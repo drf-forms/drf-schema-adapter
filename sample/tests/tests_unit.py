@@ -106,8 +106,8 @@ class EndpointTestCase(TestCase):
         for attr in ('permission_classes', 'filter_fields', 'search_fields', 'ordering_fields'):
             self.assertEqual(getattr(viewset, attr), getattr(self, attr))
 
-        for backend in (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter):
-            self.assertIn(backend, viewset.filter_backends)
+        for backend in ('DjangoFilterBackend', 'SearchFilter', 'OrderingFilter'):
+            self.assertIn(backend, [be.__name__ for be in viewset.filter_backends])
 
         self.assertEqual(viewset.pagination_class, pagination.PageNumberPagination)
 
@@ -144,8 +144,8 @@ class EndpointTestCase(TestCase):
         for attr in ('permission_classes', 'filter_fields', 'search_fields', 'ordering_fields'):
             self.assertEqual(getattr(viewset, attr), getattr(self, attr))
 
-        for backend in (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter):
-            self.assertIn(backend, viewset.filter_backends)
+        for backend in ('DjangoFilterBackend', 'SearchFilter', 'OrderingFilter'):
+            self.assertIn(backend, [be.__name__ for be in viewset.filter_backends])
 
     def test_plurals(self):
         endpoint = Endpoint(model=Category)

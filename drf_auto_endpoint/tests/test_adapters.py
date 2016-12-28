@@ -67,7 +67,7 @@ class AdapterTestCase(TestCase):
 
         expected = {
             "fields": [{
-                "read_only": False,
+                "readonly": False,
                 "extra": {
                     "related_model": "test",
                     "default": 20,
