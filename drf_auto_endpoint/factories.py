@@ -1,4 +1,9 @@
 from rest_framework import filters, pagination, serializers
+try:
+    from django_filters.rest_framework import DjangoFilterBackend
+except ImportError:
+    # Older versions of DRF and django_filters
+    from rest_framework.filters import DjangoFilterBackend
 from django.core.exceptions import FieldDoesNotExist
 try:
     from django.db.models.fields.reverse_related import ManyToOneRel
@@ -66,7 +71,7 @@ def viewset_factory(endpoint):
         filter_backends = list(filter_backends)
 
     for filter_type, backend in (
-        ('filter_fields', filters.DjangoFilterBackend),
+        ('filter_fields', DjangoFilterBackend),
         ('search_fields', filters.SearchFilter),
         ('ordering_fields', filters.OrderingFilter),
     ):
