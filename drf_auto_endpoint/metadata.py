@@ -112,6 +112,8 @@ class AutoMetadataMixin(object):
             for prop in ['fields', 'list_display', 'filter_fields', 'search_enabled', 'ordering_fields',
                          'needs', 'fieldsets', 'list_editable']:
                 metadata[prop] = getattr(view.endpoint, 'get_{}'.format(prop))()
+            if view.endpoint.save_twice:
+                metadata['save_twice'] = True
 
         adapter = import_string(settings.METADATA_ADAPTER)()
         return adapter(metadata)
