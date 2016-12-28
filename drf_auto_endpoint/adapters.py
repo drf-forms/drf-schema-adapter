@@ -6,6 +6,9 @@ class BaseAdapter(object):
     def render(self, config):
         return config['fields']
 
+    def render_root(self, config):
+        return config
+
     def __call__(self, config):
         return self.render(config)
 

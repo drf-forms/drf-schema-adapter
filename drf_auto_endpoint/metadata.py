@@ -6,6 +6,7 @@ from rest_framework.fields import empty
 from rest_framework.metadata import SimpleMetadata, BaseMetadata
 
 from .utils import get_validation_attrs
+from .app_settings import settings
 
 
 class AutoMetadataMixin(object):
@@ -31,11 +32,11 @@ class AutoMetadataMixin(object):
 
         ]
 
-        metadata.update(rv)
+        adapter = import_string(settings.METADATA_ADAPTER)()
+        metadata.update(adapter.render_root(rv))
         return metadata
 
     def determine_metadata(self, request, view):
-        from drf_auto_endpoint.app_settings import settings
 
         try:
              metadata = super(AutoMetadataMixin, self).determine_metadata(request, view)
