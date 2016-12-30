@@ -37,6 +37,7 @@ class Endpoint(object):
     list_me = True
 
     save_twice = False
+    sortable_by = None
 
     inflector_language = English
 
@@ -91,19 +92,9 @@ class Endpoint(object):
     def get_fields_for_serializer(self):
 
         if self.fields is None:
-            if self.fieldsets is None:
-                print('by all fields')
-                self.fields = tuple(get_all_field_names(self.model))
-                if self.include_str:
-                    self.fields += ('__str__', )
-            else:
-                print('by fieldsets')
-                self.fields = [
-                    field['name'] if isinstance(field, dict) else field
-                    for field in self.fieldsets
-                ]
-
-        print(self.fields)
+            self.fields = tuple(get_all_field_names(self.model))
+            if self.include_str:
+                self.fields += ('__str__', )
 
         return self.fields
 
@@ -269,4 +260,7 @@ class Endpoint(object):
         if self.list_editable is None:
             return []
         return self.list_editable
+
+    def get_sortable_by(self):
+        return self.sortable_by
 

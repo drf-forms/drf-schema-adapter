@@ -102,6 +102,8 @@ class AutoMetadataMixin(object):
                     'search_fields': [],
                     'ordering_fields': [],
                     'fields': fields_metadata,
+                    'save_twice': False,
+                    'sortable_by': None,
                     'fieldsets': [{'title': None, 'fields': [
                         field
                         for field in view.serializer_class.Meta.fields
@@ -110,7 +112,7 @@ class AutoMetadataMixin(object):
                 })
         else:
             for prop in ['fields', 'list_display', 'filter_fields', 'search_enabled', 'ordering_fields',
-                         'needs', 'fieldsets', 'list_editable']:
+                         'needs', 'fieldsets', 'list_editable', 'sortable_by']:
                 metadata[prop] = getattr(view.endpoint, 'get_{}'.format(prop))()
             if view.endpoint.save_twice:
                 metadata['save_twice'] = True
