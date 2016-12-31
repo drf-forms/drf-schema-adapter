@@ -132,3 +132,17 @@ A list or tuple containing the list of fieldsets to use. A fieldset has 2 proper
 a `title` and a list of `fields`. Somewhat similar to the
 [`fieldsets` attribute of a `ModelAdmin` class](https://docs.djangoproject.com/en/1.10/ref/contrib/admin/#django.contrib.admin.ModelAdmin.fieldsets)
 while more powerfull as you are free to describe any number of levels of nested records here.
+
+### `save_twice`
+
+*default:* `False`
+
+Used to indicated to the frontend that this model should be saved twice (once before and once after related models) for new records or after having saved the related models for existing records.
+This is useful for models that have a oneToMany
+relationship to a model (let's call it employees) and a foreignKey to that same model (let's call it favourite).
+
+### `sortable_by`
+
+*default:* `None`
+
+The name of the field by which models in this endpoint can be re-ordered (usually `position`).

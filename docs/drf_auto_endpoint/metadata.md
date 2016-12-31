@@ -26,7 +26,7 @@ REST_FRAMEWORK = {
 ```
 
 Any of the two provided metadata classes (or your own metadata class using `AutoMetadataMixin`)
-will provide an output similar to this:
+will provide an output similar to this when calling `OPTIONS` on an endpoint:
 
 ```
 [
@@ -104,6 +104,64 @@ will provide an output similar to this:
         }
     }
 ]
+```
+
+Any of the two provided metadata classes will provide an output similar this when calling `OPTIONS` on the root of the api.
+
+```
+{
+    "endpoints": [
+        "crm/companies",
+        "crm/contacts",
+        "crm/contactmechanisms",
+        "products/categories",
+        "products/products",
+        "accounting/invoices",
+        "accounting/invoicelines"
+    ],
+    "applications": [
+        {
+            "models": [
+                {
+                    "singular": "invoice",
+                    "endpoint": "accounting/invoices",
+                    "name": "invoices"
+                }
+            ],
+            "name": "accounting"
+        },
+        {
+            "models": [
+                {
+                    "singular": "category",
+                    "endpoint": "products/categories",
+                    "name": "categories"
+                },
+                {
+                    "singular": "product",
+                    "endpoint": "products/products",
+                    "name": "products"
+                }
+            ],
+            "name": "products"
+        },
+        {
+            "models": [
+                {
+                    "singular": "company",
+                    "endpoint": "crm/companies",
+                    "name": "companies"
+                },
+                {
+                    "singular": "contact",
+                    "endpoint": "crm/contacts",
+                    "name": "contacts"
+                }
+            ],
+            "name": "crm"
+        }
+    ]
+}
 ```
 
 The exact output depends on the `Adapter` you choose to use. Currently **DRF-schama-adapters** supports

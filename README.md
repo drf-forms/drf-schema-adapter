@@ -18,7 +18,13 @@ Within the source directory:
 
 `python setup.py install`
 
-## Basic sage
+
+## Demo application
+
+You can see a demo application running at
+[https://djembersample.pythonanywhere.com/](https://djembersample.pythonanywhere.com/).
+
+## Basic usage
 
 First of all you'll need to import the default EndpointRouter in your urls.py file.
 

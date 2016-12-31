@@ -18,6 +18,11 @@ Within the source directory:
 
 `python setup.py install`
 
+## Demo application
+
+You can see a demo application running at
+[https://djembersample.pythonanywhere.com/](https://djembersample.pythonanywhere.com/).
+
 ## Basic usage
 
 ### Auto endpoints
