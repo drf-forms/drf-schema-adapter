@@ -132,10 +132,15 @@ class Endpoint(object):
         serializer_instance = self.get_serializer()()
         name = field['name'] if isinstance(field, dict) else field
         field_instance = serializer_instance.fields[name]
+        read_only = name == '__str__'
+        if not read_only and field_instance.read_only:
+            if not isinstance(field_instance, serializers.ManyRelatedField):
+                read_only = True
+
         rv = {
             'key': name,
             'type': settings.WIDGET_MAPPING[field_instance.__class__.__name__],
-            'read_only': field_instance.read_only or name == '__str__',
+            'read_only': read_only,
             'ui': {
                 'label': name.title().replace('_', ' ') if name != '__str__' else \
                     serializer_instance.Meta.model.__name__,
