@@ -15,8 +15,13 @@ DEFAULT_SETTINGS = {
         'text': 'textarea',
         'choice': 'select',
         'DateField': 'date',
+        'TimeField': 'time',
+        'DateTimeField': 'datetime',
         'CharField': 'text',
         'ChoiceField': 'select',
+        'EmailField': 'email',
+        'URLField': 'url',
+
     },
     'METADATA_ADAPTER': 'drf_auto_endpoint.adapters.BaseAdapter',
 }
