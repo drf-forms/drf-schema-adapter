@@ -70,24 +70,25 @@ class EmberAdapter(BaseAdapter):
         adapted = []
         for field in fields:
             new_field = {
-                "label": field["ui"]["label"],
-                "readonly": field["read_only"],
-                "extra": {},
-                "name": field["key"],
-                "widget": field["type"],
+                'label': field['ui']['label'],
+                'readonly': field['read_only'],
+                'extra': {},
+                'name': field['key'],
+                'widget': field['type'],
+                'required': field['validation']['required'],
             }
 
-            if "choices" in field:
-                new_field["extra"]["choices"] = field["choices"]
+            if 'choices' in field:
+                new_field['extra']['choices'] = field['choices']
 
-            if "related_endpoint" in field:
-                new_field["extra"]["related_model"] = field["related_endpoint"]
+            if 'related_endpoint' in field:
+                new_field['extra']['related_model'] = field['related_endpoint']
 
-            if "placeholder" in field["ui"]:
-                new_field["extra"]["placeholder"] = field["ui"]["placeholder"]
+            if 'placeholder' in field['ui']:
+                new_field['extra']['placeholder'] = field['ui']['placeholder']
 
-            if "default" in field:
-                new_field["extra"]["default"] = field["default"]
+            if 'default' in field:
+                new_field['extra']['default'] = field['default']
 
             adapted.append(new_field)
 
