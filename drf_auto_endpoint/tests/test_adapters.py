@@ -74,8 +74,8 @@ class AdapterTestCase(TestCase):
                 },
                 "name": "age",
                 "label": "Age",
-                "widget": "number"
-                "required": False
+                "widget": "number",
+                "required": False,
             }],
             "fieldsets": [{
                 "title": None,
