@@ -51,7 +51,14 @@ class AutoMetadataMixin(object):
 
 
         serializer_instance = view.serializer_class()
-        if not hasattr(view, 'endpoint'):
+        endpoint = None
+        if hasattr(view, 'endpoint'):
+            endpoint = view.endpoint
+        else:
+            if hasattr(view.serializer_class.Meta, 'model'):
+                endpoint = Endpoint(view.serializer_class.Meta.model, viewset=viewset)
+
+        if endpoint is None:
             fields_metadata = []
 
             for field in view.serializer_class.Meta.fields:
@@ -111,10 +118,10 @@ class AutoMetadataMixin(object):
                     ]}]
                 })
         else:
-            for prop in ['fields', 'list_display', 'filter_fields', 'search_enabled', 'ordering_fields',
-                         'needs', 'fieldsets', 'list_editable', 'sortable_by']:
-                metadata[prop] = getattr(view.endpoint, 'get_{}'.format(prop))()
-            if view.endpoint.save_twice:
+            for prop in ['fields', 'list_display', 'filter_fields', 'search_enabled',
+                         'ordering_fields', 'needs', 'fieldsets', 'list_editable', 'sortable_by', ]:
+                metadata[prop] = getattr(endpoint, 'get_{}'.format(prop))()
+            if endpoint.save_twice:
                 metadata['save_twice'] = True
 
         adapter = import_string(settings.METADATA_ADAPTER)()
