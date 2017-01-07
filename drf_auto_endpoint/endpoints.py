@@ -4,7 +4,18 @@ from rest_framework.fields import empty
 from inflector import Inflector, English
 
 from .factories import serializer_factory, viewset_factory
-from .utils import get_validation_attrs
+from .utils import get_validation_attrs, get_languages
+
+try:
+    from modeltranslation.translator import translator
+
+except ImportError:
+    class Translator(object):
+        def get_registered_models(self, abstract=True):
+            return []
+
+
+    translator = Translator()
 
 
 def get_all_field_names(model):
@@ -41,6 +52,9 @@ class Endpoint(object):
 
     inflector_language = English
 
+    _translated_fields = None
+    _translated_field_names = None
+
     def __init__(self, model=None, **kwargs):
         self.inflector = Inflector(self.inflector_language)
 
@@ -76,6 +90,9 @@ class Endpoint(object):
 
         if self.model is None:
             self.model = self.get_serializer().Meta.model
+
+    def get_languages(self):
+        return get_languages()
 
     @property
     def singular_model_name(self):
@@ -149,6 +166,7 @@ class Endpoint(object):
                 'required': field_instance.required,
             },
             'extra': {},
+            'translated': name in self.get_translated_fields()
         }
 
         default = field_instance.default
@@ -213,7 +231,8 @@ class Endpoint(object):
                     'key': field
                 }
                 for field in self.get_fields_for_serializer()
-                if field != 'id' and field != '__str__'  and \
+                if field != 'id' and field != '__str__' and \
+                    field not in self.translated_field_names and \
                     self._get_field_dict(field)['type'] != settings.WIDGET_MAPPING['ManyRelatedField']]
             }
         ]
@@ -269,3 +288,24 @@ class Endpoint(object):
     def get_sortable_by(self):
         return self.sortable_by
 
+    def get_translated_fields(self):
+        if self._translated_fields is None:
+            models = translator.get_registered_models()
+            if self.model in models:
+                options = translator.get_options_for_model(self.model)
+                rv = [field for field in options.fields]
+                self._translated_fields = rv
+            else:
+                self._translated_fields = []
+        return self._translated_fields
+
+    @property
+    def translated_field_names(self):
+        if self._translated_field_names is None:
+            rv = []
+            for field in self.get_translated_fields():
+                for language in self.get_languages():
+                    l = language.replace('-', '_')
+                    rv.append('{}_{}'.format(field, l))
+            self._translated_field_names = rv
+        return self._translated_field_names

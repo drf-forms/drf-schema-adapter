@@ -24,6 +24,7 @@ class AdapterTestCase(TestCase):
                     "min": 10,
                     "max": 100,
                 },
+                "translated": False,
                 "extra": {}
             }],
             'fieldsets': [{
@@ -76,6 +77,7 @@ class AdapterTestCase(TestCase):
                 "label": "Age",
                 "widget": "number",
                 "required": False,
+                "translated": False,
             }],
             "fieldsets": [{
                 "title": None,

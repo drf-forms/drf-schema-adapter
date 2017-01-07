@@ -76,6 +76,7 @@ class EmberAdapter(BaseAdapter):
                 'name': field['key'],
                 'widget': field['type'],
                 'required': field['validation']['required'],
+                'translated': field['translated'],
             }
 
             if 'choices' in field:

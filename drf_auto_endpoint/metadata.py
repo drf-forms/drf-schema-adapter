@@ -5,7 +5,7 @@ from django.utils.module_loading import import_string
 from rest_framework.fields import empty
 from rest_framework.metadata import SimpleMetadata, BaseMetadata
 
-from .utils import get_validation_attrs
+from .utils import get_validation_attrs, get_languages
 from .app_settings import settings
 
 
@@ -32,6 +32,7 @@ class AutoMetadataMixin(object):
             } for k, v in applications.items()
 
         ]
+        rv['languages'] = get_languages()
 
         adapter = import_string(settings.METADATA_ADAPTER)()
         metadata.update(adapter.render_root(rv))
@@ -111,6 +112,8 @@ class AutoMetadataMixin(object):
                     'fields': fields_metadata,
                     'save_twice': False,
                     'sortable_by': None,
+                    'languages': get_languages(),
+                    'translated_fields': [],
                     'fieldsets': [{'title': None, 'fields': [
                         field
                         for field in view.serializer_class.Meta.fields
@@ -118,8 +121,9 @@ class AutoMetadataMixin(object):
                     ]}]
                 })
         else:
-            for prop in ['fields', 'list_display', 'filter_fields', 'search_enabled',
-                         'ordering_fields', 'needs', 'fieldsets', 'list_editable', 'sortable_by', ]:
+            for prop in ['fields', 'list_display', 'filter_fields', 'search_enabled', 'languages',
+                         'ordering_fields', 'needs', 'fieldsets', 'list_editable', 'sortable_by',
+                         'translated_fields', ]:
                 metadata[prop] = getattr(endpoint, 'get_{}'.format(prop))()
             if endpoint.save_twice:
                 metadata['save_twice'] = True
