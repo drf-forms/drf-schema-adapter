@@ -54,6 +54,7 @@ class Endpoint(object):
 
     _translated_fields = None
     _translated_field_names = None
+    _default_language_field_names = None
 
     def __init__(self, model=None, **kwargs):
         self.inflector = Inflector(self.inflector_language)
@@ -109,7 +110,8 @@ class Endpoint(object):
     def get_fields_for_serializer(self):
 
         if self.fields is None:
-            self.fields = tuple(get_all_field_names(self.model))
+            self.fields = tuple([f for f in get_all_field_names(self.model)
+                                 if f not in self.default_language_field_names])
             if self.include_str:
                 self.fields += ('__str__', )
 
@@ -309,3 +311,15 @@ class Endpoint(object):
                     rv.append('{}_{}'.format(field, l))
             self._translated_field_names = rv
         return self._translated_field_names
+
+    @property
+    def default_language_field_names(self):
+        from django.conf import settings as django_settings
+        if self._default_language_field_names is None:
+            l = django_settings.LANGUAGE_CODE.replace('-', '_')
+            rv = []
+            for field in self.get_translated_fields():
+                rv.append('{}_{}'.format(field, l))
+            self._default_language_field_names = rv
+        return self._default_language_field_names
+
