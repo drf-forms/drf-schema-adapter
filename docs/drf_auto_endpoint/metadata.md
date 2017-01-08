@@ -269,86 +269,121 @@ not just single forms; it looks like this.
 
 ```
 {
-"fields": [
-        {
+  "fields": [
+  {
             "extra": {},
+            "readonly": true,
+            "required": false,
             "name": "id",
             "widget": "number",
-            "read_only": true,
+            "translated": false,
             "label": "Id"
-        },
-        {
-            "extra": {
+        
+  },
+  {
+    "extra": {
                 "placeholder": "Enter your name here"
-            },
+            
+    },
+            "readonly": false,
+            "required": true,
             "name": "name",
             "widget": "text",
-            "read_only": false,
+            "translated": false,
             "label": "Name"
-        },
-        {
-            "extra": {
+        
+  },
+  {
+    "extra": {
                 "related_model": "sample/category"
-            },
+            
+    },
+            "readonly": false,
+            "required": true,
             "name": "category",
             "widget": "foreignkey",
-            "read_only": false,
+            "translated": false,
             "label": "Category"
-        },
-        {
-            "extra": {
-                "choices": [
-                    {
+        
+  },
+  {
+    "extra": {
+      "choices": [
+      {
                         "value": "s",
                         "label": "Sellable"
-                    },
-                    {
+                    
+      },
+      {
                         "value": "r",
                         "label": "Rentable"
-                    }
-                ]
-            },
+                    
+      }
+                
+      ]
+            
+    },
+            "readonly": false,
+            "required": false,
             "name": "product_type",
             "widget": "select",
-            "read_only": false,
+            "translated": false,
             "label": "Product Type"
-        },
-        {
+        
+  },
+  {
             "extra": {},
+            "readonly": true,
+            "required": false,
             "name": "__str__",
             "widget": "text",
-            "read_only": true,
+            "translated": false,
             "label": "Product"
-        }
-    ],
-    "list_display": [
+        
+  }
+    
+  ],
+  "list_display": [
         "__str__"
-    ],
+    
+  ],
     "filter_fields": [],
     "search_enabled": false,
+    "languages": [],
     "ordering_fields": [],
     "needs": [
-        {
+    {
             "app": "sample",
             "singular": "category",
             "plural": "categories"
-        }
+        
+    }
+    
     ],
     "fieldsets": [
-        {
-            "fields": [
-                {
-                    "key": "name"
-                },
-                {
-                    "key": "category"
-                },
-                {
-                    "key": "product_type"
-                }
-            ],
+    {
+      "fields": [
+      {
+                    "name": "name"
+                
+      },
+      {
+                    "name": "category"
+                
+      },
+      {
+                    "name": "product_type"
+                
+      }
+            
+      ],
             "title": null
-        }
-    ]
+        
+    }
+    
+    ],
+    "list_editable": [],
+    "sortable_by": null,
+    "translated_fields": []
 }
 ```
