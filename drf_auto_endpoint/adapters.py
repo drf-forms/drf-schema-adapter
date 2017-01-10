@@ -3,6 +3,9 @@ class BaseAdapter(object):
     Basic adapter that renders a dict to json with no modifications.
     """
 
+    extra_metadata_lists = []
+    extra_metadata_booleans = []
+
     def render(self, config):
         return config['fields']
 
@@ -64,6 +67,10 @@ class EmberAdapter(BaseAdapter):
             "widget": "foreignkey"
         }, ...]
     """
+
+    extra_metadata_lists = ['list_display', 'filter_fields', 'languages', 'ordering_fields', 'needs',
+                           'list_editable', 'sortable_by', 'translated_fields', 'custom_actions']
+    extra_metadata_booleans = ['save_twice', 'search_enabled']
 
     def render(self, config):
         fields = config['fields'];

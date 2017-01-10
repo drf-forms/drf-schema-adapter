@@ -50,6 +50,8 @@ class Endpoint(object):
     save_twice = False
     sortable_by = None
 
+    custom_actions = None
+
     inflector_language = English
 
     _translated_fields = None
@@ -256,11 +258,10 @@ class Endpoint(object):
         fields = self._get_endpoint_list('filter_fields')
         return fields
 
-    def get_search_enabled(self):
+    @property
+    def search_enabled(self):
         fields = self._get_endpoint_list('search_fields')
-        if len(fields) > 0:
-            return True
-        return False
+        return len(fields) > 0
 
     def get_ordering_fields(self):
         fields = self._get_endpoint_list('ordering_fields')
@@ -323,3 +324,7 @@ class Endpoint(object):
             self._default_language_field_names = rv
         return self._default_language_field_names
 
+    def get_custom_actions(self):
+        if self.custom_actions is None:
+            return []
+        return self.custom_actions

@@ -59,6 +59,7 @@ class AutoMetadataMixin(object):
             if hasattr(view.serializer_class.Meta, 'model'):
                 endpoint = Endpoint(view.serializer_class.Meta.model, viewset=viewset)
 
+        adapter = import_string(settings.METADATA_ADAPTER)()
         if endpoint is None:
             fields_metadata = []
 
@@ -104,31 +105,23 @@ class AutoMetadataMixin(object):
 
                 fields_metadata.append(field_metadata)
                 metadata.update({
-                    'list_display': ['__str__', ],
-                    'list_editable': [],
-                    'filter_fields': [],
-                    'search_fields': [],
-                    'ordering_fields': [],
                     'fields': fields_metadata,
-                    'save_twice': False,
-                    'sortable_by': None,
-                    'languages': get_languages(),
-                    'translated_fields': [],
                     'fieldsets': [{'title': None, 'fields': [
                         field
                         for field in view.serializer_class.Meta.fields
                         if field != 'id' and field != '__str__'
                     ]}]
                 })
+                for prop in adapater.extra_metadata_lists:
+                    metadata[prop] = []
+                for prop in adapter.extra_metadata_booleans:
+                    metadata[prop] = False
         else:
-            for prop in ['fields', 'list_display', 'filter_fields', 'search_enabled', 'languages',
-                         'ordering_fields', 'needs', 'fieldsets', 'list_editable', 'sortable_by',
-                         'translated_fields', ]:
+            for prop in ['fields', 'fieldsets', ] + adapter.extra_metadata_lists:
                 metadata[prop] = getattr(endpoint, 'get_{}'.format(prop))()
-            if endpoint.save_twice:
-                metadata['save_twice'] = True
+            for prop in adapter.extra_metadata_booleans:
+                metadata[prop] = getattr(endpoint, prop)()
 
-        adapter = import_string(settings.METADATA_ADAPTER)()
         return adapter(metadata)
 
 
