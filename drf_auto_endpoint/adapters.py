@@ -1,10 +1,17 @@
+from collections import namedtuple
+
+
+PROPERTY = 1
+GETTER = 0
+ExtraMetaDataInfo = namedtuple('ExtraMetaDataInfo', ['attr', 'attr_type', 'default'])
+
+
 class BaseAdapter(object):
     """
     Basic adapter that renders a dict to json with no modifications.
     """
 
-    extra_metadata_lists = []
-    extra_metadata_booleans = []
+    extra_metadata_info = []
 
     def render(self, config):
         return config['fields']
@@ -68,10 +75,20 @@ class EmberAdapter(BaseAdapter):
         }, ...]
     """
 
-    extra_metadata_lists = ['fieldsets', 'list_display', 'filter_fields', 'languages',
-                            'ordering_fields', 'needs', 'list_editable', 'sortable_by',
-                            'translated_fields', 'custom_actions']
-    extra_metadata_booleans = ['save_twice', 'search_enabled']
+    extra_metadata_info = [
+        ExtraMetaDataInfo('fieldsets', GETTER, []),
+        ExtraMetaDataInfo('list_display', GETTER, []),
+        ExtraMetaDataInfo('filter_fields', GETTER, []),
+        ExtraMetaDataInfo('languages', GETTER, []),
+        ExtraMetaDataInfo('ordering_fields', GETTER, []),
+        ExtraMetaDataInfo('needs', GETTER, []),
+        ExtraMetaDataInfo('list_editable', GETTER, []),
+        ExtraMetaDataInfo('sortable_by', GETTER, []),
+        ExtraMetaDataInfo('translated_fields', GETTER, []),
+        ExtraMetaDataInfo('custom_actions', GETTER, []),
+        ExtraMetaDataInfo('save_twice', PROPERTY, False),
+        ExtraMetaDataInfo('search_enabled', PROPERTY, False),
+    ]
 
     def render(self, config):
         fields = config['fields'];

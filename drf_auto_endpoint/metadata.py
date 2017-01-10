@@ -7,6 +7,7 @@ from rest_framework.metadata import SimpleMetadata, BaseMetadata
 
 from .utils import get_validation_attrs, get_languages
 from .app_settings import settings
+from .adapters import PROPERTY, GETTER, ExtraMetaDataInfo
 
 
 class AutoMetadataMixin(object):
@@ -107,22 +108,21 @@ class AutoMetadataMixin(object):
                 metadata.update({
                     'fields': fields_metadata,
                 })
-                for prop in adapater.extra_metadata_lists:
-                    if prop == 'fieldsets':
+                for extra_info in adapater.extra_metadata_info:
+                    if extra_info.attr == 'fieldsets':
                         metadata['fieldsets'] = [{'title': None, 'fields': [
                                                     field
                                                     for field in view.serializer_class.Meta.fields
                                                     if field != 'id' and field != '__str__'
                                                  ]}]
                     else:
-                        metadata[prop] = []
-                for prop in adapter.extra_metadata_booleans:
-                    metadata[prop] = False
+                        metadata[extra_info.attr] = extra_info.default
         else:
-            for prop in ['fields', ] + adapter.extra_metadata_lists:
-                metadata[prop] = getattr(endpoint, 'get_{}'.format(prop))()
-            for prop in adapter.extra_metadata_booleans:
-                metadata[prop] = getattr(endpoint, prop)()
+            for extra_info in [ExtraMetaDataInfo('fields', GETTER, []), ] + adapter.extra_metadata_info:
+                if extra_info.attr_type == GETTER:
+                    metadata[extra_info.attr] = getattr(endpoint, 'get_{}'.format(extra_info.attr))()
+                else:
+                    metadata[extra_info.attr] = getattr(endpoint, extra_info.attr, extra_info.default)
 
         return adapter(metadata)
 
