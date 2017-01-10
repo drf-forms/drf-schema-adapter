@@ -106,18 +106,20 @@ class AutoMetadataMixin(object):
                 fields_metadata.append(field_metadata)
                 metadata.update({
                     'fields': fields_metadata,
-                    'fieldsets': [{'title': None, 'fields': [
-                        field
-                        for field in view.serializer_class.Meta.fields
-                        if field != 'id' and field != '__str__'
-                    ]}]
                 })
                 for prop in adapater.extra_metadata_lists:
-                    metadata[prop] = []
+                    if prop == 'fieldsets':
+                        metadata['fieldsets'] = [{'title': None, 'fields': [
+                                                    field
+                                                    for field in view.serializer_class.Meta.fields
+                                                    if field != 'id' and field != '__str__'
+                                                 ]}]
+                    else:
+                        metadata[prop] = []
                 for prop in adapter.extra_metadata_booleans:
                     metadata[prop] = False
         else:
-            for prop in ['fields', 'fieldsets', ] + adapter.extra_metadata_lists:
+            for prop in ['fields', ] + adapter.extra_metadata_lists:
                 metadata[prop] = getattr(endpoint, 'get_{}'.format(prop))()
             for prop in adapter.extra_metadata_booleans:
                 metadata[prop] = getattr(endpoint, prop)()

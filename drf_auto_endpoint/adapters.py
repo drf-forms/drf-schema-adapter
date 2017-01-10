@@ -68,8 +68,9 @@ class EmberAdapter(BaseAdapter):
         }, ...]
     """
 
-    extra_metadata_lists = ['list_display', 'filter_fields', 'languages', 'ordering_fields', 'needs',
-                           'list_editable', 'sortable_by', 'translated_fields', 'custom_actions']
+    extra_metadata_lists = ['fieldsets', 'list_display', 'filter_fields', 'languages',
+                            'ordering_fields', 'needs', 'list_editable', 'sortable_by',
+                            'translated_fields', 'custom_actions']
     extra_metadata_booleans = ['save_twice', 'search_enabled']
 
     def render(self, config):
