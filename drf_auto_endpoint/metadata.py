@@ -114,7 +114,7 @@ class AutoMetadataMixin(object):
                                                     field
                                                     for field in view.serializer_class.Meta.fields
                                                     if field != 'id' and field != '__str__'
-                                                 ]}]
+                                                ]}]
                     else:
                         metadata[meta_info.attr] = meta_info.default
         else:
