@@ -7,7 +7,7 @@ from rest_framework.metadata import SimpleMetadata, BaseMetadata
 
 from .utils import get_validation_attrs, get_languages
 from .app_settings import settings
-from .adapters import PROPERTY, GETTER, ExtraMetaDataInfo
+from .adapters import PROPERTY, GETTER
 
 
 class AutoMetadataMixin(object):
@@ -105,24 +105,24 @@ class AutoMetadataMixin(object):
                     field_metadata['related_endpoint'] = field
 
                 fields_metadata.append(field_metadata)
-                metadata.update({
-                    'fields': fields_metadata,
-                })
-                for extra_info in adapater.extra_metadata_info:
-                    if extra_info.attr == 'fieldsets':
+
+                for meta_info in adapater.metadata_info:
+                    if meta_info.attr == 'fields':
+                        metadata['fields'] = fields_metadata,
+                    elif meta_info.attr == 'fieldsets':
                         metadata['fieldsets'] = [{'title': None, 'fields': [
                                                     field
                                                     for field in view.serializer_class.Meta.fields
                                                     if field != 'id' and field != '__str__'
                                                  ]}]
                     else:
-                        metadata[extra_info.attr] = extra_info.default
+                        metadata[meta_info.attr] = meta_info.default
         else:
-            for extra_info in [ExtraMetaDataInfo('fields', GETTER, []), ] + adapter.extra_metadata_info:
-                if extra_info.attr_type == GETTER:
-                    metadata[extra_info.attr] = getattr(endpoint, 'get_{}'.format(extra_info.attr))()
+            for meta_info in adapter.metadata_info:
+                if meta_info.attr_type == GETTER:
+                    metadata[meta_info.attr] = getattr(endpoint, 'get_{}'.format(meta_info.attr))()
                 else:
-                    metadata[extra_info.attr] = getattr(endpoint, extra_info.attr, extra_info.default)
+                    metadata[meta_info.attr] = getattr(endpoint, meta_info.attr, meta_info.default)
 
         return adapter(metadata)
 

@@ -3,7 +3,7 @@ from collections import namedtuple
 
 PROPERTY = 1
 GETTER = 0
-ExtraMetaDataInfo = namedtuple('ExtraMetaDataInfo', ['attr', 'attr_type', 'default'])
+MetaDataInfo = namedtuple('ExtraMetaDataInfo', ['attr', 'attr_type', 'default'])
 
 
 class BaseAdapter(object):
@@ -11,7 +11,9 @@ class BaseAdapter(object):
     Basic adapter that renders a dict to json with no modifications.
     """
 
-    extra_metadata_info = []
+    metadata_info = [
+        MetaDataInfo('fields', GETTER, []),
+    ]
 
     def render(self, config):
         return config['fields']
@@ -75,19 +77,20 @@ class EmberAdapter(BaseAdapter):
         }, ...]
     """
 
-    extra_metadata_info = [
-        ExtraMetaDataInfo('fieldsets', GETTER, []),
-        ExtraMetaDataInfo('list_display', GETTER, []),
-        ExtraMetaDataInfo('filter_fields', GETTER, []),
-        ExtraMetaDataInfo('languages', GETTER, []),
-        ExtraMetaDataInfo('ordering_fields', GETTER, []),
-        ExtraMetaDataInfo('needs', GETTER, []),
-        ExtraMetaDataInfo('list_editable', GETTER, []),
-        ExtraMetaDataInfo('sortable_by', GETTER, []),
-        ExtraMetaDataInfo('translated_fields', GETTER, []),
-        ExtraMetaDataInfo('custom_actions', GETTER, []),
-        ExtraMetaDataInfo('save_twice', PROPERTY, False),
-        ExtraMetaDataInfo('search_enabled', PROPERTY, False),
+    metadata_info = [
+        MetaDataInfo('fields', GETTER, []),
+        MetaDataInfo('fieldsets', GETTER, []),
+        MetaDataInfo('list_display', GETTER, []),
+        MetaDataInfo('filter_fields', GETTER, []),
+        MetaDataInfo('languages', GETTER, []),
+        MetaDataInfo('ordering_fields', GETTER, []),
+        MetaDataInfo('needs', GETTER, []),
+        MetaDataInfo('list_editable', GETTER, []),
+        MetaDataInfo('sortable_by', GETTER, []),
+        MetaDataInfo('translated_fields', GETTER, []),
+        MetaDataInfo('custom_actions', GETTER, []),
+        MetaDataInfo('save_twice', PROPERTY, False),
+        MetaDataInfo('search_enabled', PROPERTY, False),
     ]
 
     def render(self, config):
