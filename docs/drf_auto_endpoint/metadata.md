@@ -347,43 +347,43 @@ not just single forms; it looks like this.
         "__str__"
     
   ],
-    "filter_fields": [],
-    "search_enabled": false,
-    "languages": [],
-    "ordering_fields": [],
-    "needs": [
+  "filter_fields": [],
+  "search_enabled": false,
+  "languages": [],
+  "ordering_fields": [],
+  "needs": [
     {
-            "app": "sample",
-            "singular": "category",
-            "plural": "categories"
-        
+      "app": "sample",
+      "singular": "category",
+      "plural": "categories"
+      
     }
-    
-    ],
-    "fieldsets": [
+  
+  ],
+  "fieldsets": [
     {
       "fields": [
-      {
-                    "name": "name"
-                
-      },
-      {
-                    "name": "category"
-                
-      },
-      {
-                    "name": "product_type"
-                
-      }
+        {
+          "name": "name"
+                  
+        },
+        {
+          "name": "category"
+                  
+        },
+        {
+          "name": "product_type"
+                  
+        }
             
       ],
-            "title": null
-        
+      "title": null
     }
-    
-    ],
-    "list_editable": [],
-    "sortable_by": null,
-    "translated_fields": []
+  ],
+  "list_editable": [],
+  "sortable_by": null,
+  "translated_fields": [],
+  "save_twice": false,
+  "custom_actions": []
 }
 ```
