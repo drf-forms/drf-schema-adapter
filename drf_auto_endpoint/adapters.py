@@ -89,6 +89,7 @@ class EmberAdapter(BaseAdapter):
         MetaDataInfo('sortable_by', GETTER, []),
         MetaDataInfo('translated_fields', GETTER, []),
         MetaDataInfo('custom_actions', GETTER, []),
+        MetaDataInfo('bulk_actions', GETTER, []),
         MetaDataInfo('save_twice', PROPERTY, False),
         MetaDataInfo('search_enabled', PROPERTY, False),
     ]

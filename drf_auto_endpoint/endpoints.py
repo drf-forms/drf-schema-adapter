@@ -51,6 +51,7 @@ class Endpoint(object):
     sortable_by = None
 
     custom_actions = None
+    bulk_actions = None
 
     inflector_language = English
 
@@ -328,3 +329,8 @@ class Endpoint(object):
         if self.custom_actions is None:
             return []
         return self.custom_actions
+
+    def get_bulk_actions(self):
+        if self.bulk_actions is None:
+            return []
+        return self.bulk_actions
