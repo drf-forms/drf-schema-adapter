@@ -84,7 +84,14 @@ def viewset_factory(endpoint):
         cls_attrs['filter_backends'] = filter_backends
 
     if endpoint.page_size is not None:
-        cls_attrs['page_size'] = endpoint.page_size
-        cls_attrs['pagination_class'] = pagination.PageNumberPagination
+
+        pg_cls_name = '{}Pagination'.format(endpoint.model.__name__)
+        pg_cls_attrs = {
+            'page_size': endpoint.page_size,
+            'page_size_query_param': 'page_size'
+        }
+        pg_cls = type(pg_cls_name, (pagination.PageNumberPagination, ), pg_cls_attrs)
+
+        cls_attrs['pagination_class'] = pg_cls
 
     return type(cls_name, (endpoint.get_base_viewset(),), cls_attrs)
