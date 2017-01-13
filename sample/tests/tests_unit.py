@@ -109,7 +109,11 @@ class EndpointTestCase(TestCase):
         for backend in ('DjangoFilterBackend', 'SearchFilter', 'OrderingFilter'):
             self.assertIn(backend, [be.__name__ for be in viewset.filter_backends])
 
-        self.assertEqual(viewset.pagination_class, pagination.PageNumberPagination)
+        self.assertEqual(viewset.pagination_class.__name__, 'ProductPagination')
+        self.assertTrue(issubclass(
+            viewset.pagination_class,
+            pagination.PageNumberPagination
+        ))
 
     def test_non_factory_viewset(self):
         endpoint = Endpoint(viewset=DummyProductViewSet)
