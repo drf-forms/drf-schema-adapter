@@ -10,8 +10,8 @@ DEFAULT_SETTINGS = {
         'IntegerField': 'number',
         'FloatField': 'number',
         'DecimalField': 'number',
-        'PrimaryKeyRelatedField': 'foreignkey',
-        'ManyRelatedField': 'tomany-table',
+        'ForeignKey': 'foreignkey',
+        'ManyToOneRel': 'tomany-table',
         'text': 'textarea',
         'choice': 'select',
         'DateField': 'date',
@@ -21,7 +21,8 @@ DEFAULT_SETTINGS = {
         'ChoiceField': 'select',
         'EmailField': 'email',
         'URLField': 'url',
-
+        'ManyToManyField': 'manytomany',
+        'ManyToManyRel': 'manytomany',
     },
     'METADATA_ADAPTER': 'drf_auto_endpoint.adapters.BaseAdapter',
 }

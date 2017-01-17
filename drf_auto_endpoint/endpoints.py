@@ -186,6 +186,7 @@ class Endpoint(object):
             if isinstance(field_instance, (relations.PrimaryKeyRelatedField, relations.ManyRelatedField)):
                 model_field = self.model._meta.get_field(field_instance.source)
                 related_model = model_field.related_model
+                rv['type'] = settings.WIDGET_MAPPING[model_field.__class__.__name__]
                 rv['related_endpoint'] = '{}/{}'.format(
                     related_model._meta.app_label,
                     related_model._meta.model_name.lower()
@@ -238,7 +239,7 @@ class Endpoint(object):
                 for field in self.get_fields_for_serializer()
                 if field != 'id' and field != '__str__' and \
                     field not in self.translated_field_names and \
-                    self._get_field_dict(field)['type'] != settings.WIDGET_MAPPING['ManyRelatedField']]
+                    self._get_field_dict(field)['type'][:6] != 'tomany']
             }
         ]
 
@@ -270,11 +271,11 @@ class Endpoint(object):
 
     def get_needs(self):
         related_models = [
-            f.model
-            if f.model and f.model != self.model
-            else f.related_model if f.related_model else None
+            f.related_model
+            if f.related_model
+            else f.model if f.model and f.model != self.model else None
             for f in self.model._meta.get_fields()
-            if ((f.one_to_many or f.one_to_one) and f.auto_created) or (f.many_to_one and f.related_model)
+            if f.is_relation
         ]
         return [
             {
