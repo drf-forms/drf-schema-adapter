@@ -187,6 +187,8 @@ class Endpoint(object):
                 model_field = self.model._meta.get_field(field_instance.source)
                 related_model = model_field.related_model
                 rv['type'] = settings.WIDGET_MAPPING[model_field.__class__.__name__]
+                if model_field.__class__.__name__ == 'ManyToManyRel':
+                    rv['validation']['required'] = False
                 rv['related_endpoint'] = '{}/{}'.format(
                     related_model._meta.app_label,
                     related_model._meta.model_name.lower()

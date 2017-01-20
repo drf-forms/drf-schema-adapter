@@ -21,8 +21,8 @@ DEFAULT_SETTINGS = {
         'ChoiceField': 'select',
         'EmailField': 'email',
         'URLField': 'url',
-        'ManyToManyField': 'manytomany',
-        'ManyToManyRel': 'manytomany',
+        'ManyToManyField': 'manytomany-lists',
+        'ManyToManyRel': 'manytomany-lists',
     },
     'METADATA_ADAPTER': 'drf_auto_endpoint.adapters.BaseAdapter',
 }
