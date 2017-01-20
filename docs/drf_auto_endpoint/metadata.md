@@ -384,6 +384,69 @@ not just single forms; it looks like this.
   "sortable_by": null,
   "translated_fields": [],
   "save_twice": false,
-  "custom_actions": []
+  "custom_actions": [],
+  "bulk_actions": [],
 }
+```
+
+## Creating a custom adapter
+
+When creating a custom adapter, the first thing you'll want to do is import the base class and tools you will need:
+
+```
+from drf_auto_endpoint.adapters import BaseAdapter, MetaDataInfo, PROPERTY, GETTER
+```
+
+By default, the `BaseAdapter` produces a result containing only `fields`.
+If you'd like to get more information like actions or languages, you'll have to override the
+`metadata_info` property of the adapter.
+`metadata_info` is a list of `MetaDataInfo` objects.
+A `MetaDataInfo` object takes 3 arguments:
+
+- the name of the property or method (as in get_&lt;name&gt;()) to call on the endpoint
+- whether the name refers to a `PROPERTY` or a `GETTER`
+- a default value (used to produce metadata on non-model endpoints or viewsets)
+
+Here is a list of existing properties and getters that can be used:
+
+`'fields', GETTER, []`
+`'fieldsets', GETTER, []`
+`'list_display', GETTER, []`
+`'filter_fields', GETTER, []`
+`'languages', GETTER, []`
+`'ordering_fields', GETTER, []`
+`'needs', GETTER, []`
+`'list_editable', GETTER, []`
+`'sortable_by', GETTER, []`
+`'translated_fields', GETTER, []`
+`'custom_actions', GETTER, []`
+`'bulk_actions', GETTER, []`
+`'save_twice', PROPERTY, False`
+`'search_enabled', PROPERTY, False`
+
+If you need more information, feel free to add properties and getters on your custom `Endpoint`.
+
+Finally, if the output format of the default adapter doesn't suite you,
+you will probably want to override the `render` method on your custom adapter.
+The `render` method receives a raw dictionary as input and is expected to return a raw dictionary as output.
+
+### Sample
+
+```
+from drf_auto_endpoint.adapters import BaseAdapter, MetaDataInfo, PROPERTY, GETTER
+
+
+class CustomAdapter(BaseAdapter):
+
+  metadata_info = [
+        MetaDataInfo('fields', GETTER, []),
+        MetaDataInfo('fieldsets', GETTER, []),
+        MetaDataInfo('list_display', GETTER, []),
+        MetaDataInfo('filter_fields', GETTER, []),
+        MetaDataInfo('search_enabled', PROPERTY, False),
+  ]
+
+  def render(self, config):
+      config['custom_fields'] = config.pop('fields', [])
+      return config
 ```
