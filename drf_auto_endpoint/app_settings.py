@@ -25,6 +25,9 @@ DEFAULT_SETTINGS = {
         'ManyToManyRel': 'manytomany-lists',
     },
     'METADATA_ADAPTER': 'drf_auto_endpoint.adapters.BaseAdapter',
+    'BASE_SERIALIZER': 'rest_framework.serializers.ModelSerializer',
+    'BASE_VIEWSET': 'rest_framework.viewsets.ModelViewSet',
+    'BASE_READONLY_VIEWSET': 'rest_framework.viewsets.ReadOnlyModelViewSet',
 }
 
 

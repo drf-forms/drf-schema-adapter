@@ -1,3 +1,5 @@
+from django.utils.module_loading import import_string
+
 from rest_framework import serializers, viewsets, relations
 from rest_framework.fields import empty
 
@@ -5,6 +7,7 @@ from inflector import Inflector, English
 
 from .factories import serializer_factory, viewset_factory
 from .utils import get_validation_attrs, get_languages
+from .app_settings import settings
 
 try:
     from modeltranslation.translator import translator
@@ -24,9 +27,9 @@ def get_all_field_names(model):
 
 class Endpoint(object):
 
-    base_serializer = serializers.ModelSerializer
-    base_viewset = viewsets.ModelViewSet
-    base_readonly_viewset = viewsets.ReadOnlyModelViewSet
+    base_serializer = import_string(settings.BASE_SERIALIZER)
+    base_viewset = import_string(settings.BASE_VIEWSET)
+    base_readonly_viewset = import_string(settings.BASE_READONLY_VIEWSET)
 
     model = None
     fields = None
@@ -149,7 +152,6 @@ class Endpoint(object):
         )
 
     def _get_field_dict(self, field):
-        from drf_auto_endpoint.app_settings import settings
 
         serializer_instance = self.get_serializer()()
         name = field['name'] if isinstance(field, dict) else field

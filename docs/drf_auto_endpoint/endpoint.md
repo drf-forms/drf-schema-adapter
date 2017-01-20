@@ -63,7 +63,7 @@ Similar to the `permission_classes` attribute you would use on a
 
 ### `base_serializer`
 
-*default*: `ModelSerializer`
+*default*: `ModelSerializer` (from `settings.DRF_AUTO_BASE_SERIALIZER`)
 
 `Endpoint`'s will automatically generate serializers based on `ModelSerialier`.
 You can override this behavior and pass in your own `base_serializer` tha will be used to generate
@@ -80,6 +80,7 @@ of your own using the `serializer` attribute
 ### `base_viewset`
 
 *default:* `ReadOnlyModelViewSet` *(if* `read_only = True` *) or* `ModelViewSet`
+(from `settings.DRF_AUTO_BASE_VIEWSET` and `settings.DRF_AUTO_BASE_READONLY_VIEWSET`)
 
 `Endpoint`'s will automatically generate viewsets based on `ModelViewSet` or `ReadOnlyModelViewSet`.
 You can override this behavior and pass in your own `base_viewset` tha will be used to generate
