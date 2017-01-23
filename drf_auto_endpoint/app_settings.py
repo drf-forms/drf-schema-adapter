@@ -37,7 +37,7 @@ class Settings(object):
     def __init__(self):
         mapping = DEFAULT_SETTINGS['WIDGET_MAPPING']
         mapping.update(getattr(django_settings, 'DRF_AUTO_WIDGET_MAPPING', {}))
-        self.WIDGET_MAPPING = defaultdict(lambda: this.DEFAULT_WIDGET)
+        self.WIDGET_MAPPING = defaultdict(lambda: self.DEFAULT_WIDGET)
         for k, v in mapping.items():
             self.WIDGET_MAPPING[k] = v
 
