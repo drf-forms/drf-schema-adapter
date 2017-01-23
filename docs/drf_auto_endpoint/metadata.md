@@ -438,15 +438,14 @@ from drf_auto_endpoint.adapters import BaseAdapter, MetaDataInfo, PROPERTY, GETT
 
 class CustomAdapter(BaseAdapter):
 
-  metadata_info = [
-        MetaDataInfo('fields', GETTER, []),
-        MetaDataInfo('fieldsets', GETTER, []),
-        MetaDataInfo('list_display', GETTER, []),
-        MetaDataInfo('filter_fields', GETTER, []),
-        MetaDataInfo('search_enabled', PROPERTY, False),
-  ]
+    metadata_info = [
+          MetaDataInfo('fields', GETTER, []),
+          MetaDataInfo('list_display', GETTER, []),
+          MetaDataInfo('filter_fields', GETTER, []),
+          MetaDataInfo('search_enabled', PROPERTY, False),
+    ]
 
-  def render(self, config):
-      config['custom_fields'] = config.pop('fields', [])
-      return config
+    def render(self, config):
+        config['form_fields'] = config.pop('fields', [])
+        return config
 ```
