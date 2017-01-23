@@ -24,6 +24,7 @@ DEFAULT_SETTINGS = {
         'ManyToManyField': 'manytomany-lists',
         'ManyToManyRel': 'manytomany-lists',
     },
+    'DEFAULT_WIDGET': 'text',
     'METADATA_ADAPTER': 'drf_auto_endpoint.adapters.BaseAdapter',
     'BASE_SERIALIZER': 'rest_framework.serializers.ModelSerializer',
     'BASE_VIEWSET': 'rest_framework.viewsets.ModelViewSet',
@@ -34,9 +35,9 @@ DEFAULT_SETTINGS = {
 class Settings(object):
 
     def __init__(self):
-        mapping = getattr(django_settings, 'DRF_AUTO_WIDGET_MAPPING', {})
-        mapping.update(DEFAULT_SETTINGS['WIDGET_MAPPING'])
-        self.WIDGET_MAPPING = defaultdict(lambda: 'text')
+        mapping = DEFAULT_SETTINGS['WIDGET_MAPPING']
+        mapping.update(getattr(django_settings, 'DRF_AUTO_WIDGET_MAPPING', {}))
+        self.WIDGET_MAPPING = defaultdict(lambda: this.DEFAULT_WIDGET)
         for k, v in mapping.items():
             self.WIDGET_MAPPING[k] = v
 

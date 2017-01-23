@@ -3,7 +3,7 @@ from collections import namedtuple
 
 PROPERTY = 1
 GETTER = 0
-MetaDataInfo = namedtuple('ExtraMetaDataInfo', ['attr', 'attr_type', 'default'])
+MetaDataInfo = namedtuple('MetaDataInfo', ['attr', 'attr_type', 'default'])
 
 
 class BaseAdapter(object):
@@ -26,10 +26,8 @@ class BaseAdapter(object):
 
 
 def to_html_tag(widget_type):
-    if widget_type == "checkbox":
-        return "checkbox"
-    if widget_type == "select":
-        return "select"
+    if widget_type in ["checkbox", "select"]:
+        return widget_type
     return "input"
 
 

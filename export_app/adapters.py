@@ -60,7 +60,7 @@ class BaseAdapter(object):
                     answer = input('{} already exists, do you want to overwrite it? [y/N] '.format(
                         target_file
                     ))
-                    if answer.lower in ('', 'no', 'n'):
+                    if answer.lower() in ('', 'no', 'n'):
                         return
         with open(target_file, 'w') as f:
             output = render_to_string(template, context)
