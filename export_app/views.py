@@ -26,6 +26,9 @@ class EmberModelView(BaseModelView):
         except ModelNotFoundException as e:
             raise Http404('No viewset found for {}'.format(e.model))
 
+        for item in ['model_name', 'application_name']:
+            context[item] = context[item].replace('_', '-')
+
         fields, rels = self.get_fields_for_model(model, serializer_instance, self.adapter_class)
 
         # WIP: for models on the fly, we may need to add url name
@@ -34,6 +37,11 @@ class EmberModelView(BaseModelView):
         #     url_name = '{}:{}'.format(settings.URL_NAMESPACE, settings.URL_NAME)
 
         context['fields'] = fields
-        context['rels'] = rels
+        context['rels'] = []
+        for rel in rels:
+            for item in ['app', 'related_model']:
+                rel[item] = rel[item].replace('_', '-')
+            context['rels'].append(rel)
+
         context['ember_app'] = settings.FRONT_APPLICATION_NAME
         return context

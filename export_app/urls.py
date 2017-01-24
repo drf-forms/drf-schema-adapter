@@ -5,5 +5,5 @@ from export_app.views import EmberModelView
 
 
 urlpatterns = [
-    url(r'^(?P<model>[\w\/]+)\.js', EmberModelView.as_view(), name=settings.URL_NAME),
+    url(r'^(?P<model>[\w\/_-]+)\.js', EmberModelView.as_view(), name=settings.URL_NAME),
 ]

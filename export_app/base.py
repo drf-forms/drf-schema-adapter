@@ -25,6 +25,7 @@ class BaseSerializerExporter(object):
         return None
 
     def get_viewset_for_basename(self, basename, with_endpoint=False):
+        basename = basename.replace('_', '-')
         viewset = None
         endpoint = self.get_endpoint_for_basename(basename)
         if endpoint is not None:

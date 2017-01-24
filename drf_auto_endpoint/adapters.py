@@ -110,7 +110,7 @@ class EmberAdapter(BaseAdapter):
                 new_field['extra']['choices'] = field['choices']
 
             if 'related_endpoint' in field:
-                new_field['extra']['related_model'] = field['related_endpoint']
+                new_field['extra']['related_model'] = field['related_endpoint'].replace('_', '-')
 
             if 'placeholder' in field['ui']:
                 new_field['extra']['placeholder'] = field['ui']['placeholder']
@@ -128,5 +128,11 @@ class EmberAdapter(BaseAdapter):
                     new_field['name'] = new_field.pop('key')
                 fs['fields'][j] = new_field
             config['fieldsets'][i] = fs
+
+        for i, need in enumerate(config['needs']):
+            config['needs'][i] = {
+                key: value.replace('_', '-')
+                for key, value in need.items()
+            }
 
         return config
