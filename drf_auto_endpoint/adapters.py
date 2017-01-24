@@ -129,7 +129,7 @@ class EmberAdapter(BaseAdapter):
                 fs['fields'][j] = new_field
             config['fieldsets'][i] = fs
 
-        for i, need in enumerate(config['needs']):
+        for i, need in enumerate(config.get('needs', [])):
             config['needs'][i] = {
                 key: value.replace('_', '-')
                 for key, value in need.items()
