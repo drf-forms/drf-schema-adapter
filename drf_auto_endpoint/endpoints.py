@@ -279,7 +279,7 @@ class Endpoint(object):
             if f.related_model
             else f.model if f.model and f.model != self.model else None
             for f in self.model._meta.get_fields()
-            if f.is_relation
+            if f.is_relation and f.name in self.get_fields_for_serializer()
         ]
         return [
             {
