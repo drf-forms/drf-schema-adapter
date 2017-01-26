@@ -22,7 +22,11 @@ except ImportError:
 
 
 def get_all_field_names(model):
-    return [field.name for field in model._meta.get_fields()]
+    return [
+        field.name
+        for field in model._meta.get_fields()
+        if not hasattr(field, 'field') or getattr(field, 'related_name', None) is not None
+    ]
 
 
 class Endpoint(object):

@@ -93,7 +93,7 @@ class EmberAdapter(BaseAdapter):
     ]
 
     def render(self, config):
-        fields = config['fields'];
+        fields = config['fields']
         adapted = []
         for field in fields:
             new_field = {
