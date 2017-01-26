@@ -3,7 +3,7 @@ from django.utils.module_loading import import_string
 from rest_framework import serializers, viewsets, relations
 from rest_framework.fields import empty
 
-from inflector import Inflector, English
+from inflector import Inflector
 
 from .factories import serializer_factory, viewset_factory
 from .utils import get_validation_attrs, get_languages
@@ -56,7 +56,7 @@ class Endpoint(object):
     custom_actions = None
     bulk_actions = None
 
-    inflector_language = English
+    inflector_language = import_string(settings.INFLECTOR_LANGUAGE)
 
     _translated_fields = None
     _translated_field_names = None
@@ -184,25 +184,24 @@ class Endpoint(object):
         if default and default != empty:
             rv['default'] = default
 
-        if getattr(field_instance, 'choices', None) is not None:
-            if isinstance(field_instance, (relations.PrimaryKeyRelatedField, relations.ManyRelatedField)):
-                model_field = self.model._meta.get_field(field_instance.source)
-                related_model = model_field.related_model
-                rv['type'] = settings.WIDGET_MAPPING[model_field.__class__.__name__]
-                if model_field.__class__.__name__ == 'ManyToManyRel':
-                    rv['validation']['required'] = False
-                rv['related_endpoint'] = '{}/{}'.format(
-                    related_model._meta.app_label,
-                    related_model._meta.model_name.lower()
-                )
-            else:
-                rv['type'] = settings.WIDGET_MAPPING['choice']
-                rv['choices'] = [
-                    {
-                        'label': v,
-                        'value': k,
-                    } for k, v in field_instance.choices.items()
-                ]
+        if isinstance(field_instance, (relations.PrimaryKeyRelatedField, relations.ManyRelatedField)):
+            model_field = self.model._meta.get_field(field_instance.source)
+            related_model = model_field.related_model
+            rv['type'] = settings.WIDGET_MAPPING[model_field.__class__.__name__]
+            if model_field.__class__.__name__ == 'ManyToManyRel':
+                rv['validation']['required'] = False
+            rv['related_endpoint'] = '{}/{}'.format(
+                related_model._meta.app_label,
+                related_model._meta.model_name.lower()
+            )
+        elif hasattr(field_instance, 'choices'):
+            rv['type'] = settings.WIDGET_MAPPING['choice']
+            rv['choices'] = [
+                {
+                    'label': v,
+                    'value': k,
+                } for k, v in field_instance.choices.items()
+            ]
 
         rv['validation'].update(get_validation_attrs(field_instance))
 
