@@ -1,5 +1,7 @@
 from django.utils.module_loading import import_string
+from django.core.exceptions import FieldDoesNotExist
 from django.core.urlresolvers import reverse
+from django.db.models.fields import NOT_PROVIDED
 
 from rest_framework import serializers, viewsets, relations
 from rest_framework.fields import empty
@@ -184,16 +186,25 @@ class Endpoint(object):
             'translated': name in self.get_translated_fields()
         }
 
-        default = field_instance.default
-
         if self.fields_annotation and name in self.fields_annotation and 'placeholder' in self.fields_annotation[name]:
             rv['ui']['placeholder'] = self.fields_annotation[name]['placeholder']
 
+        default = field_instance.default
+        try:
+            model_field = self.model._meta.get_field(field_instance.source)
+        except FieldDoesNotExist:
+            model_field = None
+
         if default and default != empty:
             rv['default'] = default
+        elif default == empty and hasattr(model_field, 'default'):
+            default = model_field.default
+            if default != NOT_PROVIDED:
+                if callable(default):
+                    default = default()
+                rv['default'] = default
 
         if isinstance(field_instance, (relations.PrimaryKeyRelatedField, relations.ManyRelatedField)):
-            model_field = self.model._meta.get_field(field_instance.source)
             related_model = model_field.related_model
             rv['type'] = settings.WIDGET_MAPPING[model_field.__class__.__name__]
             if model_field.__class__.__name__ == 'ManyToManyRel':
