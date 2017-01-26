@@ -89,9 +89,10 @@ class SerializerExporterWithFields(BaseSerializerExporter):
                 relationships.append(field_item)
                 if hasattr(model_field, 'field'):
                     field_item['inverse']=model_field.field.name
-                elif hasattr(model_field, 'remote_field'):
-                    field_item['inverse']=model_field.remote_field.name
-                if field_item.get('inverse', '+')[-1] == '+':
+                elif hasattr(model_field, 'remote_field') and \
+                        getattr(model_field.remote_field, 'related_name', None) is not None:
+                    field_item['inverse']=model_field.remote_field.related_name
+                if field_item.get('inverse', '-')[-1] == '+':
                     field_item.pop('inverse')
                 if isinstance(field, ModelSerializer):
                     if field.many:
