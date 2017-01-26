@@ -1,4 +1,5 @@
 from django.utils.module_loading import import_string
+from django.core.urlresolvers import reverse
 
 from rest_framework import serializers, viewsets, relations
 from rest_framework.fields import empty
@@ -127,7 +128,7 @@ class Endpoint(object):
 
         return self.fields
 
-    def get_serializer(self):
+    def get_serializer(self, data=None):
 
         if self.serializer is None:
             if self.viewset is None:
@@ -135,7 +136,10 @@ class Endpoint(object):
             else:
                 self.serializer = self.viewset.serializer_class
 
-        return self.serializer
+        if data is None:
+           return self.serializer
+
+        return self.serializer(data)
 
     def get_base_viewset(self):
         return self.base_viewset if not self.read_only or self.base_viewset != viewsets.ModelViewSet \
@@ -334,11 +338,39 @@ class Endpoint(object):
         return self._default_language_field_names
 
     def get_custom_actions(self):
-        if self.custom_actions is None:
-            return []
-        return self.custom_actions
+        rv  = []
+        viewset = self.get_viewset()
+
+        for action_name in dir(viewset):
+            action = getattr(viewset, action_name)
+            if getattr(action, 'action_type', None) == 'custom':
+                rv.append({
+                    'url': reverse('{}-{}'.format(self.get_url(), action.__name__.lower()),
+                                   kwargs={'pk': ':id'}),
+                    'verb': action.bind_to_methods[0],
+                    **action.action_kwargs
+                })
+
+        if self.custom_actions is not None:
+            rv += self.custom_actions
+
+        return rv
 
     def get_bulk_actions(self):
-        if self.bulk_actions is None:
-            return []
-        return self.bulk_actions
+        rv = []
+        viewset = self.get_viewset()
+
+        for action_name in dir(viewset):
+            action = getattr(viewset, action_name)
+            if getattr(action, 'action_type', None) == 'bulk':
+                rv.append({
+                    'url': reverse('{}-{}'.format(self.get_url(), action.__name__.lower()),
+                                   kwargs={'pk': ':id'}),
+                    'verb': action.bind_to_methods[0],
+                    **action.action_kwargs
+                })
+
+        if self.bulk_actions is not None:
+            rv += []
+
+        return rv

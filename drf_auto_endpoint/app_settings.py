@@ -30,6 +30,8 @@ DEFAULT_SETTINGS = {
     'BASE_VIEWSET': 'rest_framework.viewsets.ModelViewSet',
     'BASE_READONLY_VIEWSET': 'rest_framework.viewsets.ReadOnlyModelViewSet',
     'INFLECTOR_LANGUAGE': 'inflector.English',
+    'ACTION_ICON_CLASS': 'fa fa-cog',
+    'ACTION_BTN_CLASS': 'btn btn-default',
 }
 
 

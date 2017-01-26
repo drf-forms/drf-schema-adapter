@@ -94,4 +94,11 @@ def viewset_factory(endpoint):
 
         cls_attrs['pagination_class'] = pg_cls
 
-    return type(cls_name, (endpoint.get_base_viewset(),), cls_attrs)
+    rv = type(cls_name, (endpoint.get_base_viewset(),), cls_attrs)
+
+    for method_name in dir(endpoint):
+        method = getattr(endpoint, method_name)
+        if getattr(method, 'action_type', None) in ['custom', 'bulk']:
+            setattr(rv, method_name, method)
+
+    return rv
