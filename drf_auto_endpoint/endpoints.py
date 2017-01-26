@@ -355,12 +355,13 @@ class Endpoint(object):
         for action_name in dir(viewset):
             action = getattr(viewset, action_name)
             if getattr(action, 'action_type', None) == 'custom':
-                rv.append({
+                custom_action = {
                     'url': reverse('{}-{}'.format(self.get_url(), action.__name__.lower()),
                                    kwargs={'pk': ':id'}),
                     'verb': action.bind_to_methods[0],
-                    **action.action_kwargs
-                })
+                }
+                custom_action.update(action.action_kwargs)
+                rv.append(custom_action)
 
         if self.custom_actions is not None:
             rv += self.custom_actions
@@ -374,12 +375,13 @@ class Endpoint(object):
         for action_name in dir(viewset):
             action = getattr(viewset, action_name)
             if getattr(action, 'action_type', None) == 'bulk':
-                rv.append({
+                bulk_action = {
                     'url': reverse('{}-{}'.format(self.get_url(), action.__name__.lower()),
                                    kwargs={'pk': ':id'}),
                     'verb': action.bind_to_methods[0],
-                    **action.action_kwargs
-                })
+                }
+                bulk_action.update(action.action_kwargs)
+                rv.append(bulk_action)
 
         if self.bulk_actions is not None:
             rv += []
