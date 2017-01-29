@@ -5,7 +5,7 @@ from django.utils.module_loading import import_string
 from rest_framework.fields import empty
 from rest_framework.metadata import SimpleMetadata, BaseMetadata
 
-from .utils import get_validation_attrs, get_languages
+from .utils import get_validation_attrs, get_languages, get_field_dict
 from .app_settings import settings
 from .adapters import PROPERTY, GETTER
 
@@ -58,7 +58,7 @@ class AutoMetadataMixin(object):
             endpoint = view.endpoint
         else:
             if hasattr(view.serializer_class.Meta, 'model'):
-                endpoint = Endpoint(view.serializer_class.Meta.model, viewset=viewset)
+                endpoint = Endpoint(view.serializer_class.Meta.model, viewset=view)
 
         adapter = import_string(settings.METADATA_ADAPTER)()
         if endpoint is None:
@@ -74,35 +74,7 @@ class AutoMetadataMixin(object):
                 if type_ is None:
                     raise NotImplementedError()
 
-                field_metadata = {
-                    'key': field,
-                    'type': type_,
-                    'read_only': False,
-                    'ui': {
-                        'label': field.title(),
-                    },
-
-                    'validation': {
-                        'required': instance_field.required,
-                    },
-                    'extra': {}
-                }
-
-                default = instance_field.default
-
-                if default and default != empty:
-                    field_metadata['default'] = default
-
-                if getattr(instance_field, 'choices', None):
-                    field_metadata['choices'] = [{
-                        'label': v,
-                        'value': k,
-                    } for k, v in instance_field.choices.items()]
-
-                field_metadata['validation'].update(get_validation_attrs(instance_field))
-
-                if type_ == 'foreignkey':
-                    field_metadata['related_endpoint'] = field
+                field_metadata = get_field_dict(field, view.serializer_class)
 
                 fields_metadata.append(field_metadata)
 
@@ -111,7 +83,7 @@ class AutoMetadataMixin(object):
                         metadata['fields'] = fields_metadata,
                     elif meta_info.attr == 'fieldsets':
                         metadata['fieldsets'] = [{'title': None, 'fields': [
-                                                    field
+                                                    {'key': field}
                                                     for field in view.serializer_class.Meta.fields
                                                     if field != 'id' and field != '__str__'
                                                 ]}]

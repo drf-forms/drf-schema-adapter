@@ -61,7 +61,7 @@ class BaseSerializerExporter(object):
 
         return model, serializer_instance, model_name, application_name
 
-    def get_fields_for_model(self, model, serializer_instance, target_app=None):
+    def get_fields_for_model(self, model, serializer_instance, adapter, target_app=None):
         return [], []
 
 
@@ -82,18 +82,24 @@ class SerializerExporterWithFields(BaseSerializerExporter):
             }
             if isinstance(field, PrimaryKeyRelatedField) or isinstance(field, ManyRelatedField) \
                     or isinstance(field, ModelSerializer):
-                model_field = model._meta.get_field(field_name)
-                field_item['related_model'] = model_field.related_model._meta.model_name.lower()
-                field_item['app'] = target_app if target_app is not None else \
-                    model_field.related_model._meta.app_label.lower()
-                relationships.append(field_item)
-                if hasattr(model_field, 'field'):
-                    field_item['inverse']=model_field.field.name
-                elif hasattr(model_field, 'remote_field') and \
-                        getattr(model_field.remote_field, 'related_name', None) is not None:
-                    field_item['inverse']=model_field.remote_field.related_name
-                if field_item.get('inverse', '-')[-1] == '+':
-                    field_item.pop('inverse')
+                if model is None:
+                    field_item['related_model'] = field.queryset.model._meta.model_name.lower()
+                    field_item['app'] = target_app if target_app is not None else \
+                        field.queryset.model._meta.app_label.lower()
+                    relationships.append(field_item)
+                else:
+                    model_field = model._meta.get_field(field_name)
+                    field_item['related_model'] = model_field.related_model._meta.model_name.lower()
+                    field_item['app'] = target_app if target_app is not None else \
+                        model_field.related_model._meta.app_label.lower()
+                    relationships.append(field_item)
+                    if hasattr(model_field, 'field'):
+                        field_item['inverse']=model_field.field.name
+                    elif hasattr(model_field, 'remote_field') and \
+                            getattr(model_field.remote_field, 'related_name', None) is not None:
+                        field_item['inverse']=model_field.remote_field.related_name
+                    if field_item.get('inverse', '-')[-1] == '+':
+                        field_item.pop('inverse')
                 if isinstance(field, ModelSerializer):
                     if field.many:
                         field_item[type] = adapter.field_type_mapping['ManyRelatedField']

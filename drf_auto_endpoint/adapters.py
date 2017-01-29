@@ -92,33 +92,37 @@ class EmberAdapter(BaseAdapter):
         MetaDataInfo('search_enabled', PROPERTY, False),
     ]
 
+    @classmethod
+    def adapt_field(cls, field):
+        new_field = {
+            'label': field['ui']['label'],
+            'readonly': field['read_only'],
+            'extra': {},
+            'name': field['key'],
+            'widget': field['type'],
+            'required': field['validation']['required'],
+            'translated': field['translated'],
+        }
+
+        if 'choices' in field:
+            new_field['extra']['choices'] = field['choices']
+
+        if 'related_endpoint' in field:
+            new_field['extra']['related_model'] = field['related_endpoint'].replace('_', '-')
+
+        if 'placeholder' in field['ui']:
+            new_field['extra']['placeholder'] = field['ui']['placeholder']
+
+        if 'default' in field:
+            new_field['extra']['default'] = field['default']
+
+        return new_field
+
     def render(self, config):
         fields = config['fields']
         adapted = []
         for field in fields:
-            new_field = {
-                'label': field['ui']['label'],
-                'readonly': field['read_only'],
-                'extra': {},
-                'name': field['key'],
-                'widget': field['type'],
-                'required': field['validation']['required'],
-                'translated': field['translated'],
-            }
-
-            if 'choices' in field:
-                new_field['extra']['choices'] = field['choices']
-
-            if 'related_endpoint' in field:
-                new_field['extra']['related_model'] = field['related_endpoint'].replace('_', '-')
-
-            if 'placeholder' in field['ui']:
-                new_field['extra']['placeholder'] = field['ui']['placeholder']
-
-            if 'default' in field:
-                new_field['extra']['default'] = field['default']
-
-            adapted.append(new_field)
+            adapted.append(self.adapt_field(field))
 
         config['fields'] =  adapted
         for i, fs in enumerate(config['fieldsets']):

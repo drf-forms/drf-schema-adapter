@@ -1,15 +1,12 @@
 from django.utils.module_loading import import_string
-from django.core.exceptions import FieldDoesNotExist
 from django.core.urlresolvers import reverse
-from django.db.models.fields import NOT_PROVIDED
 
 from rest_framework import serializers, viewsets, relations
-from rest_framework.fields import empty
 
 from inflector import Inflector
 
 from .factories import serializer_factory, viewset_factory
-from .utils import get_validation_attrs, get_languages
+from .utils import get_validation_attrs, get_languages, get_field_dict
 from .app_settings import settings
 
 try:
@@ -45,6 +42,7 @@ class Endpoint(object):
     fieldsets = None
     list_display = None
     list_editable = None
+    extra_fields = None
 
     permission_classes = None
     filter_fields = None
@@ -125,6 +123,8 @@ class Endpoint(object):
         if self.fields is None:
             self.fields = tuple([f for f in get_all_field_names(self.model)
                                  if f not in self.default_language_field_names])
+            if self.extra_fields is not None:
+                self.fields += tuple(self.extra_fields)
             if self.include_str:
                 self.fields += ('__str__', )
 
@@ -162,75 +162,8 @@ class Endpoint(object):
         )
 
     def _get_field_dict(self, field):
-
-        serializer_instance = self.get_serializer()()
-        name = field['name'] if isinstance(field, dict) else field
-        field_instance = serializer_instance.fields[name]
-        read_only = name == '__str__'
-        if not read_only and field_instance.read_only:
-            if not isinstance(field_instance, serializers.ManyRelatedField):
-                read_only = True
-
-        rv = {
-            'key': name,
-            'type': settings.WIDGET_MAPPING[field_instance.__class__.__name__],
-            'read_only': read_only,
-            'ui': {
-                'label': name.title().replace('_', ' ') if name != '__str__' else \
-                    serializer_instance.Meta.model.__name__,
-            },
-            'validation': {
-                'required': field_instance.required,
-            },
-            'extra': {},
-            'translated': name in self.get_translated_fields()
-        }
-
-        if self.fields_annotation and name in self.fields_annotation and 'placeholder' in self.fields_annotation[name]:
-            rv['ui']['placeholder'] = self.fields_annotation[name]['placeholder']
-
-        default = field_instance.default
-        try:
-            model_field = self.model._meta.get_field(field_instance.source)
-        except FieldDoesNotExist:
-            model_field = None
-
-        if default and default != empty:
-            rv['default'] = default
-        elif default == empty and hasattr(model_field, 'default'):
-            default = model_field.default
-            if default != NOT_PROVIDED:
-                if callable(default):
-                    default = default()
-                rv['default'] = default
-
-        if isinstance(field_instance, (relations.PrimaryKeyRelatedField, relations.ManyRelatedField)):
-            related_model = model_field.related_model
-            rv['type'] = settings.WIDGET_MAPPING[model_field.__class__.__name__]
-            if model_field.__class__.__name__ == 'ManyToManyRel':
-                rv['validation']['required'] = False
-            rv['related_endpoint'] = '{}/{}'.format(
-                related_model._meta.app_label,
-                related_model._meta.model_name.lower()
-            )
-        elif hasattr(field_instance, 'choices'):
-            rv['type'] = settings.WIDGET_MAPPING['choice']
-            rv['choices'] = [
-                {
-                    'label': v,
-                    'value': k,
-                } for k, v in field_instance.choices.items()
-            ]
-
-        rv['validation'].update(get_validation_attrs(field_instance))
-
-        if isinstance(field, dict):
-            extra = rv['extra']
-            extra.update(field.get('extra', {}))
-            rv.update(field)
-            rv['extra'] = extra
-
-        return rv
+        return get_field_dict(field, self.get_serializer(), self.get_translated_fields(),
+                              self.fields_annotation, self.model)
 
     def get_fields(self):
         return [
