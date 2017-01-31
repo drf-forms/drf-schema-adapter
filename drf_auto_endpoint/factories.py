@@ -10,6 +10,33 @@ try:
 except ImportError:
     # Django 1.8
     from django.db.models.fields.related import ManyToOneRel
+from django.db.models.fields import NOT_PROVIDED
+
+
+class NullToDefaultMixin(object):
+
+    def __init__(self, *args, **kwargs):
+        super(NullToDefaultMixin, self).__init__(*args, **kwargs)
+        for field in self.Meta.fields:
+            try:
+                model_field = self.Meta.model._meta.get_field(field)
+                if hasattr(model_field, 'default') and model_field.default != NOT_PROVIDED:
+                    self.fields[field].allow_null = True
+            except FieldDoesNotExist:
+                pass
+
+    def validate(self, data):
+        for field in self.Meta.fields:
+            try:
+                model_field = self.Meta.model._meta.get_field(field)
+                if hasattr(model_field, 'default') and model_field.default != NOT_PROVIDED and \
+                        data.get(field, NOT_PROVIDED) is None:
+                    data.pop(field)
+            except FieldDoesNotExist:
+                pass
+
+        return data
+
 
 
 def serializer_factory(endpoint):
@@ -37,10 +64,9 @@ def serializer_factory(endpoint):
             if isinstance(model_field, ManyToOneRel):
                 cls_attrs[meta_field] = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
         except FieldDoesNotExist:
-            #  This is not a field, it's a property
-            pass
+            cls_attrs[meta_field] = serializers.ReadOnlyField()
 
-    return type(cls_name, (endpoint.base_serializer, ), cls_attrs)
+    return type(cls_name, (NullToDefaultMixin, endpoint.base_serializer, ), cls_attrs)
 
 
 def viewset_factory(endpoint):
