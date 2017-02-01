@@ -92,6 +92,15 @@ class EmberAdapter(BaseAdapter):
         MetaDataInfo('search_enabled', PROPERTY, False),
     ]
 
+    def render_root(self, config):
+        config['applications'] = [
+            {
+                'name': app['name'].replace('_', '-'),
+                'models': app['models']
+            } for app in config['applications']
+        ]
+        return config
+
     @classmethod
     def adapt_field(cls, field):
         new_field = {
