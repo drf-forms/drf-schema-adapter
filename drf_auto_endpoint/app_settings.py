@@ -11,6 +11,8 @@ DEFAULT_SETTINGS = {
         'FloatField': 'number',
         'DecimalField': 'number',
         'ForeignKey': 'foreignkey',
+        'OneToOneField': 'foreignkey',
+        'OneToOneRel': 'foreignkey',
         'PrimaryKeyRelatedField': 'foreignkey',
         'ManyToOneRel': 'tomany-table',
         'text': 'textarea',
