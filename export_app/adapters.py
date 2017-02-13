@@ -85,6 +85,10 @@ class EmberAdapter(BaseAdapter):
         'JSONField': None,
         'PrimaryKeyRelatedField': 'belongsTo',
         'ManyRelatedField': 'hasMany',
+        'DateField': 'nullable',
+        'DateTimeField': 'nullable',
+        'TimeField': 'nullable',
+        'DurationField': 'nullable',
     }
     DEFAULT_MAPPING = 'string'
     requires_fields = True
