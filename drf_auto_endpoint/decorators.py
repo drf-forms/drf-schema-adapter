@@ -30,6 +30,7 @@ def bulk_action(method='GET', type='request', icon_class=None, btn_class=None, t
         func.detail = False
         func.action_type = 'bulk'
         func.action_kwargs = action_kwargs(icon_class, btn_class, text, func, kwargs)
+        func.action_kwargs['atOnce'] = func.action_kwargs.get('atOnce', True)
         func.kwargs = {}
 
         return func

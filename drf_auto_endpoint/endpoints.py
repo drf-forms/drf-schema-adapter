@@ -309,8 +309,7 @@ class Endpoint(object):
             action = getattr(viewset, action_name)
             if getattr(action, 'action_type', None) == 'bulk':
                 bulk_action = {
-                    'url': reverse('{}-{}'.format(self.get_url(), action.__name__.lower()),
-                                   kwargs={'pk': ':id'}),
+                    'url': reverse('{}-{}'.format(self.get_url(), action.__name__.lower())),
                     'verb': action.bind_to_methods[0],
                 }
                 bulk_action.update(action.action_kwargs)
