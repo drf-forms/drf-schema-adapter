@@ -10,7 +10,8 @@ class Command(SerializerExporterWithFields, BaseCommand):
     help = 'Export DRF serializer definition to an EmberJS model definition'
 
     def add_arguments(self, parser):
-        parser.add_argument('model_endpoint', nargs='+')
+        parser.add_argument('model_endpoint', nargs='*')
+        parser.add_argument('--all', default=False, action='store_true')
         parser.add_argument('--adapter_name', default=settings.ADAPTER)
         parser.add_argument('--target_app', default=None,
                             help='force all relationships to the target_app instead of the model\'s app')
@@ -23,7 +24,17 @@ class Command(SerializerExporterWithFields, BaseCommand):
         Adapter = import_string(adapter_name)
         adapter = Adapter()
 
-        for endpoint in options['model_endpoint']:
+        endpoints = options['model_endpoint']
+
+        if len(endpoints) == 0 and not options['all']:
+            raise CommandError('You need to specify at least one model_endpoint or use --all')
+        elif options['all'] and len(endpoints) > 0:
+            raise CommandError('You need to specify either model_endpoint(s) or use --all but you cannot use both at the same time')
+        elif options['all']:
+            endpoints = getattr(self.router, '_endpoints', {}).keys()
+
+        for endpoint in endpoints:
+            print('Exporting {} using {}'.format(endpoint, adapter_name))
             try:
                 if adapter.works_with in ['serializer', 'both']:
                     model, serializer_instance, model_name, application_name = \
