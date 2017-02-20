@@ -45,7 +45,7 @@ class EmberModelView(BaseModelView):
             context['rels'].append(rel)
 
         context['ember_app'] = settings.FRONT_APPLICATION_NAME
-        return
+        return context
 
 
 class WizardModelView(BaseModelView):
@@ -70,4 +70,4 @@ class WizardModelView(BaseModelView):
             context['rels'].append(rel)
 
         context['ember_app'] = settings.FRONT_APPLICATION_NAME
-        return contextcontext
+        return context
