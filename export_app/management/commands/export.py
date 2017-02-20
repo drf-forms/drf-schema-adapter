@@ -7,14 +7,19 @@ from export_app.base import SerializerExporterWithFields, ModelNotFoundException
 
 
 class Command(SerializerExporterWithFields, BaseCommand):
-    help = 'Export DRF serializer definition to an EmberJS model definition'
+    help = 'Export DRF serializer definition to a frontend model definition'
 
     def add_arguments(self, parser):
-        parser.add_argument('model_endpoint', nargs='*')
-        parser.add_argument('--all', default=False, action='store_true')
-        parser.add_argument('--adapter_name', default=settings.ADAPTER)
+        parser.add_argument('model_endpoint', nargs='*',
+                            help="The shorthand url(s) of the endpoint(s) for which you'd like to export models. Eg: 'sample/products'")
+        parser.add_argument('--all', default=False, action='store_true',
+                            help="Export all models corresponding to endpoints registered with your router")
+        parser.add_argument('--adapter_name', default=settings.ADAPTER,
+                            help='Defaults to {}'.format(settings.ADAPTER))
         parser.add_argument('--target_app', default=None,
-                            help='force all relationships to the target_app instead of the model\'s app')
+                            help='Force all relationships to the target_app instead of the model\'s app')
+        parser.add_argument('--router', default=None,
+                            help='Defaults to {}'.format(settings.ROUTER_PATH))
 
     def handle(self, *args, **options):
         target_app = options['target_app']
@@ -24,10 +29,13 @@ class Command(SerializerExporterWithFields, BaseCommand):
         Adapter = import_string(adapter_name)
         adapter = Adapter()
 
+        if options['router'] is not None:
+            self.router = import_string(options['router'])
         endpoints = options['model_endpoint']
 
         if len(endpoints) == 0 and not options['all']:
-            raise CommandError('You need to specify at least one model_endpoint or use --all')
+            self.print_help('drf_auto_endpoint', 'export')
+            return
         elif options['all'] and len(endpoints) > 0:
             raise CommandError('You need to specify either model_endpoint(s) or use --all but you cannot use both at the same time')
         elif options['all']:
