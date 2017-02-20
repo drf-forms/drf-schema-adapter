@@ -100,14 +100,14 @@ class EmberAdapter(BaseAdapter):
 
     def write_to_file(self, application_name, model_name, context):
         base_target_dir = os.path.join(django_settings.BASE_DIR, settings.FRONT_APPLICATION_PATH,
-                                       'app', 'models', 'base', application_name)
+                                       'app', 'models', 'base', application_name.replace('_', '-'))
         target_dir = os.path.join(django_settings.BASE_DIR, settings.FRONT_APPLICATION_PATH,
-                                  'app', 'models', application_name)
+                                  'app', 'models', application_name.replace('_', '-'))
         test_target_dir = os.path.join(django_settings.BASE_DIR, settings.FRONT_APPLICATION_PATH,
-                                       'tests', 'unit', 'models', application_name)
+                                       'tests', 'unit', 'models', application_name.replace('_', '-'))
 
-        filename = '{}.js'.format(model_name)
-        test_filename = '{}-test.js'.format(model_name)
+        filename = '{}.js'.format(model_name).replace('_', '-')
+        test_filename = '{}-test.js'.format(model_name).replace('_', '-')
 
         files = [
             (base_target_dir, filename, self.base_template_name, True),

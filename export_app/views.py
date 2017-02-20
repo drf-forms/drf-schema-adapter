@@ -45,4 +45,29 @@ class EmberModelView(BaseModelView):
             context['rels'].append(rel)
 
         context['ember_app'] = settings.FRONT_APPLICATION_NAME
-        return context
+        return
+
+
+class WizardModelView(BaseModelView):
+
+    def get_context_data(self, **kwargs):
+        context = super(WizardModelView, self).get_context_data(**kwargs)
+        base_name, method_name = self.kwargs['model'].rsplit('/', 1)
+        context['application_name'] = 'wizard/{}'.format(base_name.replace('_', '-'))
+        context['model_name'] = method_name.replace('_', '-')
+
+        viewset, *_other = self.get_viewset_for_basename(base_name)
+        serializer = getattr(viewset, method_name).serializer
+        serializer_instance = serializer()
+
+        fields, rels = self.get_fields_for_model(None, serializer_instance, self.adapter_class)
+
+        context['fields'] = fields
+        context['rels'] = []
+        for rel in rels:
+            for item in ['app', 'related_model']:
+                rel[item] = rel[item].replace('_', '-')
+            context['rels'].append(rel)
+
+        context['ember_app'] = settings.FRONT_APPLICATION_NAME
+        return contextcontext

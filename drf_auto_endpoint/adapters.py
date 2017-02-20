@@ -16,13 +16,26 @@ class BaseAdapter(object):
     ]
 
     def render(self, config):
-        return config['fields']
+        fields = config['fields']
+        adapted = []
+        for field in fields:
+            adapted.append(self.adapt_field(field))
+
+        return adapted
 
     def render_root(self, config):
         return config
 
     def __call__(self, config):
         return self.render(config)
+
+    @classmethod
+    def adapt_field(cls, field):
+        return field
+
+    @classmethod
+    def adapt_wizard(cls, func):
+        return func
 
 
 def to_html_tag(widget_type):
@@ -33,31 +46,27 @@ def to_html_tag(widget_type):
 
 class AngularFormlyAdapter(BaseAdapter):
 
-    def render(self, config):
-        fields = config['fields'];
-        adapted = []
-        for field in fields:
-            field["validation"].update({
-                "label": field["ui"]["label"],
-                "type": field["type"],
-            })
+    @classmethod
+    def adapt_field(self, field):
+        field["validation"].update({
+            "label": field["ui"]["label"],
+            "type": field["type"],
+        })
 
-            new_field = {
-                "key": field["key"],
-                "read_only": field["read_only"],
-                "type": to_html_tag(field["type"]),
-                "templateOptions": field["validation"]
-            }
+        new_field = {
+            "key": field["key"],
+            "read_only": field["read_only"],
+            "type": to_html_tag(field["type"]),
+            "templateOptions": field["validation"]
+        }
 
-            if "placeholder" in field["ui"]:
-                new_field["templateOptions"]["placeholder"] = field["ui"]["placeholder"]
+        if "placeholder" in field["ui"]:
+            new_field["templateOptions"]["placeholder"] = field["ui"]["placeholder"]
 
-            if "default" in field:
-                new_field["defaultValue"] = field["default"]
+        if "default" in field:
+            new_field["defaultValue"] = field["default"]
 
-            adapted.append(new_field)
-
-        return adapted
+        return new_field
 
 
 class EmberAdapter(BaseAdapter):
@@ -128,12 +137,8 @@ class EmberAdapter(BaseAdapter):
         return new_field
 
     def render(self, config):
-        fields = config['fields']
-        adapted = []
-        for field in fields:
-            adapted.append(self.adapt_field(field))
 
-        config['fields'] =  adapted
+        config['fields'] = super(EmberAdapter, self).render(config)
         for i, fs in enumerate(config['fieldsets']):
             for j, f in enumerate(fs['fields']):
                 new_field = f
@@ -149,3 +154,11 @@ class EmberAdapter(BaseAdapter):
             }
 
         return config
+
+    @classmethod
+    def adapt_wizard(cls, func):
+        func.action_kwargs['allowBulk'] = False
+        func.action_kwargs['type'] = 'closureMethod'
+        func.action_kwargs['method'] = '_wizard'
+
+        return func
