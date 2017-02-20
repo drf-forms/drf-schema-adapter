@@ -2,13 +2,22 @@ language: python
 python:
   - "2.7"
   - "3.5"
+  - "3.6"
 env:
   - DJANGOVER=django18
   - DJANGOVER=django19
   - DJANGOVER=django110
+  - DJANGOVER=django111
+  - DJANGOVER=djangomaster
 # command to install dependencies
 install: "pip install -r requirements.txt"
 # command to run tests
 script:
   - export TOX_ENV=py${TRAVIS_PYTHON_VERSION/./}-${DJANGOVER}
   - tox -r -e "$TOX_ENV"
+matrix:
+  exclude:
+    - python: "2.7"
+      env: DJANGOVER=django111
+    - python: "2.7"
+      env: DJANGOVER=djangomaster

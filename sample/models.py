@@ -23,7 +23,7 @@ class Category(models.Model):
 class Product(models.Model):
 
     name = models.CharField(max_length=255)
-    category = models.ForeignKey(Category, related_name='products')
+    category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
     product_type = models.CharField(max_length=1, choices=PRODUCT_TYPES, default='s')
 
     def __str__(self):

@@ -14,7 +14,7 @@ router.register(Category)
 router.register(HowItWorks, base_viewset=AbstractHowItWorksViewSet)
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
+    # url(r'^admin/', include(admin.site.urls)),
     url(r'^$', HomepageView.as_view()),
     url(r'^api/', include(router.urls)),
     url(r'^models/', include(export_urls, namespace=export_settings.URL_NAMESPACE)),

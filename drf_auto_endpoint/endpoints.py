@@ -1,12 +1,11 @@
 from django.utils.module_loading import import_string
-from django.core.urlresolvers import reverse
 
 from rest_framework import serializers, viewsets, relations
 
 from inflector import Inflector
 
 from .factories import serializer_factory, viewset_factory
-from .utils import get_validation_attrs, get_languages, get_field_dict
+from .utils import get_validation_attrs, get_languages, get_field_dict, reverse
 from .app_settings import settings
 
 try:

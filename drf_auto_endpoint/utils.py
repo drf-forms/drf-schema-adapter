@@ -9,6 +9,17 @@ from rest_framework.fields import empty
 from .app_settings import settings
 
 
+def reverse(*args, **kwargs):
+    try:
+        from django.core.urlresolvers import reverse
+        return reverse(*args, **kwargs)
+    except ModuleNotFoundError:
+        # Django 1.11+
+        from django.urls.resolvers import get_resolver
+        resolver = get_resolver()
+        return resolver.reverse(*args, **kwargs)
+
+
 def get_validation_attrs(instance_field):
     rv = {}
 
