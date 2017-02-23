@@ -6,10 +6,10 @@ except ImportError:
     from rest_framework.filters import DjangoFilterBackend
 from django.core.exceptions import FieldDoesNotExist
 try:
-    from django.db.models.fields.reverse_related import ManyToOneRel
+    from django.db.models.fields.reverse_related import ManyToOneRel, OneToOneRel
 except ImportError:
     # Django 1.8
-    from django.db.models.fields.related import ManyToOneRel
+    from django.db.models.fields.related import ManyToOneRel, OneToOneRel
 from django.db.models.fields import NOT_PROVIDED
 
 
@@ -61,7 +61,9 @@ def serializer_factory(endpoint):
     for meta_field in meta_attrs['fields']:
         try:
             model_field = endpoint.model._meta.get_field(meta_field)
-            if isinstance(model_field, ManyToOneRel):
+            if isinstance(model_field, OneToOneRel):
+                cls_attrs[meta_field] = serializers.PrimaryKeyRelatedField(read_only=True)
+            elif isinstance(model_field, ManyToOneRel):
                 cls_attrs[meta_field] = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
         except FieldDoesNotExist:
             cls_attrs[meta_field] = serializers.ReadOnlyField()
