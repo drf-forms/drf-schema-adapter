@@ -6,7 +6,8 @@ frameworks and libraries
 
 ## Installation
 
-`drf-schema-adapter` is compatible with python 2.7 and 3.4+, Django 1.8 and DRF 3.3+
+`drf-schema-adapter` is compatible with python 2.7 (Django 1.8, 1.9, 1.10 only) and 3.4+, Django 1.8
+and DRF 3.3+
 
 ### With pip
 
