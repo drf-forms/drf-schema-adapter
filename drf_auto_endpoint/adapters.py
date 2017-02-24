@@ -99,6 +99,7 @@ class EmberAdapter(BaseAdapter):
         MetaDataInfo('bulk_actions', GETTER, []),
         MetaDataInfo('save_twice', PROPERTY, False),
         MetaDataInfo('search_enabled', PROPERTY, False),
+        MetaDataInfo('conditional_formatting', PROPERTY, {}),
     ]
 
     def render_root(self, config):
