@@ -1,15 +1,19 @@
 from rest_framework import filters, pagination, serializers
+
 try:
     from django_filters.rest_framework import DjangoFilterBackend
 except ImportError:
     # Older versions of DRF and django_filters
     from rest_framework.filters import DjangoFilterBackend
 from django.core.exceptions import FieldDoesNotExist
+
 try:
     from django.db.models.fields.reverse_related import ManyToOneRel, OneToOneRel
 except ImportError:
     # Django 1.8
     from django.db.models.fields.related import ManyToOneRel, OneToOneRel
+
+from django.conf import settings
 from django.db.models.fields import NOT_PROVIDED
 
 
@@ -108,6 +112,11 @@ def viewset_factory(endpoint):
             filter_backends.append(backend)
             cls_attrs[filter_type] = getattr(endpoint, filter_type)
 
+    if hasattr(endpoint, 'filter_class'):
+        if DjangoFilterBackend not in filter_backends:
+            filter_backends.append(DjangoFilterBackend)
+        cls_attrs['filter_class'] = endpoint.filter_class
+
     if len(filter_backends) > 0:
         cls_attrs['filter_backends'] = filter_backends
 
@@ -116,7 +125,8 @@ def viewset_factory(endpoint):
         pg_cls_name = '{}Pagination'.format(endpoint.model.__name__)
         pg_cls_attrs = {
             'page_size': endpoint.page_size,
-            'page_size_query_param': 'page_size'
+            'page_size_query_param': 'page_size',
+            'max_page_size': settings.REST_FRAMEWORK.get('PAGE_SIZE', 250)
         }
         pg_cls = type(pg_cls_name, (pagination.PageNumberPagination, ), pg_cls_attrs)
 
