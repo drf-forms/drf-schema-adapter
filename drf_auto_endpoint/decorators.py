@@ -91,6 +91,7 @@ def wizard(target_model, serializer, icon_class=None, btn_class=None, text=None,
         #               func.__qualname__.split('.<locals>', 1)[0].rsplit('.', 1)[0])
         func.bind_to_methods = [kwargs.pop('method', 'POST'), ]
         func.detail = True
+        func.wizard = True
         func.action_type = 'custom'
         func.action_kwargs = action_kwargs(icon_class, btn_class, text, func, kwargs)
         func.kwargs = {}

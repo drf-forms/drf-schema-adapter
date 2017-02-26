@@ -48,7 +48,7 @@ class AutoMetadataMixin(object):
         except AttributeError:
             metadata = {}
 
-        if view.__class__.__name__ == 'APIRootView':
+        if view.__class__.__name__ == 'APIRootView' or view == 'APIRootView':
             return self.root_metadata(metadata, view)
 
 

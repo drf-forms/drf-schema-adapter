@@ -10,7 +10,7 @@ class Command(SerializerExporterWithFields, BaseCommand):
     help = 'Export DRF serializer definition to a frontend model definition'
 
     def add_arguments(self, parser):
-        parser.add_argument('model_endpoint', nargs='*',
+        parser.add_argument('wizard_endpoint', nargs='*',
                             help="The shorthand url(s) of the endpoint(s) for which you'd like to export models. Eg: 'sample/products'")
         parser.add_argument('--all', default=False, action='store_true',
                             help="Export all models corresponding to endpoints registered with your router")
@@ -32,36 +32,36 @@ class Command(SerializerExporterWithFields, BaseCommand):
 
         if options['router'] is not None:
             self.router = import_string(options['router'])
-        endpoints = options['model_endpoint']
+        endpoints = options['wizard_endpoint']
 
         if len(endpoints) == 0 and not options['all']:
             self.print_help('drf_auto_endpoint', 'export')
             return
         elif options['all'] and len(endpoints) > 0:
-            raise CommandError('You need to specify either model_endpoint(s) or use --all but you cannot use both at the same time')
+            raise CommandError('You need to specify either wizard_endpoint(s) or use --all but you cannot use both at the same time')
         elif options['all']:
-            endpoints = getattr(self.router, '_endpoints', {}).keys()
+            endpoints = []
+            for path, endpoint in getattr(self.router, '_endpoints', {}).items():
+                viewset = endpoint.get_viewset()
+                for method in dir(viewset):
+                    if hasattr(getattr(viewset, method), 'wizard') and getattr(viewset, method).wizard:
+                        endpoints.append('{}/{}'.format(path, method))
 
         for endpoint in endpoints:
             print('Exporting {} using {}'.format(endpoint, adapter_name))
+            base_name, method_name = endpoint.rsplit('/', 1)
+
             try:
-                if adapter.works_with in ['serializer', 'both']:
-                    model, serializer_instance, model_name, application_name = \
-                        self.get_serializer_for_basename(endpoint)
-
-                    class BogusViewSet(object):
-                        pagination_class = None
-
-                    viewset = BogusViewSet()
-                if adapter.works_with in ['viewset', 'both']:
-                    viewset, model_name, application_name = self.get_viewset_for_basename(endpoint)
+                viewset, model_name, application_name = self.get_viewset_for_basename(base_name)
+                serializer = getattr(viewset, method_name).serializer
+                serializer_instance = serializer()
             except ModelNotFoundException as e:
                 raise CommandError('No viewset found for {}'.format(e.model))
 
             fields, rels = [], []
 
             if adapter.requires_fields:
-                fields, rels = self.get_fields_for_model(model, serializer_instance, adapter,
+                fields, rels = self.get_fields_for_model(None, serializer_instance, adapter,
                                                          target_app)
 
             belongsTo = False
@@ -77,24 +77,21 @@ class Command(SerializerExporterWithFields, BaseCommand):
                     if belongsTo:
                         break
 
-            if adapter.works_with in ['serializer', 'both']:
-                context = {
-                    'endpoint': endpoint,
-                    'model_name': model_name,
-                    'application_name': application_name,
-                    'fields': fields,
-                    'rels': rels,
-                    'belongsTo': belongsTo,
-                    'hasMany': hasMany,
-                    'target_app': target_app,
-                    'api_base': settings.BACK_API_BASE,
-                    'pagination_container': 'result' if getattr(viewset, '.pagination_class', None) \
-                        is not None or getattr(django_settings, 'REST_FRAMEWORK', {}). \
-                        get('DEFAULT_PAGINATION_CLASS', None) is not None else None
-                }
+            base_name = 'wizard/{}'.format(base_name)
+            context = {
+                'endpoint': 'wizard/{}'.format(endpoint),
+                'model_name': method_name,
+                'application_name': base_name,
+                'fields': fields,
+                'rels': rels,
+                'belongsTo': belongsTo,
+                'hasMany': hasMany,
+                'target_app': target_app,
+                'api_base': settings.BACK_API_BASE,
+                'pagination_container': None,
+                'updir': 3,
+            }
 
-                adapter.write_to_file(application_name, model_name, context, options['noinput'])
-            else:
-                adapter.write_to_file(application_name, model_name, viewset, options['noinput'])
+            print('writing {}/{}'.format(base_name, method_name))
+            adapter.write_to_file(base_name, method_name, context, options['noinput'])
 
-        adapter.rebuild_index()

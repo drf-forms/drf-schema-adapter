@@ -41,7 +41,7 @@ class BaseAdapter(object):
             return cls.DEFAULT_MAPPING
         return rv
 
-    def write_to_file(self, application_name, model_name, context):
+    def write_to_file(self, application_name, model_name, context, force_overwrite=False):
         raise NotImplemented("You need to implement your Adapter")
 
     def create_dirs(self, *args):
@@ -71,6 +71,9 @@ class BaseAdapter(object):
         for file in files:
             self.write_file(context, *file)
 
+    def rebuild_index(self):
+        pass
+
 
 class EmberAdapter(BaseAdapter):
 
@@ -98,7 +101,9 @@ class EmberAdapter(BaseAdapter):
     test_template_name = 'export_app/ember_model_test.js'
     dynamic_template_name = 'export_app/dynamic_model.js'
 
-    def write_to_file(self, application_name, model_name, context):
+    def write_to_file(self, application_name, model_name, context, force_overwrite=False):
+        context['application_name'] = context['application_name'].replace('_', '-')
+        context['updir'] = context.get('updir', 1)
         base_target_dir = os.path.join(django_settings.BASE_DIR, settings.FRONT_APPLICATION_PATH,
                                        'app', 'models', 'base', application_name.replace('_', '-'))
         target_dir = os.path.join(django_settings.BASE_DIR, settings.FRONT_APPLICATION_PATH,
@@ -112,18 +117,39 @@ class EmberAdapter(BaseAdapter):
         files = [
             (base_target_dir, filename, self.base_template_name, True),
             (target_dir, filename, self.template_name, False),
-            (test_target_dir, test_filename, self.test_template_name)
+            (test_target_dir, test_filename, self.test_template_name, 'confirm' if not force_overwrite else False)
         ]
         self.write_files(context, files)
 
 
-class MetadataAdapter(BaseAdapter):
+class BaseMetadataAdapter(BaseAdapter):
 
     works_with = 'viewset'
 
-    def write_to_file(self, application_name, model_name, viewset):
-        import json
+    def render(self, data):
+        from rest_framework.renderers import JSONRenderer
+
+        renderer = JSONRenderer()
+        return renderer.render(data)
+
+    def get_metadata_from_viewset(self, viewset):
         from drf_auto_endpoint.metadata import MinimalAutoMetadata
+
+        if isinstance(viewset, dict):
+            output = viewset
+        else:
+            output = MinimalAutoMetadata().determine_metadata(None, viewset)
+
+        return output
+
+    def get_json(self, viewset):
+
+        return self.render(self.get_metadata_from_viewset(viewset))
+
+
+class MetadataAdapter(BaseMetadataAdapter):
+
+    def write_to_file(self, application_name, model_name, viewset, force_overwrite=False):
 
         target_dir = os.path.join(django_settings.BASE_DIR, settings.FRONT_APPLICATION_PATH,
                                   'data')
@@ -132,9 +158,72 @@ class MetadataAdapter(BaseAdapter):
 
         filename = '{}-{}.json'.format(application_name, model_name)
 
+        target_dir, viewset = self._write_to_file(application_name, model_name, viewset)
         with open(os.path.join(target_dir, filename), 'w') as f:
-            output = MinimalAutoMetadata().determine_metadata(None, viewset)
-            json.dump(output, f, indent=2)
+            self.get_json(viewset)
+
+
+class MetadataES6Adapter(BaseMetadataAdapter):
+
+    template_name = 'export_app/ember_metadata.js'
+    index_template_name = 'export_app/ember_metadata_index.js'
+
+    def walk_dir(self, base, ignore_index=False, prefix=''):
+        from inflector import Inflector
+        from django.utils.module_loading import import_string
+        from drf_auto_endpoint.app_settings import settings as auto_settings
+
+        inflector_language = import_string(auto_settings.INFLECTOR_LANGUAGE)
+        inflector = Inflector(inflector_language)
+
+        imports = []
+
+        for item in os.listdir(base):
+            filename = os.path.join(base, item)
+            if os.path.isdir(filename):
+                imports += self.walk_dir(filename, prefix=os.path.join(prefix, item.replace('_', '-')))
+            elif item == 'index.js' and ignore_index:
+                continue
+            else:
+                try:
+                    base_name, extension = item.rsplit('.', 1)
+                except ValueError:
+                    # a file without extension
+                    continue
+                if extension != 'js':
+                    continue
+                imports.append((
+                    os.path.join(prefix, inflector.pluralize(base_name)),
+                    os.path.join(prefix, base_name).replace('/', '_').replace('-', '_'),
+                    os.path.join('.', prefix.replace('-', '_'), base_name)
+                ))
+        return imports
+
+    def rebuild_index(self):
+        from drf_auto_endpoint.metadata import MinimalAutoMetadata
+        context = {}
+        directory = os.path.join(django_settings.BASE_DIR, settings.FRONT_APPLICATION_PATH,
+                                 'app', 'data')
+        context['items'] = self.walk_dir(directory, True)
+        context['root_metadata'] = self.render(
+            MinimalAutoMetadata().determine_metadata(None, 'APIRootView')
+        )
+        self.write_file(context, directory, 'index.js', self.index_template_name, True)
+
+    def write_to_file(self, application_name, model_name, viewset, force_overwrite=False):
+        target_dir = os.path.join(django_settings.BASE_DIR, settings.FRONT_APPLICATION_PATH,
+                                  'app', 'data', application_name)
+
+        self.create_dirs(target_dir, application_name)
+        filename = '{}.js'.format(model_name)
+
+        output = self.get_json(viewset)
+
+        context = {
+            'json': output
+        }
+
+        self.write_file(context, target_dir, filename, self.template_name, True)
 
 
 class MobxAxiosAdapter(BaseAdapter):
@@ -149,7 +238,7 @@ class MobxAxiosAdapter(BaseAdapter):
     base_store_template_name = 'export_app/mobxaxios_base_store.js'
     store_template_name = 'export_app/mobxaxios_store.js'
 
-    def write_to_file(self, application_name, model_name, context):
+    def write_to_file(self, application_name, model_name, context, force_overwrite=False):
         base_target_dir = os.path.join(django_settings.BASE_DIR, settings.FRONT_APPLICATION_PATH)
         config_target_dir = os.path.join(base_target_dir, 'config')
         model_target_dir = os.path.join(base_target_dir, 'models')
@@ -161,7 +250,7 @@ class MobxAxiosAdapter(BaseAdapter):
         files = [
             (config_target_dir, 'axios-config.js', self.config_template_name, False),
             (store_target_dir, '_base.js', self.base_store_template_name, True),
-            (store_target_dir, filename, self.store_template_name),
+            (store_target_dir, filename, self.store_template_name, 'confirm' if not force_overwrite else False),
             (model_base_target_dir, '_base.js', self.base_model_template_name, True),
             (model_base_target_dir, filename, self.model_base_template_name, True),
             (model_target_dir, filename, self.model_template_name, False)
