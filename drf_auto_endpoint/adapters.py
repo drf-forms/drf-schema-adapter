@@ -132,6 +132,9 @@ class EmberAdapter(BaseAdapter):
         if 'placeholder' in field['ui']:
             new_field['extra']['placeholder'] = field['ui']['placeholder']
 
+        if 'help' in field['ui']:
+            new_field['extra']['help'] = field['ui']['help']
+
         if 'default' in field:
             new_field['extra']['default'] = field['default']
 
