@@ -35,6 +35,8 @@ DEFAULT_SETTINGS = {
     'INFLECTOR_LANGUAGE': 'inflector.English',
     'ACTION_ICON_CLASS': 'fa fa-cog',
     'ACTION_BTN_CLASS': 'btn btn-default',
+    'ROUTER_CLASS': 'drf_auto_endpoint.router.EndpointRouter',
+    'DEFAULT_ENDPOINT_MODULES': 'endpoints',
 }
 
 

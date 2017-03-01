@@ -81,7 +81,7 @@ class Endpoint(object):
         if len(kwargs.keys()) > 0:
             raise Exception('{} got an unexpected keyword argument: "{}"'.format(
                 self.__class__.__name__,
-                kwargs.keys()[0]
+                list(kwargs.keys())[0]
             ))
 
         if self.serializer is not None:

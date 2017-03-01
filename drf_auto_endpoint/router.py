@@ -1,8 +1,11 @@
 from collections import OrderedDict
 
+from django.utils.module_loading import import_string
+
 from rest_framework.routers import DefaultRouter
 
 from .endpoints import Endpoint
+from .app_settings import settings
 
 
 class EndpointRouter(DefaultRouter):
@@ -11,6 +14,7 @@ class EndpointRouter(DefaultRouter):
 
     def __init__(self, *args, **kwargs):
         self._endpoints = OrderedDict()
+        self._registry = {}
         super(EndpointRouter, self).__init__(*args, **kwargs)
 
     def register(self, model=None, endpoint=None, fields=None, permission_classes=None,
@@ -34,6 +38,8 @@ class EndpointRouter(DefaultRouter):
                                                 ordering_fields=ordering_fields,
                                                 fields_annotation=fields_annotation,
                                                 list_me=list_me, **extra)
+        elif isinstance(endpoint, type):
+            endpoint = endpoint()
 
         url = endpoint.get_url() if 'url' not in kwargs else kwargs.pop('url')
         self._endpoints[url] = endpoint
@@ -55,4 +61,17 @@ class EndpointRouter(DefaultRouter):
         super(EndpointRouter, self).register(*args, **kwargs)
 
 
-router = EndpointRouter()
+def register(wrapped=None, **kwargs):
+    from drf_auto_endpoint.router import router as default_router
+
+    def _endpoint_wrapper(endpoint_class):
+        router = kwargs.pop('router', default_router)
+        router.register(endpoint=endpoint_class(), **kwargs)
+        return endpoint_class
+
+    if wrapped is not None:
+        return _endpoint_wrapper(wrapped)
+    return _endpoint_wrapper
+
+
+router = import_string(settings.ROUTER_CLASS)()
