@@ -23,23 +23,33 @@ class EndpointRouter(DefaultRouter):
                  base_name=None, fields_annotation=None, fielsets=None, base_serializer=None,
                  list_me=True, **kwargs):
 
-        if endpoint is None:
+        if (endpoint is None or isinstance(endpoint, type)):
             extra = {}
             if base_viewset is not None:
                 extra['base_viewset'] = base_viewset
             if base_serializer is not None:
                 extra['base_serializer'] = base_serializer
 
-            endpoint = self.base_endpoint_class(model=model, fields=fields, fieldsets=fielsets,
-                                                permission_classes=permission_classes,
-                                                serializer=serializer, filter_fields=filter_fields,
-                                                read_only=read_only, viewset=viewset,
-                                                search_fields=search_fields,
-                                                ordering_fields=ordering_fields,
-                                                fields_annotation=fields_annotation,
-                                                list_me=list_me, **extra)
+            endpoint_kwargs = {
+                'model': model,
+                'fields': fields,
+                'fieldsets': fielsets,
+                'permission_classes': permission_classes,
+                'serializer': serializer,
+                'filter_fields': filter_fields,
+                'read_only': read_only,
+                'viewset': viewset,
+                'search_fields': search_fields,
+                'ordering_fields': ordering_fields,
+                'fields_annotation': fields_annotation,
+                'list_me': list_me
+            }
+            endpoint_kwargs.update(extra)
+
+        if endpoint is None:
+            endpoint = self.base_endpoint_class(**endpoint_kwargs)
         elif isinstance(endpoint, type):
-            endpoint = endpoint()
+            endpoint = endpoint(**endpoint_kwargs)
 
         url = endpoint.get_url() if 'url' not in kwargs else kwargs.pop('url')
         self._endpoints[url] = endpoint
