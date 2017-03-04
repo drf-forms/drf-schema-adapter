@@ -8,13 +8,13 @@ frameworks and libraries
 
 **DRF-schema-adapter** is compatible with the following matrix
 
-|   | Py 2.7 | Py 3.4 | Py 3.5 | Py 3.6 |
-| - | ------ | ------ | ------ | ------ |
-| **Django 1.8** | DRF 3.2+ | DRF 3.2+ | DRF 3.2+ | DRF 3.2+ |
-| **Django 1.9** | DRF 3.3+ | DRF 3.3+ | DRF 3.3+ | DRF 3.3+ |
+|                 | Py 2.7   | Py 3.4   | Py 3.5   | Py 3.6   |
+| --------------- | -------- | -------- | -------- | -------- |
+| **Django 1.8**  | DRF 3.2+ | DRF 3.2+ | DRF 3.2+ | DRF 3.2+ |
+| **Django 1.9**  | DRF 3.3+ | DRF 3.3+ | DRF 3.3+ | DRF 3.3+ |
 | **Django 1.10** | DRF 3.4+ | DRF 3.4+ | DRF 3.4+ | DRF 3.4+ |
-| **Django 1.11** | No | No | DRF 3.4+ | DRF 3.4+ |
-| **Master** | No | No | DRF 3.4+ | DRF 3.4+ |
+| **Django 1.11** | No       | No       | DRF 3.4+ | DRF 3.4+ |
+| **Master**      | No       | No       | DRF 3.4+ | DRF 3.4+ |
 
 ### With pip
 
