@@ -63,9 +63,12 @@ def get_field_dict(field, serializer, translated_fields=None, fields_annotation=
         'translated': name in translated_fields
     }
 
-    if fields_annotation and name in fields_annotation and 'placeholder' in fields_annotation[name]:
-        rv['ui']['placeholder'] = fields_annotation[name]['placeholder']
-    if field_instance.help_text is not None:
+    if fields_annotation and name in fields_annotation:
+        if 'placeholder' in fields_annotation[name]:
+            rv['ui']['placeholder'] = fields_annotation[name]['placeholder']
+        if 'help' in fields_annotation[name]:
+            rv['ui']['help'] = fields_annotation[name]['help']
+    if field_instance.help_text is not None and 'help' not in rv['ui']:
         rv['ui']['help'] = field_instance.help_text
 
     default = field_instance.default

@@ -1,4 +1,4 @@
-# DRF-schema-adapter
+# DRF-schema-adapter [![Build Status](https://travis-ci.org/drf-forms/drf-schema-adapter.svg?branch=master)](https://travis-ci.org/drf-forms/drf-schema-adapter)
 
 `drf-schema-adapter` is a set of tools used to make it as straight-forward to declare an API endpoint
 as it is to declare a new `ModelAdmin` in Django and export the corresponding definition to frontend
@@ -6,8 +6,15 @@ frameworks and libraries
 
 ## Installation
 
-`drf-schema-adapter` is compatible with python 2.7 (Django 1.8, 1.9, 1.10 only) and 3.4+, Django 1.8
-and DRF 3.3+
+**DRF-schema-adapter** is compatible with the following matrix
+
+|   | Py 2.7 | Py 3.4 | Py 3.5 | Py 3.6 |
+| - | ------ | ------ | ------ | ------ |
+| **Django 1.8** | DRF 3.2+ | DRF 3.2+ | DRF 3.2+ | DRF 3.2+ |
+| **Django 1.9** | DRF 3.3+ | DRF 3.3+ | DRF 3.3+ | DRF 3.3+ |
+| **Django 1.10** | DRF 3.4+ | DRF 3.4+ | DRF 3.4+ | DRF 3.4+ |
+| **Django 1.11** | No | No | DRF 3.4+ | DRF 3.4+ |
+| **Master** | No | No | DRF 3.4+ | DRF 3.4+ |
 
 ### With pip
 

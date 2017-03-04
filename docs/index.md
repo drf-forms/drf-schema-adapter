@@ -3,11 +3,19 @@
 **DRF-schema-adapter**'s goal is to provide a toolset to help you create fully dynamic
 clients from **[Django](https://www.djangoproject.com/)** and
 **[Django REST framework](http://www.django-rest-framework.org/)**. Given the right
-frontend tools it can even help you build a full-fledge admin.
+frontend tools it can even help you to build a full-fledge admin.
 
-## Compatibility
+## Compatibility Matrix
 
-**DRF-schema-adapter** is compatible with python 2.7, 3.4 and 3.5 as well as Django 1.8+
+**DRF-schema-adapter** is compatible with the following matrix
+
+|   | Py 2.7 | Py 3.4 | Py 3.5 | Py 3.6 |
+| - | ------ | ------ | ------ | ------ |
+| **Django 1.8** | DRF 3.2+ | DRF 3.2+ | DRF 3.2+ | DRF 3.2+ |
+| **Django 1.9** | DRF 3.3+ | DRF 3.3+ | DRF 3.3+ | DRF 3.3+ |
+| **Django 1.10** | DRF 3.4+ | DRF 3.4+ | DRF 3.4+ | DRF 3.4+ |
+| **Django 1.11** | No | No | DRF 3.4+ | DRF 3.4+ |
+| **Master** | No | No | DRF 3.4+ | DRF 3.4+ |
 
 ## Installation
 
@@ -48,7 +56,28 @@ router.register(OtherModel, url='my_custom_url')
 urlpatterns = [
     url(r'^api/', include(router.urls)),
 ]
+```
 
+If you don't want to import your models directly in your `urls.py`, you can also take 
+advantage of `drf_auto_endpoint`'s auto-discovery capabilities and add your registrations
+to an `endpoints.py` file in your app.
+
+```
+## urls.py
+
+from drf_auto_endpoint.router import router
+
+urlpatterns = [
+    url(r'^api/', include(router.urls)),
+]
+
+
+## my_app/endpoints.py
+
+from drf_auto_endpoint.router import router
+from .models import MyModel
+
+router.register(MyModel)
 ```
 
 For more information on `drf_auto_endpoint`'s router and how to customize endpoints, see
@@ -62,8 +91,8 @@ These classes and mixins provide extra informations about the api and its fields
 calling the `OPTIONS` method on an endpoint root.
 
 Although these metadata classes and mixin work best with **DRF-schema-adapter**'s
-`Enpoint` classes, they are also compatible with regular DRF `ModelViewSet` and
-`ModelSerializer`.
+`Enpoint` classes, they are also compatible with regular DRF `(Model)ViewSet` and
+`(Model)Serializer`.
 
 To enable this extended metadata, you just have to configure it in your `settings.py`
 
@@ -112,7 +141,7 @@ Then, to export models corresponding to an enpoint you can now run:
 ex: `./manage.py export sample/products`
 
 To export those models on-the-fly, you'll need to specify your frontend application
-module name instead of its path as well as add a new route to your `urls.py`
+module name instead of its path as well as add a new url to your `urls.py`
 
 ```
 ## settings.py
@@ -137,7 +166,7 @@ some more parameters. Please, see
 [export_app's configuration section](./export_app/index.md#configuration).
 
 To know more about the configuration of `exporter_app` and the different adapters
-available, please see [the export-app' adapters section](./export_app/index.md#adapters)
+available, please see [the export-app's adapters section](./export_app/index.md#adapters)
 
 
 ---

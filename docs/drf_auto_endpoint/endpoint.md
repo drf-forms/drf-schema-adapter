@@ -2,27 +2,39 @@
 
 As with Django's `ModelAdmin` class you can also define your own `Endpoint` class and
 register it with the router instead of registering a model.
+
 In simple terms, `Endpoint`'s are a wrapper around a DRF's `ModelViewSet` and
 `ModelSerializer`.
+
+**DRF-Schema-Adapter** allows for auto-discovery of `Endpoint`'s located in `endpoints.py` file. You can
+either register them directly on the `router` or use the `@register` decorator.
 
 ```
 # my_app/endpoints.py
 from drf_auto_endpoint.endpoints import Endpoint
-from .models import MyModel
+from drf_auto_endpoint import register, router
+from .models import MyModel, OtherModel
 
+@register
 class MyModelEndpoint(Endpoint):
 
     model = MyModel
     read_only = True
     fields = ('id', 'name', 'category')
+
+
+class OtherModelEndpoint(Endpoint):
+
+    model = OtherModel
+    list_me = False
+
+
+router.register(endpoint=OtherModelEndpoint)
 ```
 
 ```
 # urls.py
 from drf_auto_endpoint.router import router
-from my_app.endpoints import MyModelEndpoint
-
-router.register(endpoint=MyModelEndpoint())
 
 urlpatterns = [
     url(r'^api/', include(router.urls)),
@@ -152,6 +164,25 @@ set as
 [`fieldsets` attribute of a `ModelAdmin` class](https://docs.djangoproject.com/en/1.10/ref/contrib/admin/#django.contrib.admin.ModelAdmin.fieldsets)
 while more powerfull as you are free to describe any number of levels of nested records here.
 
+### `fields_annotation` :warning: Only used by [metadata](./metadata.md)
+
+*default to an empty dict*
+
+A dictionary containain field annotations. annotation can be `placeholder` and/or `help`. Those values
+
+Example:
+```
+{
+    'name': {
+        'placeholder': 'Product name',
+        'help': 'The name of your product'
+    },
+    'category': {
+        'placeholder': 'Product category',
+    }
+}
+```
+
 ### `cutom_actions` :warning: Only used by [metadata](./metadata.md)
 
 *defaults to an empty list*
@@ -193,7 +224,7 @@ Whether or not this endpoint should eb listed by the `OPTIONS` call to the api r
 
 ## Decorators for cutom `Endpoint`'s
 
-All decorators accept any number of keywaord arguments. Those arguments will be translated into a
+All decorators accept any number of keyword arguments. Those arguments will be translated into a
 dictionary and made available as such for `OPTIONS` call to their relative `Endpoint` when using
 [DRF-schema-adapter's metadata capailities](./metadata.md).
 
@@ -233,7 +264,7 @@ provided. It defaults to the "capfirst'd" name of the decorated method.
 ### `@custom_action`
 
 This decorator has somewhat similar properties than
-v[DRF's ViewSet method decorator `@detail_route`](http://www.django-rest-framework.org/api-guide/viewsets/#marking-extra-actions-for-routing)
+[DRF's ViewSet method decorator `@detail_route`](http://www.django-rest-framework.org/api-guide/viewsets/#marking-extra-actions-for-routing)
 except it is meant to be use ond `Endpoint`'s and with the added functionality of adding that particular
 method directly to the `custom_actions` of the `Endpoint`.
 
