@@ -4,20 +4,79 @@ python:
   - "3.5"
   - "3.6"
 env:
-  - DJANGOVER=django18
-  - DJANGOVER=django19
-  - DJANGOVER=django110
-  - DJANGOVER=django111
-  - DJANGOVER=djangomaster
+  - DJANGO_DRF=django110-drf35
 # command to install dependencies
 install: "pip install -r requirements.txt"
 # command to run tests
 script:
-  - export TOX_ENV=py${TRAVIS_PYTHON_VERSION/./}-${DJANGOVER}
+  - export TOX_ENV=py${TRAVIS_PYTHON_VERSION/./}-${DJANGO_DRF}
   - tox -r -e "$TOX_ENV"
 matrix:
-  exclude:
+  include:
     - python: "2.7"
-      env: DJANGOVER=django111
+      env: DJANGO_DRF="django18-drf32"
     - python: "2.7"
-      env: DJANGOVER=djangomaster
+      env: DJANGO_DRF="django18-drf33"
+    - python: "2.7"
+      env: DJANGO_DRF="django18-drf34"
+    - python: "2.7"
+      env: DJANGO_DRF="django18-drf35"
+    - python: "2.7"
+      env: DJANGO_DRF="django19-drf33"
+    - python: "2.7"
+      env: DJANGO_DRF="django19-drf34"
+    - python: "2.7"
+      env: DJANGO_DRF="django19-drf35"
+    - python: "2.7"
+      env: DJANGO_DRF="django110-drf34"
+    - python: "3.5"
+      env: DJANGO_DRF="django18-drf32"
+    - python: "3.5"
+      env: DJANGO_DRF="django18-drf33"
+    - python: "3.5"
+      env: DJANGO_DRF="django18-drf34"
+    - python: "3.5"
+      env: DJANGO_DRF="django18-drf35"
+    - python: "3.5"
+      env: DJANGO_DRF="django19-drf33"
+    - python: "3.5"
+      env: DJANGO_DRF="django19-drf34"
+    - python: "3.5"
+      env: DJANGO_DRF="django19-drf35"
+    - python: "3.5"
+      env: DJANGO_DRF="django110-drf34"
+    - python: "3.5"
+      env: DJANGO_DRF="django111-drf34"
+    - python: "3.5"
+      env: DJANGO_DRF="django111-drf35"
+    - python: "3.5"
+      env: DJANGO_DRF="djangomaster-drf35"
+    - python: "3.6"
+      env: DJANGO_DRF="django18-drf32"
+    - python: "3.6"
+      env: DJANGO_DRF="django18-drf33"
+    - python: "3.6"
+      env: DJANGO_DRF="django18-drf34"
+    - python: "3.6"
+      env: DJANGO_DRF="django18-drf35"
+    - python: "3.6"
+      env: DJANGO_DRF="django19-drf33"
+    - python: "3.6"
+      env: DJANGO_DRF="django19-drf34"
+    - python: "3.6"
+      env: DJANGO_DRF="django19-drf35"
+    - python: "3.6"
+      env: DJANGO_DRF="django110-drf34"
+    - python: "3.6"
+      env: DJANGO_DRF="django111-drf34"
+    - python: "3.6"
+      env: DJANGO_DRF="django111-drf35"
+    - python: "3.6"
+      env: DJANGO_DRF="djangomaster-drf35"
+    - python: "3.6"
+      env: DJANGO_DRF="djangomaster-drfmaster"
+  allow_failures:
+    - python: "3.6"
+      env: DJANGO_DRF="djangomaster-drf35"
+    - python: "3.6"
+      env: DJANGO_DRF="djangomaster-drfmaster"

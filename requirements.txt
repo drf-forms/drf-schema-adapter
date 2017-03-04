@@ -1,8 +1,8 @@
-Django==1.10.3
-Inflector==2.0.11
-django-filter==0.15.3
-djangorestframework==3.5.2
-factory-boy==2.8.1
+Django>=1.10.3
+djangorestframework
+Inflector>=2.0.11
+django-filter>=0.15.3
+factory-boy>=2.8.1
 tox
 pytest
 pytest-django
