@@ -17,3 +17,4 @@ class {{application_name|title}}{{model_name|title}}Base extends Model {
 
 export default {{application_name|title}}{{model_name|title}}Base;
 
+// vim: backupcopy=yes

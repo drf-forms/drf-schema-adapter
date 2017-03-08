@@ -88,9 +88,7 @@ class Command(SerializerExporterWithFields, BaseCommand):
                     'hasMany': hasMany,
                     'target_app': target_app,
                     'api_base': settings.BACK_API_BASE,
-                    'pagination_container': 'result' if getattr(viewset, '.pagination_class', None) \
-                        is not None or getattr(django_settings, 'REST_FRAMEWORK', {}). \
-                        get('DEFAULT_PAGINATION_CLASS', None) is not None else None
+                    'pagination_container': 'results'
                 }
 
                 adapter.write_to_file(application_name, model_name, context, options['noinput'])

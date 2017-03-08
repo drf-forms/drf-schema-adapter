@@ -15,3 +15,4 @@ export class {{application_name|title}}{{model_name|title}}Store extends Store {
             
 export default new {{application_name|title}}{{model_name|title}}Store;
 
+// vim: backupcopy=yes

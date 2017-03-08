@@ -84,3 +84,5 @@ export default class Store {
     });
   }
 }
+
+// vim: backupcopy=yes

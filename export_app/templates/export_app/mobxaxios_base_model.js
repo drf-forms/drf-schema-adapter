@@ -33,3 +33,5 @@ class Model {
 }           
             
 export default Model;
+
+// vim: backupcopy=yes
