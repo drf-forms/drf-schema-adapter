@@ -181,6 +181,30 @@ into your frontend application in a file named `data/&lt;application_name&gt;-&l
 The created output will depend on the adapter you chose for `drf_auto_endpoint` using the
 [`DRF_AUTO_METADATA_ADAPTER`](../drf_auto_endpoint/metadata.md#adapters)
 
+### `MetadataES6Adapter`
+
+This adapter is very similar to the `MetadataAdapter` with the difference that it will export your
+metadata as ES6 modules rather than JSON files.
+
+The eported files will be exported to `data/&lt;application_name&gt;/&lt;model_name&gt;.js`.
+It will also create a `data/index.js` which exports a pojo which in turn imports each of the exported
+files as:
+```
+{
+   'application-name/model-name': {...metadata},
+   'application-name/other-model': {...metadata},
+}
+```
+The index file also exposes a `metadata` pojo which contains the APIRoot's metadata.
+
+Example usage:
+```
+import modelMetadata from 'data';
+import { metadata } from 'data';
+
+console.log(modelMetadata, metadata);
+```
+
 ### `MobxAxiosAdapter` (for use with React or standalone)
 
 Using the `MobxAxiosAdapter` will export the definition of the serializer linked to an endpoint to a

@@ -7,7 +7,7 @@ DEFAULT_SETTINGS = {
     'URL_NAME': 'djember_model',
     'FRONT_APPLICATION_NAME': 'appName',
     'FRONT_APPLICATION_PATH': '../front',
-    'BACK_API_BASE': '/api',
+    'BACK_API_BASE': '/api/v1',
     'URL_FORMAT': '{app}/{model}',
     'FIELD_TYPE_MAPPING': {},
     'DEFAULT_MAPPING': None,
