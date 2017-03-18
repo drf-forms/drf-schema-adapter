@@ -92,6 +92,7 @@ class EmberAdapter(BaseAdapter):
         'DateTimeField': 'nullable',
         'TimeField': 'nullable',
         'DurationField': 'nullable',
+        'UUIDField': 'nullable',
     }
     DEFAULT_MAPPING = 'string'
     requires_fields = True
@@ -160,7 +161,7 @@ class MetadataAdapter(BaseMetadataAdapter):
 
         target_dir, viewset = self._write_to_file(application_name, model_name, viewset)
         with open(os.path.join(target_dir, filename), 'w') as f:
-            self.get_json(viewset)
+            f.write(self.get_json(viewset))
 
 
 class MetadataES6Adapter(BaseMetadataAdapter):

@@ -11,9 +11,15 @@ from .app_settings import settings
 
 def reverse(*args, **kwargs):
     try:
+        exception = ModuleNotFoundError
+    except:
+        ## py 3.6+
+        exception = ImportError
+
+    try:
         from django.core.urlresolvers import reverse
         return reverse(*args, **kwargs)
-    except ModuleNotFoundError:
+    except exception:
         # Django 1.11+
         from django.urls.resolvers import get_resolver
         resolver = get_resolver()
@@ -53,8 +59,9 @@ def get_field_dict(field, serializer, translated_fields=None, fields_annotation=
         'type': settings.WIDGET_MAPPING[field_instance.__class__.__name__],
         'read_only': read_only,
         'ui': {
-            'label': name.title().replace('_', ' ') if name != '__str__' else \
-                serializer_instance.Meta.model.__name__,
+            'label': name.title().replace('_', ' ')
+            if name != '__str__'
+            else serializer_instance.Meta.model.__name__,
         },
         'validation': {
             'required': field_instance.required,
@@ -142,4 +149,3 @@ def get_languages():
         ]
     else:
         return None
-

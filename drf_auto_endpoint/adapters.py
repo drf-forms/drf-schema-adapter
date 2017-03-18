@@ -1,4 +1,4 @@
-from collections import namedtuple
+from collections import namedtuple, defaultdict, Mapping
 
 
 PROPERTY = 1
@@ -166,3 +166,173 @@ class EmberAdapter(BaseAdapter):
         func.action_kwargs['method'] = '_wizard'
 
         return func
+
+
+class ReactJsonSchemaAdapter(BaseAdapter):
+
+    metadata_info = [
+        MetaDataInfo('fields', GETTER, []),
+        MetaDataInfo('fieldsets', GETTER, []),
+    ]
+
+    _schema_type_mapping = {
+        'number': 'number',
+        'checkbox': 'boolean',
+    }
+
+    _ui_type_mapping = {
+        'email': 'email',
+        'url': 'uri',
+        'file': 'data-url',
+        'image': 'data-url',
+        'date': 'date',
+        'datetime': 'date-time',
+    }
+
+    _schema_type_default = 'string'
+    _ui_type_default = None
+
+    @classmethod
+    def create_type_dict_for(cls, dict_type):
+        rv = defaultdict(lambda: getattr(cls, '_{}_type_default'.format(dict_type)))
+        rv.update(getattr(cls, '_{}_type_mapping'.format(dict_type)))
+        return rv
+
+    @classmethod
+    def adapt_field(cls, field):
+        schema_type_mapping = cls.create_type_dict_for('schema')
+        ui_type_mapping = cls.create_type_dict_for('ui')
+
+        new_field = {
+            'required': field['validation'].get('required', False),
+            'key': field['key'],
+            'schema': {
+                'title': field['ui']['label'],
+                'type': schema_type_mapping[field['type']]
+            },
+            'ui': {},
+        }
+
+        widget = ui_type_mapping[field['type']]
+        if widget is not None:
+            new_field['ui']['ui:widget'] = widget
+
+        if 'choices' in field:
+            new_field['schema']['enum'] = [x[0] for x in field['choices']]
+            new_field['schema']['enumNames'] = [x[1] for x in field['choices']]
+
+        # if 'related_endpoint' in field:
+        #     new_field['extra']['related_model'] = field['related_endpoint'].replace('_', '-')
+
+        if 'placeholder' in field['ui']:
+            new_field['ui']['ui:placeholder'] = field['ui']['placeholder']
+
+        if 'help' in field['ui']:
+            new_field['schema']['description'] = field['ui']['help']
+
+        if 'default' in field:
+            new_field['schema']['default'] = field['default']
+
+        if 'read_only' in field and field['read_only']:
+            new_field['ui']['ui:readonly'] = field['read_only']
+
+        return new_field
+
+    def deep_update(self, orig, updater):
+        for k, v in updater.items():
+            if isinstance(v, Mapping):
+                rv = self.deep_update(orig.get(k, {}), v)
+                orig[k] = rv
+            else:
+                orig[k] = updater[k]
+        return orig
+
+    def update_field_by_key(self, fields, original):
+        rv = None
+        key = original.get('key', None)
+        if key is None:
+            return original
+
+        for field in fields:
+            if 'key' in field and field['key'] == key:
+                rv = field
+                break
+
+        if rv is not None:
+            rv = self.deep_update(rv, original)
+            return rv
+
+        return original
+
+    def map_fieldset_schema(self, fieldset, fields, title=None):
+        schema = {
+            'type': 'object',
+            'properties': {}
+        }
+
+        if title is not None:
+            schema['title'] = title
+
+        required = []
+
+        if 'title' in fieldset and fieldset['title'] is not None:
+            schema['title'] = fieldset['title']
+
+        for field in fieldset.get('fields', []):
+            field = self.update_field_by_key(fields, field)
+
+            if field['required']:
+                required.append(field['key'])
+
+            if field['schema']['type'] == 'object':
+                schema['properties'][field['key']] = self.map_fieldset_schema(field)
+            else:
+                schema['properties'][field['key']] = field['schema']
+
+        schema['required'] = required
+        return schema
+
+    def map_fieldset_ui(self, fieldset, fields):
+        ui = {}
+        order = []
+
+        for field in fieldset.get('fields', []):
+            field = self.update_field_by_key(fields, field)
+            order.append(field['key'])
+            ui[field['key']] = field['ui']
+
+            if field['schema']['type'] == 'object':
+                ui[field['key']].update(self.map_fieldset_ui(field))
+
+        ui['ui:order'] = order
+        return ui
+
+    def render(self, config):
+
+        config['fields'] = super(ReactJsonSchemaAdapter, self).render(config)
+        fieldsets = config.pop('fieldsets')
+
+        if len(fieldsets) == 1:
+            schema = self.map_fieldset_schema(fieldsets[0], config['fields'], fieldsets[0].get('title', None))
+            ui = self.map_fieldset_ui(fieldsets[0], config['fields'])
+        else:
+            schema = {
+                'type': 'object',
+                'properties': {},
+                'required': []
+            }
+            ui = {
+                'ui:order': []
+            }
+            for index, fieldset in enumerate(fieldsets):
+                schema['properties'][index] = self.map_fieldset_schema(fieldset, config['fields'],
+                                                                       fieldset.get('title', None))
+                if 'required' in fieldset and fieldset['required']:
+                    schema['requied'].append(index)
+                ui[index] = self.map_fieldset_ui(fieldset, config['fields'])
+                ui['ui:order'].append[index]
+
+        config['schema'] = schema
+        config['ui'] = ui
+
+        return config

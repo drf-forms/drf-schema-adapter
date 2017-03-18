@@ -3,9 +3,7 @@ import {{application_name|title}}{{model_name|title}} from '../models/{{applicat
           
 export class {{application_name|title}}{{model_name|title}}Store extends Store {
   endpoint = '{{endpoint}}';
-  {% if pagination_container %}
-    result = '{{pagination_container}}';
-  {% endif %}
+  result = 'results';
           
   transform(record) {
     return new {{application_name|title}}{{model_name|title}}(record);  

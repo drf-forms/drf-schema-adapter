@@ -3,17 +3,24 @@ import { observable } from 'mobx';
 
 export default class Store {
   @observable records = [];
+  @observable schema = {};
+  @observable ui = {}
 
   endpoint = '';
   result = null;
   searchParam = 'search';
+  lastFetch = null;
 
   transform(record) {
     return record;
   }
 
   get(id) {
-    return axios.get(`${this.endpoint}/${id}`);
+    return  new Promise((resolve, reject) => {
+      axios.get(`${this.endpoint}/${id}`).then((record) => {
+        resolve(this.transform(record));
+      }, reject)
+    });
   }
 
   save(record) {
@@ -50,7 +57,14 @@ export default class Store {
   }
 
   _remove(record) {
-    this.records.replace(this.records.filter(r => r !== record));
+    this.records.replace(this.records.filter((r)=> {
+      if (record.id !== r.id) {
+        return true;
+      } else if (!record.id) {
+        return record !== r;
+      }
+      return false;
+    }));
   }
 
   delete(record) {
@@ -65,8 +79,13 @@ export default class Store {
     }
   }
 
-  create() {
-    this.records.unshift(this.transform({}));
+  create(record) {
+    if (record == undefined) {
+      record = {}
+    }
+    record = this.transform(record)
+    this.records.push(record);
+    return record;
   }
 
   search(value) {
@@ -76,11 +95,18 @@ export default class Store {
   }
 
   fetchAll(params) {
-    axios.get(this.endpoint, {params}).then((records) => {
+    return axios.get(this.endpoint, {params}).then((records) => {
       if (this.result !== null) {
         records = records[this.result];
       }
       this.records.replace(records.map(this.transform));
+    });
+  }
+
+  fetchMeta() {
+    return axios.request({method: 'options', url: this.endpoint}).then((meta) => {
+      this.schema = meta.schema;
+      this.ui = meta.ui;
     });
   }
 }

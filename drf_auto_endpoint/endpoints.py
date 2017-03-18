@@ -1,11 +1,11 @@
 from django.utils.module_loading import import_string
 
-from rest_framework import serializers, viewsets, relations
+from rest_framework import viewsets
 
 from inflector import Inflector
 
 from .factories import serializer_factory, viewset_factory
-from .utils import get_validation_attrs, get_languages, get_field_dict, reverse
+from .utils import get_languages, get_field_dict, reverse
 from .app_settings import settings
 
 try:
@@ -15,7 +15,6 @@ except ImportError:
     class Translator(object):
         def get_registered_models(self, abstract=True):
             return []
-
 
     translator = Translator()
 
@@ -156,8 +155,8 @@ class Endpoint(object):
     def get_url(self):
 
         return '{}/{}'.format(
-            self.application_name.replace('_','-'),
-            self.model_name.replace('_','-')
+            self.application_name.replace('_', '-'),
+            self.model_name.replace('_', '-')
         )
 
     def _get_field_dict(self, field):
@@ -171,17 +170,14 @@ class Endpoint(object):
         ]
 
     def get_fieldsets(self):
-        from drf_auto_endpoint.app_settings import settings
-
         if self.fieldsets is not None:
             return [
                 {
                     'title': None,
                     'fields': [{
                         'name': field
-                    }
-                    if not isinstance(field, dict) else field
-                    for field in self.fieldsets ]
+                    } if not isinstance(field, dict) else field
+                        for field in self.fieldsets]
                 }
             ]
         return [
@@ -190,9 +186,9 @@ class Endpoint(object):
                 'fields': [{
                     'key': field
                 }
-                for field in self.get_fields_for_serializer()
-                if field != 'id' and field != '__str__' and \
-                    field not in self.translated_field_names and \
+                    for field in self.get_fields_for_serializer()
+                    if field != 'id' and field != '__str__' and
+                    field not in self.translated_field_names and
                     self._get_field_dict(field)['type'][:6] != 'tomany']
             }
         ]
@@ -281,7 +277,7 @@ class Endpoint(object):
         return self._default_language_field_names
 
     def get_custom_actions(self):
-        rv  = []
+        rv = []
         viewset = self.get_viewset()
 
         for action_name in dir(viewset):

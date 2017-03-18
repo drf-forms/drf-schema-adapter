@@ -88,7 +88,6 @@ class Command(SerializerExporterWithFields, BaseCommand):
                     'hasMany': hasMany,
                     'target_app': target_app,
                     'api_base': settings.BACK_API_BASE,
-                    'pagination_container': 'results'
                 }
 
                 adapter.write_to_file(application_name, model_name, context, options['noinput'])
