@@ -11,7 +11,7 @@ from export_app import settings
 class classproperty(object):
 
     def __init__(self, getter):
-        self.getter= getter
+        self.getter = getter
 
     def __get__(self, instance, owner):
         return self.getter(owner)
@@ -255,5 +255,48 @@ class MobxAxiosAdapter(BaseAdapter):
             (model_base_target_dir, '_base.js', self.base_model_template_name, True),
             (model_base_target_dir, filename, self.model_base_template_name, True),
             (model_target_dir, filename, self.model_template_name, False)
+        ]
+        self.write_files(context, files)
+
+
+class Angular2Adapter(BaseAdapter):
+
+    FIELD_TYPE_MAPPING = {
+        'BooleanField': 'boolean',
+        'NullBooleanField': 'boolean',
+        'IntegerField': 'number',
+        'FloatField': 'number',
+        'DecimalField': 'number',
+        'ListField': 'any',
+        'DictField': 'any',
+        'JSONField': 'any',
+        'PrimaryKeyRelatedField': 'belongsTo',
+        'ManyRelatedField': 'hasMany',
+    }
+    DEFAULT_MAPPING = 'string'
+    requires_fields = True
+
+    base_template_name = 'export_app/angular2_model_base.ts'
+    template_name = 'export_app/angular2_model.ts'
+    service_base_template_name = 'export_app/angular2_service_base.ts'
+    service_template_name = 'export_app/angular2_service.ts'
+
+    def write_to_file(self, application_name, model_name, context, force_overwrite=False):
+        file_model_name = model_name.replace('_', '-')
+        context['application_name'] = context['application_name'].replace('_', '-')
+        context['updir'] = context.get('updir', 1)
+        target_dir = os.path.join(django_settings.BASE_DIR, settings.FRONT_APPLICATION_PATH,
+                                  'app', 'models', application_name.replace('_', '-'))
+
+        base_filename = '{}_base.ts'.format(file_model_name)
+        filename = '{}.ts'.format(file_model_name)
+        service_base_filename = '{}_service_base.ts'.format(file_model_name)
+        service_filename = '{}_service.ts'.format(file_model_name)
+
+        files = [
+            (target_dir, base_filename, self.base_template_name, True),
+            (target_dir, service_base_filename, self.service_base_template_name, True),
+            (target_dir, filename, self.template_name, False if force_overwrite else 'confirm'),
+            (target_dir, service_filename, self.service_template_name, False if force_overwrite else 'confirm'),
         ]
         self.write_files(context, files)
