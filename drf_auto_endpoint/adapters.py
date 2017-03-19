@@ -46,27 +46,108 @@ def to_html_tag(widget_type):
 
 class AngularFormlyAdapter(BaseAdapter):
 
+    metadata_info = [
+        MetaDataInfo('fields', GETTER, []),
+        MetaDataInfo('fieldsets', GETTER, []),
+    ]
+
     @classmethod
     def adapt_field(self, field):
-        field["validation"].update({
-            "label": field["ui"]["label"],
-            "type": field["type"],
+        field['validation'].update({
+            'label': field['ui']['label'],
+            'type': field['type'],
         })
 
         new_field = {
-            "key": field["key"],
-            "read_only": field["read_only"],
-            "type": to_html_tag(field["type"]),
-            "templateOptions": field["validation"]
+            'key': field['key'],
+            'read_only': field['read_only'],
+            'type': to_html_tag(field['type']),
+            'templateOptions': field['validation']
         }
 
-        if "placeholder" in field["ui"]:
-            new_field["templateOptions"]["placeholder"] = field["ui"]["placeholder"]
+        if 'placeholder' in field['ui']:
+            new_field['templateOptions']['placeholder'] = field['ui']['placeholder']
 
-        if "default" in field:
-            new_field["defaultValue"] = field["default"]
+        if 'default' in field:
+            new_field['defaultValue'] = field['default']
+
+        if 'choices' in field:
+            new_field['templateOptions']['options'] = [{
+                'value': choice['value'],
+                'name': choice['label'],
+            } for choice in field['choices']]
 
         return new_field
+
+    def _get_multi_boolean_as_multicheckbox(self, options, fields_map):
+        rv = []
+
+        for option in options:
+            key = option
+            label = None
+            if isinstance(option, dict):
+                if 'key' not in option:
+                    continue
+                key = option['key']
+                if 'label' in option:
+                    label = option['label']
+
+            if key in fields_map and label is None:
+                label = fields_map[key].get('templateOptions', {}).get('label', None)
+
+            if label is None:
+                label = key
+
+            rv.append({'value': key, 'name': label})
+
+        return {'options': rv}
+
+    def _render_fieldset(self, fieldset, fields_map):
+        rv = []
+        for field in fieldset:
+            new_field = {}
+            if isinstance(field, dict):
+                computed_field = None
+                if 'key' in field and field['key'] in fields_map:
+                    computed_field = fields_map[field['key']]
+            else:
+                computed_field = fields_map.get(field, None)
+                if computed_field is None:
+                    continue
+
+            if computed_field is not None:
+                new_field = computed_field
+
+            if isinstance(field, dict):
+                field_type = field.get('type', None)
+                if field_type == 'fieldset':
+                    new_field['fieldGroup'] = self._render_fieldset(field.pop('fields', []), fields_map)
+                template_options = new_field.get('templateOptions', {})
+                template_options.update(field.get('templateOptions', {}))
+                if field_type == 'fieldset' and 'label' in field:
+                    template_options['label'] = field.pop('label')
+                new_field.update(field)
+                if field_type == 'multicheckbox' and field.get('key', None) not in fields_map:
+                    template_options.update(self._get_multi_boolean_as_multicheckbox(
+                        template_options['options'],
+                        fields_map
+                    ))
+                new_field['templateOptions'] = template_options
+                if field_type == 'fieldset':
+                    new_field.pop('type')
+
+            rv.append(new_field)
+
+        return rv
+
+    def render(self, config):
+        fields_map = {
+            field['key']: field
+            for field in super(AngularFormlyAdapter, self).render(config)
+        }
+
+        adapted = self._render_fieldset(config['fieldsets'], fields_map)
+        return adapted
 
 
 class EmberAdapter(BaseAdapter):
@@ -143,13 +224,17 @@ class EmberAdapter(BaseAdapter):
     def render(self, config):
 
         config['fields'] = super(EmberAdapter, self).render(config)
-        for i, fs in enumerate(config['fieldsets']):
-            for j, f in enumerate(fs['fields']):
-                new_field = f
-                if 'key' in f:
-                    new_field['name'] = new_field.pop('key')
-                fs['fields'][j] = new_field
-            config['fieldsets'][i] = fs
+        for i, f in enumerate(config['fieldsets']):
+            new_field = f
+            if 'key' in f:
+                new_field['name'] = new_field.pop('key')
+            config['fieldsets'][i] = new_field
+            config['fieldsets'] = [
+                {
+                    'title': None,
+                    'fields': config['fieldsets']
+                }
+            ]
 
         for i, need in enumerate(config.get('needs', [])):
             config['needs'][i] = {

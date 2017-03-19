@@ -171,27 +171,15 @@ class Endpoint(object):
 
     def get_fieldsets(self):
         if self.fieldsets is not None:
-            return [
-                {
-                    'title': None,
-                    'fields': [{
-                        'name': field
-                    } if not isinstance(field, dict) else field
-                        for field in self.fieldsets]
-                }
-            ]
-        return [
-            {
-                'title': None,
-                'fields': [{
-                    'key': field
-                }
-                    for field in self.get_fields_for_serializer()
-                    if field != 'id' and field != '__str__' and
-                    field not in self.translated_field_names and
-                    self._get_field_dict(field)['type'][:6] != 'tomany']
-            }
-        ]
+            return [{'key': field} if not isinstance(field, dict)
+                    else field
+                    for field in self.fieldsets]
+
+        return [{'key': field}
+                for field in self.get_fields_for_serializer()
+                if field != 'id' and field != '__str__' and
+                field not in self.translated_field_names and
+                self._get_field_dict(field)['type'][:6] != 'tomany']
 
     def get_list_display(self):
         if self.list_display is None:
