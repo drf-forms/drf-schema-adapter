@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from collections import namedtuple, defaultdict, Mapping
 
 
@@ -72,35 +74,9 @@ class AngularFormlyAdapter(BaseAdapter):
             new_field['defaultValue'] = field['default']
 
         if 'choices' in field:
-            new_field['templateOptions']['options'] = [{
-                'value': choice['value'],
-                'name': choice['label'],
-            } for choice in field['choices']]
+            new_field['templateOptions']['options'] = field['choices']
 
         return new_field
-
-    def _get_multi_boolean_as_multicheckbox(self, options, fields_map):
-        rv = []
-
-        for option in options:
-            key = option
-            label = None
-            if isinstance(option, dict):
-                if 'key' not in option:
-                    continue
-                key = option['key']
-                if 'label' in option:
-                    label = option['label']
-
-            if key in fields_map and label is None:
-                label = fields_map[key].get('templateOptions', {}).get('label', None)
-
-            if label is None:
-                label = key
-
-            rv.append({'value': key, 'name': label})
-
-        return {'options': rv}
 
     def _render_fieldset(self, fieldset, fields_map):
         rv = []
@@ -125,13 +101,8 @@ class AngularFormlyAdapter(BaseAdapter):
                 template_options = new_field.get('templateOptions', {})
                 template_options.update(field.get('templateOptions', {}))
                 if field_type == 'fieldset' and 'label' in field:
-                    template_options['label'] = field.pop('label')
+                    template_options['title'] = field.pop('label')
                 new_field.update(field)
-                if field_type == 'multicheckbox' and field.get('key', None) not in fields_map:
-                    template_options.update(self._get_multi_boolean_as_multicheckbox(
-                        template_options['options'],
-                        fields_map
-                    ))
                 new_field['templateOptions'] = template_options
                 if field_type == 'fieldset':
                     new_field.pop('type')
@@ -146,7 +117,7 @@ class AngularFormlyAdapter(BaseAdapter):
             for field in super(AngularFormlyAdapter, self).render(config)
         }
 
-        adapted = self._render_fieldset(config['fieldsets'], fields_map)
+        adapted = self._render_fieldset(deepcopy(config['fieldsets']), fields_map)
         return adapted
 
 
@@ -221,20 +192,20 @@ class EmberAdapter(BaseAdapter):
 
         return new_field
 
+    def _replace_key_with_name(self, fields):
+        for i, field in enumerate(fields):
+            new_field = field
+            if 'key' in new_field:
+                new_field['name'] = new_field.pop('key')
+            if 'fields' in new_field:
+                new_field['fields'] = self._replace_key_with_name(new_field['fields'])
+            fields[i] = new_field
+        return fields
+
     def render(self, config):
 
         config['fields'] = super(EmberAdapter, self).render(config)
-        for i, f in enumerate(config['fieldsets']):
-            new_field = f
-            if 'key' in f:
-                new_field['name'] = new_field.pop('key')
-            config['fieldsets'][i] = new_field
-            config['fieldsets'] = [
-                {
-                    'title': None,
-                    'fields': config['fieldsets']
-                }
-            ]
+        config['fieldsets'] = [{'title': None, 'fields': self._replace_key_with_name(config['fieldsets'])}]
 
         for i, need in enumerate(config.get('needs', [])):
             config['needs'][i] = {
@@ -397,25 +368,8 @@ class ReactJsonSchemaAdapter(BaseAdapter):
         config['fields'] = super(ReactJsonSchemaAdapter, self).render(config)
         fieldsets = config.pop('fieldsets')
 
-        if len(fieldsets) == 1:
-            schema = self.map_fieldset_schema(fieldsets[0], config['fields'], fieldsets[0].get('title', None))
-            ui = self.map_fieldset_ui(fieldsets[0], config['fields'])
-        else:
-            schema = {
-                'type': 'object',
-                'properties': {},
-                'required': []
-            }
-            ui = {
-                'ui:order': []
-            }
-            for index, fieldset in enumerate(fieldsets):
-                schema['properties'][index] = self.map_fieldset_schema(fieldset, config['fields'],
-                                                                       fieldset.get('title', None))
-                if 'required' in fieldset and fieldset['required']:
-                    schema['requied'].append(index)
-                ui[index] = self.map_fieldset_ui(fieldset, config['fields'])
-                ui['ui:order'].append[index]
+        schema = self.map_fieldset_schema({'fields': fieldsets}, config['fields'], fieldsets[0].get('title', None))
+        ui = self.map_fieldset_ui({'fields': fieldsets}, config['fields'])
 
         config['schema'] = schema
         config['ui'] = ui

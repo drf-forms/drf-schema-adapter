@@ -51,6 +51,16 @@ export default class {{application_name|title}}{{model_name|title}}ServiceBase {
       .delete(`${this.baseUrl}${record.id}/`, {headers: this.getHeaders()});
   }
 
+  metadata() : Observable<any> {
+    const data$ = this.http
+    .options(this.baseUrl, {headers: this.getHeaders()})
+    .map((response) => {
+      return response.json();
+    })
+    .catch(handleError);
+    return data$;
+  }
+
   private getHeaders() {
     const headers = new Headers();
     headers.append('Accept', 'application/json');
