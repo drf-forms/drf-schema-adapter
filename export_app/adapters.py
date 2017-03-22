@@ -288,10 +288,10 @@ class Angular2Adapter(BaseAdapter):
         target_dir = os.path.join(django_settings.BASE_DIR, settings.FRONT_APPLICATION_PATH,
                                   'app', 'models', application_name.replace('_', '-'))
 
-        base_filename = '{}_base.ts'.format(file_model_name)
+        base_filename = '{}.base.ts'.format(file_model_name)
         filename = '{}.ts'.format(file_model_name)
-        service_base_filename = '{}_service_base.ts'.format(file_model_name)
-        service_filename = '{}_service.ts'.format(file_model_name)
+        service_base_filename = '{}.service.base.ts'.format(file_model_name)
+        service_filename = '{}.service.ts'.format(file_model_name)
 
         files = [
             (target_dir, base_filename, self.base_template_name, True),
