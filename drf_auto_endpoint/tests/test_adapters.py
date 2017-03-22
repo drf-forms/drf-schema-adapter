@@ -28,10 +28,7 @@ class AdapterTestCase(TestCase):
                 "extra": {}
             }],
             'fieldsets': [{
-                'title': None,
-                'fields': [{
-                    'key': '__str__'
-                }]
+                'key': '__str__'
             }]
         }
 
@@ -42,7 +39,9 @@ class AdapterTestCase(TestCase):
 
     def test_angular_formly_adapter(self):
         adapter = AngularFormlyAdapter()
-        output = adapter(self._input)
+        angular_input = dict(**self._input)
+        angular_input['fieldsets'] = ['age']
+        output = adapter(angular_input)
 
         expected = [{
             "key": "age",
