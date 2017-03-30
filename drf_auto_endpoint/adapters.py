@@ -165,6 +165,8 @@ class EmberAdapter(BaseAdapter):
 
     @classmethod
     def adapt_field(cls, field):
+        TEXT_FIELDS = ['text', 'textarea', 'markdown']
+
         new_field = {
             'label': field['ui']['label'],
             'readonly': field['read_only'],
@@ -173,6 +175,7 @@ class EmberAdapter(BaseAdapter):
             'widget': field['type'],
             'required': field['validation']['required'],
             'translated': field['translated'],
+            'validations': {},
         }
 
         if 'choices' in field:
@@ -189,6 +192,26 @@ class EmberAdapter(BaseAdapter):
 
         if 'default' in field:
             new_field['extra']['default'] = field['default']
+
+        # validators
+        if field['validation'].get('required', False):
+            new_field['validations']['presence'] = True
+        val_max = field['validation'].get('max', None)
+        val_min = field['validation'].get('min', None)
+        if val_max is not None or val_min is not None:
+            validator = {}
+            if field['type'] in TEXT_FIELDS:
+                if val_max is not None:
+                    validator['maximum'] = val_max
+                if val_min is not None:
+                    validator['minimum'] = val_min
+                new_field['validations']['length'] = validator
+            elif field['type'] == 'number':
+                if val_max is not None:
+                    validator['lessThanOrEqualTo'] = val_max
+                if val_min is not None:
+                    validator['greaterThanOrEqualTo'] = val_min
+                new_field['validations']['numericality'] = validator
 
         return new_field
 
