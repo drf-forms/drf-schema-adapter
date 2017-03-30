@@ -77,6 +77,12 @@ class AdapterTestCase(TestCase):
                 "widget": "number",
                 "required": False,
                 "translated": False,
+                'validations': {
+                    'numericality': {
+                        'greaterThanOrEqualTo': 10,
+                        'lessThanOrEqualTo': 100
+                    }
+                },
             }],
             "fieldsets": [{
                 "title": None,
