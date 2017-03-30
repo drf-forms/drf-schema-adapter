@@ -159,8 +159,7 @@ class MetadataAdapter(BaseMetadataAdapter):
 
         filename = '{}-{}.json'.format(application_name, model_name)
 
-        target_dir, viewset = self._write_to_file(application_name, model_name, viewset)
-        with open(os.path.join(target_dir, filename), 'w') as f:
+        with open(os.path.join(target_dir, filename), 'wb') as f:
             f.write(self.get_json(viewset))
 
 
