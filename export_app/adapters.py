@@ -7,6 +7,12 @@ from django.template.loader import render_to_string
 from export_app import settings
 
 
+try:
+    input = raw_input
+except NameError:
+    pass
+
+
 # from http://stackoverflow.com/questions/3203286/how-to-create-a-read-only-class-property-in-python#3203659
 class classproperty(object):
 
