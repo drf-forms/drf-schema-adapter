@@ -178,7 +178,7 @@ This is the default adapter.
 
 ### `AngularFormlyAdapter`
 
-The `AngularFormlyAdapter` is destined to be used with [angular-formly](http://angular-formly.com/).
+The `AngularFormlyAdapter` is destined to be used with [angular-formly](https://ng2.angular-formly.com/).
 To use this adapter, you'll have to enable it in your settings first.
 
 ```
