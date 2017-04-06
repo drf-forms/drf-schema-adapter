@@ -247,6 +247,121 @@ This adapter will have a slightly different output:
 ]
 ```
 
+### `ReactJsonSchemaAdapter`
+
+The `ReactJsonSchemaAdapter` is destined to be used with [react-jsonschema-form](https://github.com/mozilla-services/react-jsonschema-form).
+To use this adapter, you'll have to enable it in your settings first.
+
+```
+## settings.py
+
+...
+DRF_AUTO_METADATA_ADAPTER = 'drf_auto_endpoint.adapters.ReactJsonSchemaAdapter'
+```
+
+This adapter will have an output similar to the base adapter with extra information:
+
+```
+{
+  "fields": [
+  {
+            "required": false,
+            "key": "id",
+            "schema": {
+                "title": "Id",
+                "type": "number"
+            
+            },
+            "ui": {
+                "ui:readonly": true
+            
+            }
+        
+  },
+  {
+            "required": true,
+            "key": "lst",
+            "schema": {
+                "title": "Lst",
+                "type": "string"
+            
+            },
+            "ui": {}
+        
+  },
+  {
+            "required": true,
+            "key": "description",
+            "schema": {
+                "title": "Description",
+                "type": "string"
+            
+            },
+            "ui": {
+                "ui:placeholder": "Add a new task"
+            
+            }
+        
+  },
+  {
+            "required": false,
+            "key": "done",
+            "schema": {
+                "title": "Done",
+                "type": "boolean",
+                "default": false
+            
+            },
+            "ui": {}
+        
+  },
+  {
+            "required": false,
+            "key": "__str__",
+            "schema": {
+                "title": "Task",
+                "type": "string"
+            
+            },
+            "ui": {
+                "ui:readonly": true
+            
+            }
+        
+  }
+    
+  ],
+  "schema": {
+        "type": "object",
+        "properties": {
+          "description": {
+                "title": "Description",
+                "type": "string"
+            
+          }
+        
+        },
+        "required": [
+            "description"
+        
+        ]
+    
+  },
+  "ui": {
+    "description": {
+            "ui:placeholder": "Add a new task"
+        
+    },
+    "ui:order": [
+            "description"
+        
+    ]
+    
+  }
+
+}
+```
+
 ### EmberAdapter
 
 The `EmberAdapter` was built to use with
