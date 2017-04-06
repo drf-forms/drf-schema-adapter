@@ -247,6 +247,24 @@ This adapter will have a slightly different output:
 ]
 ```
 
+### `ReactJsonSchemaAdapter`
+
+The `ReactJsonSchemaAdapter` is destined to be used with [react-jsonschema-form](https://github.com/mozilla-services/react-jsonschema-form).
+To use this adapter, you'll have to enable it in your settings first.
+
+```
+## settings.py
+
+...
+DRF_AUTO_METADATA_ADAPTER = 'drf_auto_endpoint.adapters.ReactJsonSchemaAdapter'
+```
+
+This adapter will have an output similar to the base adapter with extra information:
+
+```
+
+```
+
 ### EmberAdapter
 
 The `EmberAdapter` was built to use with
