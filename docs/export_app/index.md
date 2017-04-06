@@ -171,7 +171,9 @@ Using the `AngularAdapter` will export an Angular1 resource definition file into
 
 ### `Angular2Adapter`
 
-*coming soon*
+Using the `Angular2Adapter` will export an Angular2+ typescript model class as well as a service in
+`app/models/&lt;application_name&gt/`. DRF-schema adapter will also create base files with code that
+will be overwritten with each export.
 
 ### `MetadataAdapter`
 
