@@ -12,7 +12,7 @@ either register them directly on the `router` or use the `@register` decorator.
 ```
 # my_app/endpoints.py
 from drf_auto_endpoint.endpoints import Endpoint
-from drf_auto_endpoint import register, router
+from drf_auto_endpoint.router import register, router
 from .models import MyModel, OtherModel
 
 @register
