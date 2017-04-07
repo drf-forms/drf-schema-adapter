@@ -24,8 +24,9 @@ class BaseSerializerExporter(object):
             return self.router._endpoints[basename]
         return None
 
-    def get_viewset_for_basename(self, basename, with_endpoint=False):
-        basename = basename.replace('_', '-')
+    def get_viewset_for_basename(self, basename, with_endpoint=False, dasherize=True):
+        if dasherize:
+            basename = basename.replace('_', '-')
         viewset = None
         endpoint = self.get_endpoint_for_basename(basename)
         if endpoint is not None:

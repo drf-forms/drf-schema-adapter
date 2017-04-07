@@ -30,6 +30,7 @@ class BaseAdapter(object):
 
     requires_fields = False
     works_with = 'serializer'
+    dasherize = False
 
     @classproperty
     def field_type_mapping(cls):
@@ -102,6 +103,7 @@ class EmberAdapter(BaseAdapter):
     }
     DEFAULT_MAPPING = 'string'
     requires_fields = True
+    dasherize = True
 
     base_template_name = 'export_app/ember_model_base.js'
     template_name = 'export_app/ember_model.js'
@@ -287,11 +289,11 @@ class Angular2Adapter(BaseAdapter):
     service_template_name = 'export_app/angular2_service.ts'
 
     def write_to_file(self, application_name, model_name, context, force_overwrite=False):
-        file_model_name = model_name.replace('_', '-')
-        context['application_name'] = context['application_name'].replace('_', '-')
+        file_model_name = model_name
+        context['application_name'] = context['application_name']
         context['updir'] = context.get('updir', 1)
         target_dir = os.path.join(django_settings.BASE_DIR, settings.FRONT_APPLICATION_PATH,
-                                  'app', 'models', application_name.replace('_', '-'))
+                                  'app', 'models', application_name)
 
         base_filename = '{}.base.ts'.format(file_model_name)
         filename = '{}.ts'.format(file_model_name)
