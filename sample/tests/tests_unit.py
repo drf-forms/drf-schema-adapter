@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from rest_framework.permissions import AllowAny
 from rest_framework import filters, pagination
@@ -253,5 +253,13 @@ class UtilsTestCase(TestCase):
                                  input_args
                              ))
 
-    def test_get_languages(self):
-        pass
+    @override_settings(USE_I18N=False)
+    def test_get_languages_no_i18n(self):
+        languages = utils.get_languages()
+        self.assertEqual(languages, None)
+
+    @override_settings(USE_I18N=True, LANGUAGES=(('fr', 'french'), ('en', 'english')))
+    def test_get_languages_i18n(self):
+        languages = utils.get_languages()
+        self.assertEqual(len(languages), 2)
+        self.assertEqual(languages, ['fr', 'en'])
