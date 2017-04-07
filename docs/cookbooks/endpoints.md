@@ -16,7 +16,7 @@ your computer if you haven't already done so.
 
 `$ sudo pip install cookiecutter`
 
-Once cookiecutter is install you can go forward and bootstrap your new project:
+Once cookiecutter is installed you can go forward and bootstrap your new project:
 
 ```
 $ cookiecutter https://bitbucket.org/levit_scs/cc_project_app_drf.git 

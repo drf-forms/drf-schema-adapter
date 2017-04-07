@@ -9,5 +9,6 @@ pages:
   - 'Export-app': export_app/index.md
   - 'Cookbooks':
     - 'Creating endpoints from models': cookbooks/endpoints.md
+    - 'Using drf-schema-adapter with Ember.js': cookbooks/ember.md
   - License: LICENSE.md
   - 'Code of conduct': COC.md
