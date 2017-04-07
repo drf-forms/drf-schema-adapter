@@ -58,6 +58,7 @@ class AutoMetadataMixin(object):
             endpoint = view.endpoint
         else:
             if hasattr(view.serializer_class.Meta, 'model'):
+                from .endpoints import Endpoint
                 endpoint = Endpoint(view.serializer_class.Meta.model, viewset=view)
 
         adapter = import_string(settings.METADATA_ADAPTER)()

@@ -47,7 +47,10 @@ def get_field_dict(field, serializer, translated_fields=None, fields_annotation=
 
     serializer_instance = serializer()
     name = field['name'] if isinstance(field, dict) else field
-    field_instance = serializer_instance.fields[name]
+    try:
+        field_instance = serializer_instance.fields[name]
+    except KeyError:
+        return {'key': name}
     read_only = name == '__str__'
     if not read_only and field_instance.read_only:
         if not isinstance(field_instance, serializers.ManyRelatedField):

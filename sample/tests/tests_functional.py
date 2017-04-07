@@ -1,4 +1,5 @@
-from django.test import override_settings
+from django.test import override_settings, TestCase
+from django.core.management import call_command
 
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -41,6 +42,33 @@ class ItRendersAPITest(APITestCase):
     @override_settings(DRF_AUTO_METADATA_ADAPTER='drf_auto_endpoint.adapters.BaseAdapter')
     def test_base_adapter(self):
         self._do_test()
+
+
+class ItExportsTest(TestCase):
+
+    def _do_test(self):
+        call_command('export', all=True, noinput=True)
+
+    @override_settings(EXPORTER_ADAPTER='export_app.adapters.EmberAdapter')
+    def test_ember_export(self):
+        self._do_test()
+
+    @override_settings(EXPORTER_ADAPTER='export_app.adapters.Angular2Adapter')
+    def test_angular2_export(self):
+        self._do_test()
+
+    @override_settings(EXPORTER_ADAPTER='export_app.adapters.MetadataAdapter')
+    def test_metadata_export(self):
+        self._do_test()
+
+    @override_settings(EXPORTER_ADAPTER='export_app.adapters.MetadataES6Adapter')
+    def test_metadata_es6_export(self):
+        self._do_test()
+
+    @override_settings(EXPORTER_ADAPTER='export_app.adapters.MobxAxiosAdapter')
+    def test_mobx_axios_export(self):
+        self._do_test()
+
 
 class CategoryAPITest(EndpointAPITestCase, APITestCase):
 
