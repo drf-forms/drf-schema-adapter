@@ -2,6 +2,7 @@ from django.test import TestCase
 
 from rest_framework.permissions import AllowAny
 from rest_framework import filters, pagination
+from rest_framework.serializers import CharField, IntegerField
 
 from ..models import Product, Category, PRODUCT_TYPES
 
@@ -9,6 +10,8 @@ from .data import DummyProductSerializer, DummyProductViewSet
 
 from drf_auto_endpoint.endpoints import Endpoint
 from drf_auto_endpoint.router import router
+from drf_auto_endpoint import utils
+from drf_auto_endpoint.app_settings import settings
 
 
 class EndpointTestCase(TestCase):
@@ -176,3 +179,79 @@ class RouterTestCase(TestCase):
         router.register(Product, url='bogus')
         endpoint = router.get_endpoint('bogus')
         self.assertTrue(isinstance(endpoint, Endpoint))
+
+
+class UtilsTestCase(TestCase):
+
+    def test_reverse(self):
+        utils.reverse('sample/products-list')
+        self.assertTrue(True)
+
+    def test_validation_attrs(self):
+        data = (
+            (CharField(), {}),
+            (IntegerField, {}),
+            (CharField(min_length=3), {'min': 3}),
+            (CharField(max_length=10), {'max': 10}),
+            (CharField(min_length=3, max_length=10), {'min': 3, 'max': 10}),
+            (IntegerField(min_value=0), {'min': 0}),
+            (IntegerField(max_value=100), {'max': 100}),
+            (IntegerField(min_value=0, max_value=100), {'min': 0, 'max': 100}),
+        )
+
+        for input_field, expected in data:
+            result = utils.get_validation_attrs(input_field)
+            self.assertEqual(result, expected,
+                             'got {} while expecting {} when comparing validation attrs for {}'.format(
+                                 result,
+                                 expected,
+                                 input_field
+                             ))
+
+    def test_action_kwargs(self):
+        def test_func():
+            pass
+
+        custom_btn = 'custom_btn'
+        custom_icon = 'custom_icon'
+        custom_text = 'custom'
+
+        data = (
+            ((None, None, None, test_func, {}), {
+                'icon_class': settings.ACTION_ICON_CLASS,
+                'btn_class': settings.ACTION_BTN_CLASS,
+                'text': 'Test_func',
+            }),
+            ((custom_icon, None, None, test_func, {}), {
+                'icon_class': custom_icon,
+                'btn_class': settings.ACTION_BTN_CLASS,
+                'text': 'Test_func',
+            }),
+            ((None, custom_btn, None, test_func, {}), {
+                'icon_class': settings.ACTION_ICON_CLASS,
+                'btn_class': custom_btn,
+                'text': 'Test_func',
+            }),
+            ((None, None, custom_text, test_func, {}), {
+                'icon_class': settings.ACTION_ICON_CLASS,
+                'btn_class': settings.ACTION_BTN_CLASS,
+                'text': custom_text,
+            }),
+            ((custom_icon, custom_btn, custom_text, test_func, {}), {
+                'icon_class': custom_icon,
+                'btn_class': custom_btn,
+                'text': custom_text,
+            }),
+        )
+
+        for input_args, expected_kwargs in data:
+            result = utils.action_kwargs(*input_args)
+            self.assertEqual(result, expected_kwargs,
+                             'got {} while expecting {} when getting action_kwargs for {}'.format(
+                                 result,
+                                 expected_kwargs,
+                                 input_args
+                             ))
+
+    def test_get_languages(self):
+        pass

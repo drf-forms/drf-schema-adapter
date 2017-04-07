@@ -18,12 +18,11 @@ def reverse(*args, **kwargs):
 
     try:
         from django.core.urlresolvers import reverse
-        return reverse(*args, **kwargs)
     except exception:
         # Django 1.11+
-        from django.urls.resolvers import get_resolver
-        resolver = get_resolver()
-        return resolver.reverse(*args, **kwargs)
+        from django.urls import reverse
+
+    return reverse(*args, **kwargs)
 
 
 def get_validation_attrs(instance_field):
@@ -36,7 +35,7 @@ def get_validation_attrs(instance_field):
         'max_value': 'max'
     }
     for attr_name, validation_name in attrs_to_validation.items():
-        if getattr(instance_field, attr_name, None):
+        if getattr(instance_field, attr_name, None) is not None:
             rv[validation_name] = getattr(instance_field, attr_name)
 
     return rv
