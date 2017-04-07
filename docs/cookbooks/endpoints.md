@@ -19,7 +19,7 @@ your computer if you haven't already done so.
 Once cookiecutter is install you can go forward and bootstrap your new project:
 
 ```
-$ cookiecutter cc_project_app_drf 
+$ cookiecutter https://bitbucket.org/levit_scs/cc_project_app_drf.git 
 project_name [Project name]: Simple test
 repo_name [simple_test]: 
 author [Your Name]: Emma
@@ -78,10 +78,14 @@ After the substitution, the file should look like this:
 ## simple_test/api_urls.py
 
 from django.conf.urls import include, url
+# from rest_framework import routers
 from drf_auto_endpoint.router import router
 
 from .views import UserViewSet
 
+# router = routers.DefaultRouter()
+
+#router.register(r'users', UserViewSet)
 router.registerViewSet(r'users', UserViewSet)
 
 urlpatterns = [
@@ -160,7 +164,9 @@ Once this is done and you have reloaded
 [http://localhost:8000/api/v1/](http://localhost:8000/api/v1/), you'll notice
 that we now have two new endpoints available, one for each of our models.
 
-## Customizing Endpoints
+At this point, you should probably create a couple categories and products
+from the DRF browable interface in order to be able to play with the interface
+later on. 
 
 This is great for prototyping but in real life our endpoints are rarely that
 simple.
@@ -198,6 +204,8 @@ order to customize it.
 For a full list of available parameters/attributes, please see
 [the endpoint attributes section](../drf_auto_endpoint/endpoint.md#atrributes).
 
+## Customizing Endpoints
+
 Let's implement the changes we mentioned above. As you'll notice, most
 attributes are similar to attributes you would declare on a DRF `ViewSet`.
 
@@ -226,3 +234,144 @@ class CategoryEndpoint(Endpoint):
     model = Category
     read_only = True
 ```
+
+## Custom viewset
+
+A common usecase when building an API is to have to slightly customize
+`ViewSet`'s. An example of this is when you want the details view to perform a
+slightly different operation than the list view like adding `1` to a counter.
+
+Let's do that with our example app.
+
+First we'll add a view counter to our Product model.
+
+```
+## catalog/models.py
+
+...
+class Product(models.Model):
+    ...
+    views = models.PositiveIntegerField(default=0)
+```
+
+Then create and run the migrations.
+
+```
+$ ./manage.py makemigrations
+$ ./manage.py migrate
+```
+
+You can notice that our new field is already available on the products endpoint
+without us having to do anything (after refreshing
+[http://localhost:8000/api/v1/catalog/products/](http://localhost:8000/api/v1/catalog/products/)
+).
+
+Now let's create a custom ViewSet.
+
+```
+## catalog/endpoints.py
+
+from rest_framework import viewsets
+
+from drf_auto_endpoint.endpoints import Endpoint
+from drf_auto_endpoint.router import register
+
+from .models import Category, Product
+
+
+class ProductViewSet(viewsets.ReadOnlyModelViewSet):
+
+    def retrieve(self, request, *args, **kwargs):
+        obj = self.get_object()
+        obj.views += 1
+        obj.save()
+        return super(ProductViewSet, self).retrieve(request, *args, **kwargs)
+
+@register
+class ProductEndpoint(Endpoint):
+
+    model = Product
+    read_only = True
+    search_fields = ('name', )
+    filter_fields = ('category_id', )
+    ordering_fields = ('price', 'name', )
+
+    base_viewset = ProductViewSet
+
+...
+```
+
+As you might have noticed, we still don't have to specify any `serializer_class`
+or `queryset` parameter when creating the ViewSet, those will be added for us
+by drf-schema-adapter.
+
+If you have already created some products, go to
+[http://localhost:8000/api/v1/catalog/products/1/](http://localhost:8000/api/v1/catalog/products/1/)
+and refresh it a few times to see the counter go up. Of course, this is a naive
+implementation and a real-world scenario would be slightly more complex.
+
+## Customizing serializers
+
+Now, intead of referencing a product's category by id like it is right now,
+let's say we want to embed the category information in the product records.
+For this we will need a custom serializer.
+Let's build by only specifying the fields that should be different from the
+default serialiazer.
+
+```
+## catalog/endpoints.py
+
+from rest_framework import viewsets, serializers
+
+from drf_auto_endpoint.endpoints import Endpoint
+from drf_auto_endpoint.router import register
+
+from .models import Category, Product
+
+
+@register
+class CategoryEndpoint(Endpoint):
+
+    model = Category
+    read_only = True
+
+
+class ProductViewSet(viewsets.ReadOnlyModelViewSet):
+
+    def retrieve(self, request, *args, **kwargs):
+        obj = self.get_object()
+        obj.views += 1
+        obj.save()
+        return super(ProductViewSet, self).retrieve(request, *args, **kwargs)
+
+
+class SimpleCategorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Category
+        fields = (
+            'name',
+        )
+
+
+class ProductSerializer(serializers.ModelSerializer):
+
+    category = SimpleCategorySerializer()
+
+
+@register
+class ProductEndpoint(Endpoint):
+
+    model = Product
+    read_only = True
+    search_fields = ('name', )
+    filter_fields = ('category_id', )
+    ordering_fields = ('price', 'name', )
+
+    base_viewset = ProductViewSet
+    base_serializer = ProductSerializer
+```
+
+As you can see, again here, we only had to define whatever was not standard in
+our serializer, we didn't have to declare a `Meta` class as drf-schema-adapter
+does this for us.
