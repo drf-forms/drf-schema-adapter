@@ -54,7 +54,8 @@ class Command(SerializerExporterWithFields, BaseCommand):
 
                     viewset = BogusViewSet()
                 if adapter.works_with in ['viewset', 'both']:
-                    viewset, model_name, application_name = self.get_viewset_for_basename(endpoint)
+                    viewset, model_name, application_name = self.get_viewset_for_basename(endpoint,
+                                                                                          dasherize=adapter.dasherize)
             except ModelNotFoundException as e:
                 raise CommandError('No viewset found for {}'.format(e.model))
 
