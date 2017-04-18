@@ -4,7 +4,6 @@ from setuptools import setup
 try:
     import pypandoc
 
-
     README = pypandoc.convert_file('README.md', 'rst')
 except ImportError:
     with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
@@ -16,7 +15,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='drf-schema-adapter',
-    version='0.9.24',
+    version='0.9.25',
     packages=['drf_auto_endpoint', 'export_app', 'export_app.management',
               'export_app.management.commands'],
     include_package_data=True,
