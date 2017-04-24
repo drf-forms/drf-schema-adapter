@@ -32,6 +32,14 @@ class BaseAdapter(object):
     works_with = 'serializer'
     dasherize = False
 
+    def __init__(self):
+        assert not self.requires_fields or self.works_with != 'viewset', """
+            Field information is provided by a serializer. Your adapter requires field information
+            (requires_fields = True) and therefore also needs to "works_with" serializer.
+            If you also require information from the viewset, please update "works_with" to "both"
+            otherwise use "works_with = 'serializer'"
+        """
+
     @classproperty
     def field_type_mapping(cls):
         default = cls.FIELD_TYPE_MAPPING
