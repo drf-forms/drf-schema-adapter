@@ -56,8 +56,8 @@ class WizardModelView(BaseModelView):
         context['application_name'] = 'wizard/{}'.format(base_name.replace('_', '-'))
         context['model_name'] = method_name.replace('_', '-')
 
-        viewset, model_name, application_name = self.get_viewset_for_basename(base_name,
-                                                                              dasherize=adapter.dasherize)
+        viewset, model_name, application_name = \
+            self.get_viewset_for_basename(base_name, dasherize=self.adapter_class.dasherize)
         serializer = getattr(viewset, method_name).serializer
         serializer_instance = serializer()
 
