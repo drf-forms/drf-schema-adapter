@@ -63,14 +63,15 @@ def serializer_factory(endpoint):
     }
 
     for meta_field in meta_attrs['fields']:
-        try:
-            model_field = endpoint.model._meta.get_field(meta_field)
-            if isinstance(model_field, OneToOneRel):
-                cls_attrs[meta_field] = serializers.PrimaryKeyRelatedField(read_only=True)
-            elif isinstance(model_field, ManyToOneRel):
-                cls_attrs[meta_field] = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-        except FieldDoesNotExist:
-            cls_attrs[meta_field] = serializers.ReadOnlyField()
+        if meta_field not in endpoint.base_serializer._declared_fields:
+            try:
+                model_field = endpoint.model._meta.get_field(meta_field)
+                if isinstance(model_field, OneToOneRel):
+                    cls_attrs[meta_field] = serializers.PrimaryKeyRelatedField(read_only=True)
+                elif isinstance(model_field, ManyToOneRel):
+                    cls_attrs[meta_field] = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+            except FieldDoesNotExist:
+                cls_attrs[meta_field] = serializers.ReadOnlyField()
 
     return type(cls_name, (NullToDefaultMixin, endpoint.base_serializer, ), cls_attrs)
 
