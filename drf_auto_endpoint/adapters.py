@@ -168,13 +168,13 @@ class EmberAdapter(BaseAdapter):
         TEXT_FIELDS = ['text', 'textarea', 'markdown']
 
         new_field = {
-            'label': field['ui']['label'],
-            'readonly': field['read_only'],
+            'label': field.get('ui', {}).get('label', ''),
+            'readonly': field.get('read_only', False),
             'extra': {},
             'name': field['key'],
-            'widget': field['type'],
-            'required': field['validation']['required'],
-            'translated': field['translated'],
+            'widget': field.get('type', 'text'),
+            'required': field.get('validation', {}).get('required', False),
+            'translated': field.get('translated', False),
             'validations': {},
         }
 
@@ -184,20 +184,20 @@ class EmberAdapter(BaseAdapter):
         if 'related_endpoint' in field:
             new_field['extra']['related_model'] = field['related_endpoint'].replace('_', '-')
 
-        if 'placeholder' in field['ui']:
+        if 'placeholder' in field.get('ui', {}):
             new_field['extra']['placeholder'] = field['ui']['placeholder']
 
-        if 'help' in field['ui']:
+        if 'help' in field.get('ui', {}):
             new_field['extra']['help'] = field['ui']['help']
 
         if 'default' in field:
             new_field['extra']['default'] = field['default']
 
         # validators
-        if field['validation'].get('required', False):
+        if field.get('validation', {}).get('required', False):
             new_field['validations']['presence'] = True
-        val_max = field['validation'].get('max', None)
-        val_min = field['validation'].get('min', None)
+        val_max = field.get('validation', {}).get('max', None)
+        val_min = field.get('validation', {}).get('min', None)
         if val_max is not None or val_min is not None:
             validator = {}
             if field['type'] in TEXT_FIELDS:

@@ -119,6 +119,9 @@ class Endpoint(object):
     def get_fields_for_serializer(self):
 
         if self.fields is None:
+            if self.serializer is not None:
+                return self.serializer.Meta.fields
+
             self.fields = tuple([f for f in get_all_field_names(self.model)
                                  if f not in self.default_language_field_names])
             if self.extra_fields is not None:
@@ -179,7 +182,7 @@ class Endpoint(object):
                 for field in self.get_fields_for_serializer()
                 if field != 'id' and field != '__str__' and
                 field not in self.translated_field_names and
-                self._get_field_dict(field)['type'][:6] != 'tomany']
+                self._get_field_dict(field).get('type', '')[:6] != 'tomany']
 
     def get_list_display(self):
         if self.list_display is None:
