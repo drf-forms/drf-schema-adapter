@@ -275,7 +275,7 @@ class Endpoint(object):
             action = getattr(viewset, action_name)
             if getattr(action, 'action_type', None) == 'custom':
                 custom_action = {
-                    'url': reverse('{}-{}'.format(self.get_url(), action.__name__.lower()),
+                    'url': reverse('{}-{}'.format(self.get_url(), action.__name__.lower().replace('_', '-')),
                                    kwargs={'pk': ':id'}),
                     'verb': action.bind_to_methods[0],
                 }
