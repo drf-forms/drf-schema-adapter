@@ -223,7 +223,7 @@ class Endpoint(object):
                 'app': model._meta.app_label,
                 'singular': model._meta.model_name.lower(),
                 'plural': self.inflector.pluralize(model._meta.model_name.lower()),
-            } for model in related_models
+            } for model in related_models if model is not None
         ]
 
     def get_list_editable(self):
