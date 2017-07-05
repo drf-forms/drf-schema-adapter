@@ -145,8 +145,12 @@ class Endpoint(object):
         return self.serializer(data)
 
     def get_base_viewset(self):
-        return self.base_viewset if not self.read_only or self.base_viewset != viewsets.ModelViewSet \
-            else self.base_readonly_viewset
+        if not self.read_only:
+            return self.base_viewset
+        if self.base_readonly_viewset.__class__.__name__ == settings.BASE_READONLY_VIEWSET and \
+                self.base_viewset.__class__.__name__ != settings.BASE_VIEWSET:
+            return self.base_viewset
+        return self.base_readonly_viewset
 
     def get_viewset(self):
 
