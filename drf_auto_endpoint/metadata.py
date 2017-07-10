@@ -2,12 +2,11 @@ from collections import defaultdict
 
 from django.utils.module_loading import import_string
 
-from rest_framework.fields import empty
 from rest_framework.metadata import SimpleMetadata, BaseMetadata
 
-from .utils import get_validation_attrs, get_languages, get_field_dict
+from .utils import get_languages, get_field_dict
 from .app_settings import settings
-from .adapters import PROPERTY, GETTER
+from .adapters import GETTER
 
 
 class AutoMetadataMixin(object):
@@ -52,7 +51,6 @@ class AutoMetadataMixin(object):
         if view.__class__.__name__ in root_view_names or view in root_view_names:
             return self.root_metadata(metadata, view)
 
-
         serializer_instance = view.serializer_class()
         endpoint = None
         if hasattr(view, 'endpoint'):
@@ -80,15 +78,18 @@ class AutoMetadataMixin(object):
 
                 fields_metadata.append(field_metadata)
 
-                for meta_info in adapater.metadata_info:
+                for meta_info in adapter.metadata_info:
                     if meta_info.attr == 'fields':
                         metadata['fields'] = fields_metadata,
                     elif meta_info.attr == 'fieldsets':
-                        metadata['fieldsets'] = [{'title': None, 'fields': [
-                                                    {'key': field}
-                                                    for field in view.serializer_class.Meta.fields
-                                                    if field != 'id' and field != '__str__'
-                                                ]}]
+                        metadata['fieldsets'] = [{
+                            'title': None,
+                            'fields': [
+                                {'key': field}
+                                for field in view.serializer_class.Meta.fields
+                                if field != 'id' and field != '__str__'
+                            ]
+                        }]
                     else:
                         metadata[meta_info.attr] = meta_info.default
         else:
@@ -107,6 +108,7 @@ class AutoMetadata(AutoMetadataMixin, SimpleMetadata):
 
 class MinimalAutoMetadata(AutoMetadataMixin, BaseMetadata):
     pass
+
 
 class RootViewMetadata(SimpleMetadata):
     pass
