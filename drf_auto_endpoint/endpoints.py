@@ -147,8 +147,10 @@ class Endpoint(object):
     def get_base_viewset(self):
         if not self.read_only:
             return self.base_viewset
-        if self.base_readonly_viewset.__class__.__name__ == settings.BASE_READONLY_VIEWSET and \
-                self.base_viewset.__class__.__name__ != settings.BASE_VIEWSET:
+        if '{}.{}'.format(self.base_readonly_viewset.__module__, self.base_readonly_viewset.__name__) \
+                == settings.BASE_READONLY_VIEWSET and \
+                '{}.{}'.format(self.base_viewset.__module__, self.base_viewset.__name__) \
+                != settings.BASE_VIEWSET:
             return self.base_viewset
         return self.base_readonly_viewset
 
