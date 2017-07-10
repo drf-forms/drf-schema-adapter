@@ -11,7 +11,8 @@ DEFAULT_SETTINGS = {
     'URL_FORMAT': '{app}/{model}',
     'FIELD_TYPE_MAPPING': {},
     'DEFAULT_MAPPING': None,
-    'ADAPTER': 'export_app.adapters.EmberAdapter'
+    'ADAPTER': 'export_app.adapters.EmberAdapter',
+    'EXCLUDE': {},
 }
 
 
