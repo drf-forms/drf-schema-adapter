@@ -32,7 +32,7 @@ class Command(SerializerExporterWithFields, BaseCommand):
 
         excludes = settings.EXCLUDE
         if isinstance(excludes, dict):
-            excludes = excludes.get(adapter_name.rsplit('.', 1), [])
+            excludes = excludes.get(adapter_name.rsplit('.', 1)[-1], [])
 
         if options['router'] is not None:
             self.router = import_string(options['router'])
