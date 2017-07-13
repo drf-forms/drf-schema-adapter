@@ -42,11 +42,11 @@ class NullToDefaultMixin(object):
         return super(NullToDefaultMixin, self).validate(data)
 
 
-def serializer_factory(endpoint):
+def serializer_factory(endpoint, fields=None):
 
     meta_attrs = {
         'model': endpoint.model,
-        'fields': endpoint.get_fields_for_serializer()
+        'fields': fields if fields is not None else endpoint.get_fields_for_serializer()
     }
     meta_parents = (object, )
     if hasattr(endpoint.base_serializer, 'Meta'):
