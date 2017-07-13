@@ -39,13 +39,10 @@ class NullToDefaultMixin(object):
             except FieldDoesNotExist:
                 pass
 
-        return data
-
+        return super(NullToDefaultMixin, self).validate(data)
 
 
 def serializer_factory(endpoint):
-
-    from .app_settings import settings
 
     meta_attrs = {
         'model': endpoint.model,
