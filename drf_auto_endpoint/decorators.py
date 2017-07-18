@@ -1,6 +1,3 @@
-import inspect
-
-from django.utils.text import capfirst
 from django.utils.module_loading import import_string
 
 from inflector import Inflector
@@ -95,11 +92,12 @@ def wizard(target_model, serializer, icon_class=None, btn_class=None, text=None,
         func.action_type = 'custom'
         func.action_kwargs = action_kwargs(icon_class, btn_class, text, func, kwargs)
         func.kwargs = {}
-        func.action_kwargs['params']['model'] = '{}/{}/{}'.format(
-            target_model._meta.app_label.lower(),
-            inflector.pluralize(target_model._meta.model_name.lower()),
-            func.__name__
-        )
+        if target_model is not None:
+            func.action_kwargs['params']['model'] = '{}/{}/{}'.format(
+                target_model._meta.app_label.lower(),
+                inflector.pluralize(target_model._meta.model_name.lower()),
+                func.__name__
+            )
         func.serializer = serializer
 
         return Adapter.adapt_wizard(func)

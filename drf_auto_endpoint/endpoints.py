@@ -1,6 +1,6 @@
-from django.utils.module_loading import import_string
+from six import with_metaclass
 
-from rest_framework import viewsets
+from django.utils.module_loading import import_string
 
 from inflector import Inflector
 
@@ -27,7 +27,38 @@ def get_all_field_names(model):
     ]
 
 
-class Endpoint(object):
+class EndpointMetaClass(type):
+
+    def __new__(cls, name, bases, attrs):
+        new_class = super(EndpointMetaClass, cls).__new__(cls, name, bases, attrs)
+        inflector = None
+
+        processed = []
+
+        for base in reversed(new_class.__mro__):
+            for key, value in list(base.__dict__.items()):
+                if key not in processed and hasattr(value, 'wizard') and value.wizard and \
+                        getattr(value, 'action_kwargs', {}).get('params', {}).get('model', None) is None:
+
+                    model = getattr(new_class, 'model', None)
+
+                    if model is not None:
+                        if inflector is None:
+                            inflector_language = import_string(settings.INFLECTOR_LANGUAGE)
+                            inflector = Inflector(inflector_language)
+
+                        getattr(new_class, key).action_kwargs['params']['model'] = '{}/{}/{}'.format(
+                            model._meta.app_label.lower(),
+                            inflector.pluralize(model._meta.model_name.lower()),
+                            value.__name__
+                        )
+
+                        processed.append(key)
+
+        return new_class
+
+
+class Endpoint(with_metaclass(EndpointMetaClass, object)):
 
     base_serializer = import_string(settings.BASE_SERIALIZER)
     base_viewset = import_string(settings.BASE_VIEWSET)
