@@ -42,15 +42,18 @@ class NullToDefaultMixin(object):
         return super(NullToDefaultMixin, self).validate(data)
 
 
-def serializer_factory(endpoint, fields=None):
+def serializer_factory(endpoint, fields=None, base_class=None):
+
+    if base_class is None:
+        base_class = endpoint.base_serializer
 
     meta_attrs = {
         'model': endpoint.model,
         'fields': fields if fields is not None else endpoint.get_fields_for_serializer()
     }
     meta_parents = (object, )
-    if hasattr(endpoint.base_serializer, 'Meta'):
-        meta_parents = (endpoint.base_serializer.Meta, ) + meta_parents
+    if hasattr(base_class, 'Meta'):
+        meta_parents = (base_class.Meta, ) + meta_parents
 
     Meta = type('Meta', meta_parents, meta_attrs)
 
@@ -60,7 +63,7 @@ def serializer_factory(endpoint, fields=None):
     }
 
     for meta_field in meta_attrs['fields']:
-        if meta_field not in endpoint.base_serializer._declared_fields:
+        if meta_field not in base_class._declared_fields:
             try:
                 model_field = endpoint.model._meta.get_field(meta_field)
                 if isinstance(model_field, OneToOneRel):
@@ -70,7 +73,7 @@ def serializer_factory(endpoint, fields=None):
             except FieldDoesNotExist:
                 cls_attrs[meta_field] = serializers.ReadOnlyField()
 
-    return type(cls_name, (NullToDefaultMixin, endpoint.base_serializer, ), cls_attrs)
+    return type(cls_name, (NullToDefaultMixin, base_class, ), cls_attrs)
 
 
 def viewset_factory(endpoint):

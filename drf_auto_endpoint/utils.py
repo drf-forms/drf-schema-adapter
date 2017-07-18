@@ -1,7 +1,8 @@
 from django.conf import settings as django_settings
+from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import FieldDoesNotExist
-from django.utils.text import capfirst
 from django.db.models.fields import NOT_PROVIDED
+from django.utils.text import capfirst
 
 from rest_framework import serializers, relations
 from rest_framework.fields import empty

@@ -15,6 +15,7 @@ DEFAULT_SETTINGS = {
         'OneToOneRel': 'foreignkey',
         'PrimaryKeyRelatedField': 'foreignkey',
         'ManyToOneRel': 'tomany-table',
+        'GenericRelation': 'tomany-table',
         'text': 'textarea',
         'choice': 'select',
         'DateField': 'date',
