@@ -57,13 +57,7 @@ def wizard(target_model, serializer, icon_class=None, btn_class=None, text=None,
     _kwargs.update(kwargs)
     kwargs = _kwargs
 
-    fieldsets = kwargs.pop('fieldsets', None)
-    if fieldsets is None:
-        fieldsets = [
-            {'name': field}
-            for field in serializer.Meta.fields
-        ]
-    kwargs['params']['fieldsets'] = fieldsets
+    kwargs['params']['fieldsets'] = kwargs.pop('fieldsets', None)
 
     serializer_instance = serializer()
     needs = []

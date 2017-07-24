@@ -40,23 +40,65 @@ class EndpointMetaClass(type):
 
         for base in reversed(new_class.__mro__):
             for key, value in list(base.__dict__.items()):
-                if key not in processed and hasattr(value, 'wizard') and value.wizard and \
-                        getattr(value, 'action_kwargs', {}).get('params', {}).get('model', None) is None:
+                if key not in processed and hasattr(value, 'wizard') and value.wizard:
+                    if getattr(value, 'action_kwargs', {}).get('params', {}).get('model', None) is None:
 
-                    model = getattr(new_class, 'model', None)
+                        model = getattr(new_class, 'model', None)
 
-                    if model is not None:
-                        if inflector is None:
-                            inflector_language = import_string(settings.INFLECTOR_LANGUAGE)
-                            inflector = Inflector(inflector_language)
+                        if model is not None:
+                            if inflector is None:
+                                inflector_language = import_string(settings.INFLECTOR_LANGUAGE)
+                                inflector = Inflector(inflector_language)
 
-                        getattr(new_class, key).action_kwargs['params']['model'] = '{}/{}/{}'.format(
-                            model._meta.app_label.lower(),
-                            inflector.pluralize(model._meta.model_name.lower()),
-                            value.__name__
+                            getattr(new_class, key).action_kwargs['params']['model'] = '{}/{}/{}'.format(
+                                model._meta.app_label.lower(),
+                                inflector.pluralize(model._meta.model_name.lower()),
+                                value.__name__
+                            )
+
+                            processed.append(key)
+
+                    if getattr(value, 'action_kwargs', {}).get('params', {}).get('fieldsets', None) is None \
+                            and getattr(new_class, 'model', None) is not None and hasattr(value, 'serializer'):
+
+                        fieldsets_path = os.path.join(
+                            django_settings.BASE_DIR,
+                            new_class.__module__.rsplit('.', 1)[0],
+                            'fieldsets.json'
                         )
 
-                        processed.append(key)
+                        try:
+                            with open(fieldsets_path, 'r') as f:
+                                fieldsets = json.load(f)
+                                value.action_kwargs['params']['fieldsets'] = \
+                                    fieldsets['{}_{}'.format(new_class.model.__name__, key)]
+                        except FileNotFoundError:
+                            pass
+                        except KeyError:
+                            pass
+
+                        if getattr(value, 'action_kwargs', {}).get('params', {}).get('fieldsets', None) is None:
+                            value.action_kwargs = getattr(value, 'action_kwargs', {})
+                            value.action_kwargs['params'] = value.action_kwargs.get('params', {})
+                            value.action_kwargs['params']['fieldsets'] = [
+                                {'name': field}
+                                for field in value.serializer.Meta.fields
+                            ]
+
+        if new_class.fieldsets is None and new_class.model is not None:
+            fieldsets_path = os.path.join(
+                django_settings.BASE_DIR,
+                new_class.__module__.rsplit('.', 1)[0],
+                'fieldsets.json'
+            )
+            try:
+                with open(fieldsets_path, 'r') as f:
+                    fieldsets = json.load(f)
+                    new_class.fieldsets = fieldsets[new_class.model.__name__]
+            except FileNotFoundError:
+                pass
+            except KeyError:
+                pass
 
         return new_class
 
@@ -104,17 +146,6 @@ class Endpoint(with_metaclass(EndpointMetaClass, object)):
 
         if model is not None:
             self.model = model
-
-        if self.fieldsets is None:
-            fieldsets_path = os.path.join(django_settings.BASE_DIR, self.__module__.rsplit('.', 1)[0], 'fieldsets.json')
-            try:
-                with open(fieldsets_path, 'r') as f:
-                    fieldsets = json.load(f)
-                    self.fieldsets = fieldsets[self.model.__name__]
-            except FileNotFoundError:
-                pass
-            except KeyError:
-                pass
 
         arg_names = ('fields', 'serializer', 'permission_classes', 'filter_fields', 'search_fields',
                      'viewset', 'read_only', 'include_str', 'ordering_fields', 'page_size',
