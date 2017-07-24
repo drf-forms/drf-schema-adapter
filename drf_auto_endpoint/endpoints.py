@@ -1,5 +1,8 @@
+import json
+import os
 from six import with_metaclass
 
+from django.conf import settings as django_settings
 from django.utils.module_loading import import_string
 
 from inflector import Inflector
@@ -101,6 +104,17 @@ class Endpoint(with_metaclass(EndpointMetaClass, object)):
 
         if model is not None:
             self.model = model
+
+        if self.fieldsets is None:
+            fieldsets_path = os.path.join(django_settings.BASE_DIR, self.__module__.rsplit('.', 1)[0], 'fieldsets.json')
+            try:
+                with open(fieldsets_path, 'r') as f:
+                    fieldsets = json.load(f)
+                    self.fieldsets = fieldsets[self.model.__name__]
+            except FileNotFoundError:
+                pass
+            except KeyError:
+                pass
 
         arg_names = ('fields', 'serializer', 'permission_classes', 'filter_fields', 'search_fields',
                      'viewset', 'read_only', 'include_str', 'ordering_fields', 'page_size',
