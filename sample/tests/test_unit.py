@@ -3,10 +3,11 @@ from django.test import TestCase, override_settings
 from rest_framework.permissions import AllowAny
 from rest_framework import filters, pagination
 from rest_framework.serializers import CharField, IntegerField
+from rest_framework.viewsets import ModelViewSet
 
 from ..models import Product, Category, PRODUCT_TYPES
 
-from .data import DummyProductSerializer, DummyProductViewSet
+from .data import DummyProductSerializer, DummyProductViewSet, DummyProductSerializerWithField
 
 from drf_auto_endpoint.endpoints import Endpoint
 from drf_auto_endpoint.router import router
@@ -90,6 +91,11 @@ class EndpointTestCase(TestCase):
 
         self.assertEqual(serializer.__name__, 'ProductSerializer')
 
+    def test_factory_serializer_dont_override_fields(self):
+        endpoint = Endpoint(model=Product, base_serializer=DummyProductSerializerWithField, fields=('id', 'name'))
+        serializer = endpoint.get_serializer()
+        self.assertTrue(serializer._declared_fields['name'].read_only)
+
     def test_non_factory_serializer(self):
         endpoint = Endpoint(model=Product, serializer=DummyProductSerializer)
 
@@ -161,6 +167,36 @@ class EndpointTestCase(TestCase):
         needs = self.endpoint.get_needs()
         self.assertEqual(len(needs), 1)
         self.assertEqual(needs[0]['plural'], 'categories')
+
+    def test_get_base_viewset(self):
+
+        class DummyViewSet(ModelViewSet):
+            pass
+
+        class OtherDummyViewSet(ModelViewSet):
+            pass
+
+        class DummyEndpoint(Endpoint):
+            model = Product
+            base_viewset = DummyViewSet
+
+        class DummyReadOnlyEndpoint(DummyEndpoint):
+            read_only = True
+
+        class OtherDummyReadOnlyEndpoint(Endpoint):
+            model = Product
+            read_only = True
+            base_viewset = OtherDummyViewSet
+            base_readonly_viewset = DummyViewSet
+
+        dummy = DummyEndpoint()
+        self.assertTrue(issubclass(dummy.get_base_viewset(), DummyViewSet))
+
+        dummy = DummyReadOnlyEndpoint()
+        self.assertTrue(issubclass(dummy.get_base_viewset(), DummyViewSet))
+
+        dummy = OtherDummyReadOnlyEndpoint()
+        self.assertTrue(issubclass(dummy.get_base_viewset(), DummyViewSet))
 
 
 class RouterTestCase(TestCase):

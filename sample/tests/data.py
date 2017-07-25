@@ -14,3 +14,8 @@ class DummyProductViewSet(viewsets.ModelViewSet):
 
     serializer_class = DummyProductSerializer
     queryset = Product.objects.all()
+
+
+class DummyProductSerializerWithField(serializers.ModelSerializer):
+
+    name = serializers.CharField(read_only=True)
