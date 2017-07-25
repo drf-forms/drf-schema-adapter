@@ -111,6 +111,7 @@ class Endpoint(with_metaclass(EndpointMetaClass, object)):
 
     model = None
     fields = None
+    exclude_fields = ()
     serializer = None
 
     fieldsets = None
@@ -199,7 +200,8 @@ class Endpoint(with_metaclass(EndpointMetaClass, object)):
                 return self.serializer.Meta.fields
 
             self.fields = tuple([f for f in get_all_field_names(self.model)
-                                 if f not in self.default_language_field_names])
+                                 if f not in self.default_language_field_names and
+                                 f not in self.exclude_fields])
             if self.extra_fields is not None:
                 self.fields += tuple(self.extra_fields)
             if self.include_str:
