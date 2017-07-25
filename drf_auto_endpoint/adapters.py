@@ -170,7 +170,7 @@ class EmberAdapter(BaseAdapter):
         new_field = {
             'label': field.get('ui', {}).get('label', ''),
             'readonly': field.get('read_only', False),
-            'extra': {},
+            'extra': field.get('extra', {}),
             'name': field['key'],
             'widget': field.get('type', 'text'),
             'required': field.get('validation', {}).get('required', False),
