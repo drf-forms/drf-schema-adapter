@@ -193,6 +193,9 @@ class Endpoint(with_metaclass(EndpointMetaClass, object)):
     def application_name(self):
         return self.model._meta.app_label.lower()
 
+    def get_exclude_fields(self):
+        return self.exclude_fields
+
     def get_fields_for_serializer(self):
 
         if self.fields is None:
@@ -201,7 +204,7 @@ class Endpoint(with_metaclass(EndpointMetaClass, object)):
 
             self.fields = tuple([f for f in get_all_field_names(self.model)
                                  if f not in self.default_language_field_names and
-                                 f not in self.exclude_fields])
+                                 f not in self.get_exclude_fields()])
             if self.extra_fields is not None:
                 self.fields += tuple(self.extra_fields)
             if self.include_str:
