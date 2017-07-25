@@ -12,6 +12,11 @@ from .utils import get_languages, get_field_dict, reverse
 from .app_settings import settings
 
 try:
+    FileNotFoundError
+except NameError:
+    FileNotFoundError = IOError
+
+try:
     from modeltranslation.translator import translator
 
 except ImportError:
