@@ -2,7 +2,7 @@
 
 `drf-schema-adapter` is a set of tools used to make it as straight-forward to declare an API endpoint
 as it is to declare a new `ModelAdmin` in Django and export the corresponding definition to frontend
-frameworks and libraries
+frameworks and libraries.
 
 ## Installation
 

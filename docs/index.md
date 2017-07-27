@@ -21,7 +21,7 @@ frontend tools it can even help you to build a full-fledge admin.
 
 ### With pip
 
-`pip install drf_schema_adapter`
+`pip install drf-schema-adapter`
 
 ### From source
 
