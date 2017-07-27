@@ -91,7 +91,7 @@ These classes and mixins provide extra informations about the api and its fields
 calling the `OPTIONS` method on an endpoint root.
 
 Although these metadata classes and mixin work best with **DRF-schema-adapter**'s
-`Enpoint` classes, they are also compatible with regular DRF `(Model)ViewSet` and
+`Endpoint` classes, they are also compatible with regular DRF `(Model)ViewSet` and
 `(Model)Serializer`.
 
 To enable this extended metadata, you just have to configure it in your `settings.py`
@@ -134,9 +134,9 @@ EXPORTER_FRONT_APPLICATION_PATH = '../front/js/src'
 EXPORTER_ROUTER_PATH = 'my_app.my_url_file.router'
 ```
 
-Then, to export models corresponding to an enpoint you can now run:
+Then, to export models corresponding to an endpoint you can now run:
 
-`./mange.py export <endpoint_base_url>`
+`./manage.py export <endpoint_base_url>`
 
 ex: `./manage.py export sample/products`
 
