@@ -4,7 +4,7 @@ from drf_auto_endpoint.metadata import AutoMetadataMixin
 
 from sample.endpoints import ProductEndpoint
 
-from .data import DummyProductSerializer
+from .data import DummyProductSerializer, DummyProductViewSet
 
 
 class TestMetadata(TestCase):
@@ -47,3 +47,8 @@ class TestMetadata(TestCase):
             metadata_mixin.determine_metadata(request, view)
         except:
             self.fail('Unable to produce metatdata')
+
+    def test_filter_and_search_fields_defined_on_viewset(self):
+        endpoint = ProductEndpoint(viewset=DummyProductViewSet)
+        self.assertTrue(endpoint.search_enabled)
+        self.assertIn('name', endpoint.get_filter_fields())

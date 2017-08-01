@@ -77,6 +77,7 @@ def serializer_factory(endpoint, fields=None, base_class=None):
 
 
 def viewset_factory(endpoint):
+    from .endpoints import BaseEndpoint
 
     base_viewset = endpoint.get_base_viewset()
 
@@ -135,9 +136,11 @@ def viewset_factory(endpoint):
 
     rv = type(cls_name, (endpoint.get_base_viewset(),), cls_attrs)
 
+    black_list = dir(BaseEndpoint)
     for method_name in dir(endpoint):
-        method = getattr(endpoint, method_name)
-        if getattr(method, 'action_type', None) in ['custom', 'bulk']:
-            setattr(rv, method_name, method)
+        if method_name not in black_list:
+            method = getattr(endpoint, method_name)
+            if getattr(method, 'action_type', None) in ['custom', 'bulk']:
+                setattr(rv, method_name, method)
 
     return rv

@@ -108,7 +108,7 @@ class EndpointMetaClass(type):
         return new_class
 
 
-class Endpoint(with_metaclass(EndpointMetaClass, object)):
+class BaseEndpoint(object):
 
     base_serializer = import_string(settings.BASE_SERIALIZER)
     base_viewset = import_string(settings.BASE_VIEWSET)
@@ -146,42 +146,6 @@ class Endpoint(with_metaclass(EndpointMetaClass, object)):
     _translated_fields = None
     _translated_field_names = None
     _default_language_field_names = None
-
-    def __init__(self, model=None, **kwargs):
-        self.inflector = Inflector(self.inflector_language)
-
-        if model is not None:
-            self.model = model
-
-        arg_names = ('fields', 'serializer', 'permission_classes', 'filter_fields', 'search_fields',
-                     'viewset', 'read_only', 'include_str', 'ordering_fields', 'page_size',
-                     'base_viewset', 'fields_annotation', 'fieldsets', 'base_serializer', 'list_me')
-        for arg_name in arg_names:
-            setattr(self, arg_name, kwargs.pop(arg_name, getattr(self, arg_name, None)))
-
-        if len(kwargs.keys()) > 0:
-            raise Exception('{} got an unexpected keyword argument: "{}"'.format(
-                self.__class__.__name__,
-                list(kwargs.keys())[0]
-            ))
-
-        if self.serializer is not None:
-            assert self.fields is None, 'You cannot specify both fields and serializer'
-        else:
-            assert self.viewset is not None or self.model is not None, \
-                'You need to specify at least a model or a viewset'
-            self.get_serializer()
-
-        if self.viewset is not None:
-            for attr in ('permission_classes', 'filter_fields', 'search_fields', 'ordering_fields',
-                         'page_size'):
-                assert getattr(self, attr, None) is None, \
-                    'You cannot specify both {} and viewset'.format(attr)
-        else:
-            self.get_viewset()
-
-        if self.model is None:
-            self.model = self.get_serializer().Meta.model
 
     def get_languages(self):
         return get_languages()
@@ -283,23 +247,26 @@ class Endpoint(with_metaclass(EndpointMetaClass, object)):
             return [self.get_fields()[0]['key']]
         return self.list_display
 
-    def _get_endpoint_list(self, name):
+    def _get_endpoint_list(self, name, check_viewset_if_none=False):
         value = getattr(self, name, None)
         if value is None:
-            return []
+            if check_viewset_if_none:
+                value = getattr(self.get_viewset(), name, None)
+            if value is None:
+                return []
         return value
 
-    def get_filter_fields(self):
-        fields = self._get_endpoint_list('filter_fields')
+    def get_filter_fields(self, check_viewset_if_none=True):
+        fields = self._get_endpoint_list('filter_fields', check_viewset_if_none)
         return fields
 
     @property
-    def search_enabled(self):
-        fields = self._get_endpoint_list('search_fields')
+    def search_enabled(self, check_viewset_if_none=True):
+        fields = self._get_endpoint_list('search_fields', check_viewset_if_none)
         return len(fields) > 0
 
-    def get_ordering_fields(self):
-        fields = self._get_endpoint_list('ordering_fields')
+    def get_ordering_fields(self, check_viewset_if_none=True):
+        fields = self._get_endpoint_list('ordering_fields', check_viewset_if_none)
         return fields
 
     def get_needs(self):
@@ -397,3 +364,42 @@ class Endpoint(with_metaclass(EndpointMetaClass, object)):
             rv += []
 
         return rv
+
+
+class Endpoint(with_metaclass(EndpointMetaClass, BaseEndpoint)):
+
+    def __init__(self, model=None, **kwargs):
+        self.inflector = Inflector(self.inflector_language)
+
+        if model is not None:
+            self.model = model
+
+        arg_names = ('fields', 'serializer', 'permission_classes', 'filter_fields', 'search_fields',
+                     'viewset', 'read_only', 'include_str', 'ordering_fields', 'page_size',
+                     'base_viewset', 'fields_annotation', 'fieldsets', 'base_serializer', 'list_me')
+        for arg_name in arg_names:
+            setattr(self, arg_name, kwargs.pop(arg_name, getattr(self, arg_name, None)))
+
+        if len(kwargs.keys()) > 0:
+            raise Exception('{} got an unexpected keyword argument: "{}"'.format(
+                self.__class__.__name__,
+                list(kwargs.keys())[0]
+            ))
+
+        if self.serializer is not None:
+            assert self.fields is None, 'You cannot specify both fields and serializer'
+        else:
+            assert self.viewset is not None or self.model is not None, \
+                'You need to specify at least a model or a viewset'
+            self.get_serializer()
+
+        if self.viewset is not None:
+            for attr in ('permission_classes', 'filter_fields', 'search_fields', 'ordering_fields',
+                         'page_size'):
+                assert getattr(self, attr, None) is None, \
+                    'You cannot specify both {} and viewset'.format(attr)
+        else:
+            self.get_viewset()
+
+        if self.model is None:
+            self.model = self.get_serializer().Meta.model
