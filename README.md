@@ -2,7 +2,7 @@
 
 `drf-schema-adapter` is a set of tools used to make it as straight-forward to declare an API endpoint
 as it is to declare a new `ModelAdmin` in Django and export the corresponding definition to frontend
-frameworks and libraries
+frameworks and libraries.
 
 ## Installation
 
@@ -69,10 +69,10 @@ urlpatterns = [
 
 ### Adding schema information to your `OPTIONS` calls
 
-Django REST framework provides the ability to customize thos calls thanks to
+Django REST framework provides the ability to customize those calls thanks to
 [metadata classes](http://www.django-rest-framework.org/api-guide/metadata/).
 
-Setup DRF to use one of **DRF-schema-adapter**'s metadata classes to get shcema information:
+Setup DRF to use one of **DRF-schema-adapter**'s metadata classes to get schema information:
 
 ```
 ## settings.py
@@ -92,7 +92,7 @@ First add `'export_app'` to your setting's `INSTALLED_APPS`, then run:
 
 ## Full documentation
 
-For a (way) more complete documentation, please see http://drf-schema-adapter.readthedocs.io
+For much more complete documentation, please see: http://drf-schema-adapter.readthedocs.io
 
 ## Related projects
 
@@ -114,12 +114,12 @@ For a (way) more complete documentation, please see http://drf-schema-adapter.re
 If you'd like to contibute to *DRF-schema-adapter**, you are more than welcome to do so. In order to
 make contributing to this project a rich experience for everyone, please follow these guide-lines:
 
-- First, fork the project with your own github account, build your code on your own repository and
-submit a pull-request once your contribution is ready
+- First, fork the project with your own GitHub account, build your code on your own repository and
+submit a pull-request once your contribution is ready.
 - Before contributing a bug-fix or new feature, create an issue explaining what the problem/need is
-first. When submitting your pull-request, make sure to reference the original issue
+first. When submitting your pull-request, make sure to reference the original issue.
 - For any code you contribute, make sure to follow PEP8 recommendation (soft line-limit 100, hard
-limit 120)
+limit 120).
 - For bug-fixes, please first write a test that will fail with the current code and passes using your
 patch. For easier evaluation, please do so in 2 separate commits
 - For new features, if your feature can be implemented as a third-party app (like new adapters), please

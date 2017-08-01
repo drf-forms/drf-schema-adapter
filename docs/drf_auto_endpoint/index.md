@@ -3,11 +3,10 @@
 `drf_auto_endpoint`'s main feature is to provide a router on which you can register `Model`'s directly.
 Not unlike `Model`'s directly in **Django** admin.'
 
-Registering a `Model` on the router implicitely creates an [`Endpoint`](./endpoint.md) which in turn uses
+Registering a `Model` on the router implicitly creates an [`Endpoint`](./endpoint.md) which in turn uses
 factory methods to create a `ModelViewSet` and a `ModelSerializer` corresponding to the registered `Model`.
 
-This is great for prototyping but as your application progresses you'll probably want to customie those endpoints.
-Some customization can be done passing parameters directly to the router when registering models.
+This is great for prototyping but as your application progresses you'll probably want to customize those endpoints. Some customization can be done passing parameters directly to the router when registering models.
 
 - `read_only`: boolean, indicates whether this endpoint should be read_only or not
 - `fields`: a list of fields that will be available on the endpoint
