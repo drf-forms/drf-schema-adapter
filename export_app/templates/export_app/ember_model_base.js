@@ -20,7 +20,7 @@ export default Model.extend({
   {% for field in rels %}
     {{field.name}}: {{field.type}}('{%if target_app %}{{target_app}}{% else %}{{field.app}}{% endif %}/{{field.related_model}}', {
       async: true,
-      {%if field.inverse %}inverse: '{{field.inverse}}'{% endif %}
+      inverse: {%if field.inverse %}'{{field.inverse}}'{% else %}null{% endif %},
     }),
   {% endfor %}
 });
