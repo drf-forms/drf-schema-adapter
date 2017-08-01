@@ -305,7 +305,7 @@ class Endpoint(with_metaclass(EndpointMetaClass, object)):
     def get_needs(self):
         related_models = [
             f.related_model
-            if f.related_model
+            if f.related_model and f.related_model != self.model
             else f.model if f.model and f.model != self.model else None
             for f in self.model._meta.get_fields()
             if f.is_relation and f.name in self.get_fields_for_serializer()
