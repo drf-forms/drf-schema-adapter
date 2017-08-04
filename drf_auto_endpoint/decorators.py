@@ -45,7 +45,13 @@ def bulk_action(method='GET', type='request', icon_class=None, btn_class=None, t
     return decorator
 
 
-def wizard(target_model, serializer, icon_class=None, btn_class=None, text=None, **kwargs):
+def wizard(target_model, serializer=None, icon_class=None, btn_class=None, text=None, **kwargs):
+
+    if serializer is None and target_model is not None:
+        serializer = target_model
+        target_model = None
+
+    assert serializer is not None, "You need to pass a serializer to the wizard decorator"
 
     inflector_language = import_string(settings.INFLECTOR_LANGUAGE)
     inflector = Inflector(inflector_language)
