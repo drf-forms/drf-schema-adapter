@@ -44,13 +44,12 @@ class EndpointMetaClass(type):
         processed = []
 
         black_list = dir(BaseEndpoint)
+        model = getattr(new_class, 'model', None)
 
         for base in reversed(new_class.__mro__):
             for key, value in list(base.__dict__.items()):
                 if key not in black_list and key not in processed and hasattr(value, 'wizard') and value.wizard:
                     if getattr(value, 'action_kwargs', {}).get('params', {}).get('model', None) is None:
-
-                        model = getattr(new_class, 'model', None)
 
                         if model is not None:
                             if inflector is None:
