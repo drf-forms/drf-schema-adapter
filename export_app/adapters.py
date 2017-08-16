@@ -3,6 +3,7 @@ from collections import defaultdict
 
 from django.conf import settings as django_settings
 from django.template.loader import render_to_string
+from django.utils.module_loading import import_string
 
 from export_app import settings
 
@@ -150,12 +151,12 @@ class BaseMetadataAdapter(BaseAdapter):
         return renderer.render(data)
 
     def get_metadata_from_viewset(self, viewset):
-        from drf_auto_endpoint.metadata import MinimalAutoMetadata
 
         if isinstance(viewset, dict):
             output = viewset
         else:
-            output = MinimalAutoMetadata().determine_metadata(None, viewset)
+            MetadataClass = import_string(django_settings.REST_FRAMEWORK['DEFAULT_METADATA_CLASS'])
+            output = MetadataClass().determine_metadata(None, viewset)
 
         return output
 
@@ -216,13 +217,13 @@ class MetadataES6Adapter(BaseMetadataAdapter):
         return imports
 
     def rebuild_index(self):
-        from drf_auto_endpoint.metadata import MinimalAutoMetadata
+        MetadataClass = import_string(django_settings.REST_FRAMEWORK['DEFAULT_METADATA_CLASS'])
         context = {}
         directory = os.path.join(django_settings.BASE_DIR, settings.FRONT_APPLICATION_PATH,
                                  'app', 'data')
         context['items'] = self.walk_dir(directory, True)
         context['root_metadata'] = self.render(
-            MinimalAutoMetadata().determine_metadata(None, 'APIRootView')
+            MetadataClass().determine_metadata(None, 'APIRootView')
         )
         self.write_file(context, directory, 'index.js', self.index_template_name, True)
 
