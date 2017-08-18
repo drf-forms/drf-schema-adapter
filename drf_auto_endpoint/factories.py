@@ -42,7 +42,14 @@ class NullToDefaultMixin(object):
         return super(NullToDefaultMixin, self).validate(data)
 
 
-def serializer_factory(endpoint, fields=None, base_class=None):
+def serializer_factory(endpoint=None, fields=None, base_class=None, model=None):
+
+    if model is not None:
+        assert endpoint is None, "You cannot specify both a model and an endpoint"
+        from .endpoints import Endpoint
+        endpoint = Endpoint(model=model)
+    else:
+        assert endpoint is not None, "You have to specify either a model or an endpoint"
 
     if base_class is None:
         base_class = endpoint.base_serializer
