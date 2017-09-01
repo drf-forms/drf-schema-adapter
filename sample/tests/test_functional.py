@@ -90,7 +90,6 @@ class ProductAPITest(EndpointAPITestCase, APITestCase):
     delete_requires_login = False
 
 
-
 class HowItWorksAPITest(EndpointAPITestCase, APITestCase):
 
     endpoint_url = 'sample/howitworks'
@@ -108,3 +107,24 @@ class HowItWorksAPITest(EndpointAPITestCase, APITestCase):
         super(HowItWorksAPITest, self).test_list_view()
         self.assertTrue(self.called < router._endpoints[self.endpoint_url].viewset.called_counter,
                         router._endpoints[self.endpoint_url].viewset.called_counter)
+
+
+class PaginationTestCase(APITestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        for i in range(251):
+            CategoryFactory().save()
+        cls.url = '/api/sample/categories/'
+
+    # def setUp(self):
+    #     self.
+
+    def test_default_page_size(self):
+        response = self.client.get(self.url, format='json')
+        self.assertEqual(len(response.json()['results']), 50)
+
+    def test_custom_page_size(self):
+        page_size = 250
+        response = self.client.get('{}?page_size={}'.format(self.url, page_size), format='json')
+        self.assertEqual(len(response.json()['results']), page_size)
