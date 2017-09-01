@@ -217,6 +217,14 @@ class RouterTestCase(TestCase):
         self.assertTrue(isinstance(endpoint, Endpoint))
 
 
+class ViewSetFactoryTestCase(TestCase):
+
+    def test_pagination(self):
+        endpoint = Endpoint(model=Product)
+        self.assertEqual(endpoint.viewset.pagination_class.__name__, 'ProductPagination')
+        self.assertEqual(endpoint.viewset.pagination_class.page_size, 50)
+
+
 class UtilsTestCase(TestCase):
 
     def test_reverse(self):
