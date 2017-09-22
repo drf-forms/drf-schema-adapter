@@ -64,6 +64,18 @@ class EndpointRouter(DefaultRouter):
             **kwargs
         )
 
+    def override_registry_entry(self, endpoint):
+        url = endpoint.get_url()
+        self._endpoints[url] = endpoint
+
+        new_registry = []
+        for (prefix, viewset, base_name) in self.registry:
+            if prefix == url:
+                new_registry.append((url, endpoint.get_viewset(), base_name))
+            else:
+                new_registry.append((prefix, viewset, base_name))
+        self.registry = new_registry
+
     def get_endpoint(self, url):
         return self._endpoints[url]
 
