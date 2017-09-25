@@ -117,14 +117,21 @@ class PaginationTestCase(APITestCase):
             CategoryFactory().save()
         cls.url = '/api/sample/categories/'
 
-    # def setUp(self):
-    #     self.
+    def get_response_data(self, response):
+        import django
+        from distutils.version import LooseVersion
+
+        self.assertEqual(200, response.status_code)
+
+        if LooseVersion(django.get_version()) >= LooseVersion('1.9'):
+            return response.json()
+        return response.data
 
     def test_default_page_size(self):
         response = self.client.get(self.url, format='json')
-        self.assertEqual(len(response.json()['results']), 50)
+        self.assertEqual(len(self.get_response_data(response)['results']), 50)
 
     def test_custom_page_size(self):
         page_size = 250
         response = self.client.get('{}?page_size={}'.format(self.url, page_size), format='json')
-        self.assertEqual(len(response.json()['results']), page_size)
+        self.assertEqual(len(self.get_response_data(response)['results']), page_size)
