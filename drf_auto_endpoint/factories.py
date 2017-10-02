@@ -125,6 +125,8 @@ def viewset_factory(endpoint):
         if DjangoFilterBackend not in filter_backends:
             filter_backends.append(DjangoFilterBackend)
         cls_attrs['filter_class'] = endpoint.filter_class
+    elif hasattr(base_viewset, 'filter_class') and DjangoFilterBackend not in filter_backends:
+        filter_backends.append(DjangoFilterBackend)
 
     if len(filter_backends) > 0:
         cls_attrs['filter_backends'] = filter_backends
