@@ -149,7 +149,7 @@ def viewset_factory(endpoint):
     for method_name in dir(endpoint):
         if method_name not in black_list:
             method = getattr(endpoint, method_name)
-            if getattr(method, 'action_type', None) in ['custom', 'bulk']:
+            if getattr(method, 'action_type', None) in ['custom', 'bulk', 'list']:
                 setattr(rv, method_name, method)
 
     return rv

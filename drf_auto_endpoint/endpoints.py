@@ -141,6 +141,7 @@ class BaseEndpoint(object):
 
     custom_actions = None
     bulk_actions = None
+    list_actions = None
 
     inflector_language = import_string(settings.INFLECTOR_LANGUAGE)
 
@@ -362,7 +363,26 @@ class BaseEndpoint(object):
                 rv.append(bulk_action)
 
         if self.bulk_actions is not None:
-            rv += []
+            rv += self.bulk_actions
+
+        return rv
+
+    def get_list_actions(self):
+        rv = []
+        viewset = self.get_viewset()
+
+        for action_name in dir(viewset):
+            action = getattr(viewset, action_name)
+            if getattr(action, 'action_type', None) == 'list':
+                list_action = {
+                    'url': reverse('{}-{}'.format(self.get_url(), action.__name__.lower())),
+                    'verb': action.bind_to_methods[0],
+                }
+                list_action.update(action.action_kwargs)
+                rv.append(list_action)
+
+        if self.list_actions is not None:
+            rv += self.list_actions
 
         return rv
 

@@ -45,13 +45,14 @@ def bulk_action(method='GET', type='request', icon_class=None, btn_class=None, t
     return decorator
 
 
-def wizard(target_model, serializer=None, icon_class=None, btn_class=None, text=None, **kwargs):
+def wizard(target_model, serializer=None, icon_class=None, btn_class=None, text=None, meta_type='custom', **kwargs):
 
     if serializer is None and target_model is not None:
         serializer = target_model
         target_model = None
 
     assert serializer is not None, "You need to pass a serializer to the wizard decorator"
+    assert meta_type in ['custom', 'list']
 
     inflector_language = import_string(settings.INFLECTOR_LANGUAGE)
     inflector = Inflector(inflector_language)
@@ -87,9 +88,12 @@ def wizard(target_model, serializer=None, icon_class=None, btn_class=None, text=
         # cls = getattr(inspect.getmodule(func),
         #               func.__qualname__.split('.<locals>', 1)[0].rsplit('.', 1)[0])
         func.bind_to_methods = [kwargs.pop('method', 'POST'), ]
-        func.detail = True
+        func.action_type = meta_type
+        if meta_type == 'custom':
+            func.detail = True
+        else:
+            func.detail = False
         func.wizard = True
-        func.action_type = 'custom'
         func.action_kwargs = action_kwargs(icon_class, btn_class, text, func, kwargs)
         func.kwargs = {}
         if target_model is not None:

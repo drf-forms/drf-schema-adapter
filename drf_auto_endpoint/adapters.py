@@ -149,6 +149,7 @@ class EmberAdapter(BaseAdapter):
         MetaDataInfo('translated_fields', GETTER, []),
         MetaDataInfo('custom_actions', GETTER, []),
         MetaDataInfo('bulk_actions', GETTER, []),
+        MetaDataInfo('list_actions', GETTER, []),
         MetaDataInfo('save_twice', PROPERTY, False),
         MetaDataInfo('search_enabled', PROPERTY, False),
         MetaDataInfo('conditional_formatting', PROPERTY, {}),
