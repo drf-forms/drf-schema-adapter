@@ -13,8 +13,9 @@ frameworks and libraries.
 | **Django 1.8**  | DRF 3.2+ | DRF 3.2+ | DRF 3.2+ | DRF 3.2+ |
 | **Django 1.9**  | DRF 3.3+ | DRF 3.3+ | DRF 3.3+ | DRF 3.3+ |
 | **Django 1.10** | DRF 3.4+ | DRF 3.4+ | DRF 3.4+ | DRF 3.4+ |
-| **Django 1.11** | No       | No       | DRF 3.4+ | DRF 3.4+ |
-| **Master**      | No       | No       | DRF 3.4+ | DRF 3.4+ |
+| **Django 1.11** | DRF 3.4+ | DRF 3.4+ | DRF 3.4+ | DRF 3.4+ |
+| **Django 2.0**  | No       | No       | DRF 3.7+ | DRF 3.7+ |
+| **Master**      | No       | No       | DRF 3.7+ | DRF 3.7+ |
 
 ### With pip
 
