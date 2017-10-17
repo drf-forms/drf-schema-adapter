@@ -1,10 +1,11 @@
-from rest_framework import filters, pagination, serializers
+from rest_framework import pagination, serializers
+from rest_framework.filters import OrderingFilter, SearchFilter
 
-try:
-    from django_filters.rest_framework import DjangoFilterBackend
-except ImportError:
-    # Older versions of DRF and django_filters
-    from rest_framework.filters import DjangoFilterBackend
+# try:
+from django_filters.rest_framework import DjangoFilterBackend
+# except ImportError:
+#     # Older versions of DRF and django_filters
+#     from rest_framework.filters import DjangoFilterBackend
 from django.core.exceptions import FieldDoesNotExist
 
 try:
@@ -113,8 +114,8 @@ def viewset_factory(endpoint):
 
     for filter_type, backend in (
         ('filter_fields', DjangoFilterBackend),
-        ('search_fields', filters.SearchFilter),
-        ('ordering_fields', filters.OrderingFilter),
+        ('search_fields', SearchFilter),
+        ('ordering_fields', OrderingFilter),
     ):
 
         if getattr(endpoint, filter_type, None) is not None:

@@ -4,6 +4,11 @@ from rest_framework.permissions import AllowAny
 from rest_framework import filters, pagination
 from rest_framework.serializers import CharField, IntegerField
 from rest_framework.viewsets import ModelViewSet
+try:
+    from django_filters.rest_framework import DjangoFilterBackend
+except ImportError:
+    # Older versions of DRF and django_filters
+    from rest_framework.filters import DjangoFilterBackend
 
 from ..models import Product, Category, PRODUCT_TYPES
 
@@ -105,7 +110,7 @@ class EndpointTestCase(TestCase):
         viewset = self.endpoint.get_viewset()
         self.assertEqual(viewset.serializer_class, self.endpoint.get_serializer())
 
-        for backend in (filters.DjangoFilterBackend, filters.SearchFilter):
+        for backend in (DjangoFilterBackend, filters.SearchFilter):
             self.assertNotIn(backend, viewset.filter_backends)
 
         self.assertEqual(viewset.__name__, 'ProductViewSet')
