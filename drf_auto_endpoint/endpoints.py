@@ -188,8 +188,10 @@ class BaseEndpoint(object):
         if self.serializer is None:
             if self.viewset is None:
                 self.serializer = serializer_factory(self)
+            elif isinstance(self.viewset, type):
+                self.serializer = self.viewset.get_serializer_class(self.viewset)
             else:
-                self.serializer = self.viewset.serializer_class
+                self.serializer = self.viewset.get_serializer_class()
 
         if data is None:
            return self.serializer

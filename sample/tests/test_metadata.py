@@ -17,6 +17,9 @@ class TestMetadata(TestCase):
             serializer_class = DummyProductSerializer
             endpoint = ProductEndpoint(fields=['name'])
 
+            def get_serializer_class(self):
+                return self.serializer_class
+
         view = MockView()
         metadata = metadata_mixin.determine_metadata(request, view)
         self.assertIn('placeholder', metadata[0]['ui'])
@@ -28,6 +31,9 @@ class TestMetadata(TestCase):
         class MockView(object):
             serializer_class = DummyProductSerializer
             endpoint = ProductEndpoint(serializer=DummyProductSerializer)
+
+            def get_serializer_class(self):
+                return self.serializer_class
 
         view = MockView()
         try:
@@ -41,6 +47,9 @@ class TestMetadata(TestCase):
 
         class MockView(object):
             serializer_class = DummyProductSerializer
+
+            def get_serializer_class(self):
+                return self.serializer_class
 
         view = MockView()
         try:
