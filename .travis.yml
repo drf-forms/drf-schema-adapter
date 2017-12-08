@@ -6,7 +6,7 @@ python:
 env:
   - DJANGO_DRF=django110-drf35
 # command to install dependencies
-install: "pip install -r requirements.txt"
+install: "pip install tox"
 # command to run tests
 script:
   - export TOX_ENV=py${TRAVIS_PYTHON_VERSION/./}-${DJANGO_DRF}
