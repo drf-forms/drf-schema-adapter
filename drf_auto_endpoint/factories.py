@@ -15,6 +15,7 @@ except ImportError:
     from django.db.models.fields.related import ManyToOneRel, OneToOneRel
 
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.db.models.fields import NOT_PROVIDED
 
 
@@ -84,6 +85,40 @@ def serializer_factory(endpoint=None, fields=None, base_class=None, model=None):
     return type(cls_name, (NullToDefaultMixin, base_class, ), cls_attrs)
 
 
+def pagination_factory(endpoint):
+    pg_cls_name = '{}Pagination'.format(endpoint.model.__name__)
+
+    page_size = getattr(endpoint, 'page_size', None)
+    pg_cls_attrs = {
+        'page_size': page_size if page_size is not None else settings.REST_FRAMEWORK.get('PAGE_SIZE', 50),
+    }
+
+    if hasattr(endpoint, 'pagination_template'):
+        pg_cls_attrs['template'] = endpoint.pagination_template
+
+    BasePagination = getattr(endpoint, 'base_pagination', pagination.PageNumberPagination)
+    if issubclass(BasePagination, pagination.PageNumberPagination):
+        pg_cls_attrs['page_size_query_param'] = getattr(endpoint, 'page_size_query_param', 'page_size')
+        for param in ('django_paginator_class', 'page_query_param', 'max_page_size', 'last_page_string',
+                      'page_size'):
+            if getattr(endpoint, param, None) is not None:
+                pg_cls_attrs[param] = getattr(endpoint, param)
+    elif issubclass(BasePagination, pagination.LimitOffsetPagination):
+        pg_cls_attrs.pop('page_size')
+        for param in ('default_limit', 'limit_query_param', 'offset_query_param', 'max_limit'):
+            if getattr(endpoint, param, None) is not None:
+                pg_cls_attrs[param] = getattr(endpoint, param)
+    elif issubclass(BasePagination, pagination.CursorPagination):
+        for param in ('page_size', 'cursor_query_param', 'ordering'):
+            if getattr(endpoint, param, None) is not None:
+                pg_cls_attrs[param] = getattr(endpoint, param)
+    else:
+        raise ImproperlyConfigured('base_pagination_class needs to be a subclass of one of the following:'
+                                   'PageNumberPagination, LimitOffsetPagination, CursorPagination')
+
+    return type(pg_cls_name, (BasePagination, ), pg_cls_attrs)
+
+
 def viewset_factory(endpoint):
     from .endpoints import BaseEndpoint
 
@@ -135,16 +170,7 @@ def viewset_factory(endpoint):
     if hasattr(endpoint, 'pagination_class'):
         cls_attrs['pagination_class'] = endpoint.pagination_class
     else:
-        pg_cls_name = '{}Pagination'.format(endpoint.model.__name__)
-        page_size = getattr(endpoint, 'page_size', None)
-        pg_cls_attrs = {
-            'page_size': page_size if page_size is not None else settings.REST_FRAMEWORK.get('PAGE_SIZE', 50),
-            'page_size_query_param': getattr(endpoint, 'page_size_query_param', 'page_size'),
-            'max_page_size': getattr(endpoint, 'max_age_size', settings.REST_FRAMEWORK.get('PAGE_SIZE', 50) * 5)
-        }
-        pg_cls = type(pg_cls_name, (pagination.PageNumberPagination, ), pg_cls_attrs)
-
-        cls_attrs['pagination_class'] = pg_cls
+        cls_attrs['pagination_class'] = pagination_factory(endpoint)
 
     rv = type(cls_name, (endpoint.get_base_viewset(),), cls_attrs)
 
