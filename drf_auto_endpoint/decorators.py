@@ -2,6 +2,7 @@ from django.utils.module_loading import import_string
 
 from inflector import Inflector
 
+from rest_framework.response import Response
 from rest_framework.serializers import PrimaryKeyRelatedField
 
 from .app_settings import settings
@@ -85,25 +86,35 @@ def wizard(target_model, serializer=None, icon_class=None, btn_class=None, text=
     kwargs['languages'] = get_languages()
 
     def decorator(func):
-        # cls = getattr(inspect.getmodule(func),
-        #               func.__qualname__.split('.<locals>', 1)[0].rsplit('.', 1)[0])
-        func.bind_to_methods = [kwargs.pop('method', 'POST'), ]
-        func.action_type = meta_type
+
+        def wizard_func(self, request, *args, **kwargs):
+            Serializer = serializer
+            serializer_instance = Serializer(data=request.data)
+
+            if not serializer_instance.is_valid():
+                return Response(serializer_instance.errors, status=400)
+
+            request.validated_data = serializer_instance.validated_data
+
+            return func(self, request, *args, **kwargs)
+
+        wizard_func.bind_to_methods = [kwargs.pop('method', 'POST'), ]
+        wizard_func.action_type = meta_type
         if meta_type == 'custom':
-            func.detail = True
+            wizard_func.detail = True
         else:
-            func.detail = False
-        func.wizard = True
-        func.action_kwargs = action_kwargs(icon_class, btn_class, text, func, kwargs)
-        func.kwargs = {}
+            wizard_func.detail = False
+        wizard_func.wizard = True
+        wizard_func.action_kwargs = action_kwargs(icon_class, btn_class, text, wizard_func, kwargs)
+        wizard_func.kwargs = {}
         if target_model is not None:
-            func.action_kwargs['params']['model'] = '{}/{}/{}'.format(
+            wizard_func.action_kwargs['params']['model'] = '{}/{}/{}'.format(
                 target_model._meta.app_label.lower(),
                 inflector.pluralize(target_model._meta.model_name.lower()),
-                func.__name__
+                wizard_func.__name__
             )
-        func.serializer = serializer
+        wizard_func.serializer = serializer
 
-        return Adapter.adapt_wizard(func)
+        return Adapter.adapt_wizard(wizard_func)
 
     return decorator
