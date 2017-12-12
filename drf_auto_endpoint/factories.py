@@ -96,7 +96,7 @@ def pagination_factory(endpoint):
     if hasattr(endpoint, 'pagination_template'):
         pg_cls_attrs['template'] = endpoint.pagination_template
 
-    BasePagination = getattr(endpoint, 'base_pagination', pagination.PageNumberPagination)
+    BasePagination = getattr(endpoint, 'base_pagination_class', pagination.PageNumberPagination)
     if issubclass(BasePagination, pagination.PageNumberPagination):
         pg_cls_attrs['page_size_query_param'] = getattr(endpoint, 'page_size_query_param', 'page_size')
         for param in ('django_paginator_class', 'page_query_param', 'max_page_size', 'last_page_string',
