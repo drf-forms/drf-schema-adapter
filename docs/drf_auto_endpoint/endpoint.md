@@ -293,7 +293,8 @@ calendar appointment would require the "target date".
 
 Wizard's are also somewhat similar to 
 v[DRF's ViewSet method decorator `@detail_route`](http://www.django-rest-framework.org/api-guide/viewsets/#marking-extra-actions-for-routing)
-with the difference that they use an extra serializer to validate the data sent from the frontend.
+with the difference that they use an extra serializer to validate the data sent from the frontend. This validated data
+will be set to the `validated_data` attribute on the `request` passed to the wizard method.
 
 `@wizard` decorators (unlike the previous 2) take 2 required arguments:
 
