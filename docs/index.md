@@ -39,7 +39,7 @@ You can see a demo application running at
 
 ### Auto endpoints
 
-Thanks to `drf_auto_endpoint`, **DRF-schema-adapter** helps you register endpints as
+Thanks to `drf_auto_endpoint`, **DRF-schema-adapter** helps you register endpoints as
 easily as registering basic admin classes.
 
 In order to register endpoints, you'll have to import `drf_auto_endpoint`'s router as
