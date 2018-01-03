@@ -21,7 +21,7 @@ class EndpointRouter(DefaultRouter):
                  serializer=None, filter_fields=None, read_only=False, viewset=None,
                  search_fields=None, ordering_fields=None, page_size=None, base_viewset=None,
                  base_name=None, fields_annotation=None, fielsets=None, base_serializer=None,
-                 list_me=True, **kwargs):
+                 list_me=True, prefix='', **kwargs):
 
         if (endpoint is None or isinstance(endpoint, type)):
             extra = {}
@@ -60,7 +60,7 @@ class EndpointRouter(DefaultRouter):
         super(EndpointRouter, self).register(
             url,
             endpoint.get_viewset(),
-            base_name=base_name,
+            base_name=prefix + base_name,
             **kwargs
         )
 
