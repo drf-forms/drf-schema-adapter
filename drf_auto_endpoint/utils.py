@@ -89,7 +89,7 @@ def get_field_dict(field, serializer, translated_fields=None, fields_annotation=
         except FieldDoesNotExist:
             pass
 
-    if default and default != empty:
+    if default and default != empty and not callable(default):
         rv['default'] = default
     elif default == empty and hasattr(model_field, 'default'):
         default = model_field.default
