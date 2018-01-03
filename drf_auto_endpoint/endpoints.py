@@ -340,7 +340,7 @@ class BaseEndpoint(object):
             if getattr(action, 'action_type', None) == 'custom':
                 custom_action = {
                     'url': reverse('{}-{}'.format(self.get_url(), action.__name__.lower().replace('_', '-')),
-                                   kwargs={'pk': ':id'}),
+                                   kwargs={getattr(viewset, 'lookup_field', 'pk'): ':id'}),
                     'verb': action.bind_to_methods[0],
                 }
                 custom_action.update(action.action_kwargs)
