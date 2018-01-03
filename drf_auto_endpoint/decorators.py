@@ -114,6 +114,7 @@ def wizard(target_model, serializer=None, icon_class=None, btn_class=None, text=
                 wizard_func.__name__
             )
         wizard_func.serializer = serializer
+        wizard_func.__name__ = func.__name__
 
         return Adapter.adapt_wizard(wizard_func)
 
