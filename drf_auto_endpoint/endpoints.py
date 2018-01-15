@@ -57,7 +57,7 @@ class EndpointMetaClass(type):
                                 inflector = Inflector(inflector_language)
 
                             getattr(new_class, key).action_kwargs['params']['model'] = '{}/{}/{}'.format(
-                                model._meta.app_label.lower(),
+                                model._meta.app_label.lower().replace('_', '-'),
                                 inflector.pluralize(model._meta.model_name.lower()),
                                 value.__name__
                             )
@@ -118,12 +118,13 @@ class BaseEndpoint(object):
     model = None
     fields = None
     exclude_fields = ()
-    serializer = None
+    extra_fields = None
 
+    serializer = None
     fieldsets = None
+
     list_display = None
     list_editable = None
-    extra_fields = None
 
     permission_classes = None
     filter_fields = None

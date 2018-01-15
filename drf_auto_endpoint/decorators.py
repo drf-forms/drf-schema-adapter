@@ -105,16 +105,17 @@ def wizard(target_model, serializer=None, icon_class=None, btn_class=None, text=
         else:
             wizard_func.detail = False
         wizard_func.wizard = True
+        wizard_func.__name__ = func.__name__
         wizard_func.action_kwargs = action_kwargs(icon_class, btn_class, text, wizard_func, kwargs)
         wizard_func.kwargs = {}
         if target_model is not None:
             wizard_func.action_kwargs['params']['model'] = '{}/{}/{}'.format(
-                target_model._meta.app_label.lower(),
+                target_model._meta.app_label.lower().replace('_', '-'),
                 inflector.pluralize(target_model._meta.model_name.lower()),
                 wizard_func.__name__
             )
+            print(wizard_func.action_kwargs['params']['model'])
         wizard_func.serializer = serializer
-        wizard_func.__name__ = func.__name__
 
         return Adapter.adapt_wizard(wizard_func)
 
