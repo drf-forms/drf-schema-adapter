@@ -60,8 +60,8 @@ class Command(SerializerExporterWithFields, BaseCommand):
 
                         viewset = BogusViewSet()
                     if adapter.works_with in ['viewset', 'both']:
-                        viewset, model_name, application_name = self.get_viewset_for_basename(endpoint,
-                                                                                              dasherize=adapter.dasherize)
+                        viewset, model_name, application_name = \
+                            self.get_viewset_for_basename(endpoint, dasherize=adapter.dasherize)
                         viewset = viewset()
                 except ModelNotFoundException as e:
                     raise CommandError('No viewset found for {}'.format(e.model))
@@ -86,6 +86,14 @@ class Command(SerializerExporterWithFields, BaseCommand):
                             break
 
                 if adapter.works_with in ['serializer', 'both']:
+                    base = None
+                    if model and model.__bases__[0].__name__ != 'django.db.models.base' and \
+                            model.__bases__[0].__name__ != 'Model' and len(model.__bases__) == 1 and \
+                            not model.__bases__[0]._meta.abstract:
+                        base = (
+                            model.__bases__[0].__name__.lower(),
+                            model.__bases__[0].__module__.split('.')[0].lower().replace('_', '-')
+                        )
                     context = {
                         'endpoint': endpoint,
                         'model_name': model_name,
@@ -96,6 +104,7 @@ class Command(SerializerExporterWithFields, BaseCommand):
                         'hasMany': hasMany,
                         'target_app': target_app,
                         'api_base': settings.BACK_API_BASE,
+                        'base': base,
                     }
 
                     adapter.write_to_file(application_name, model_name, context, options['noinput'])

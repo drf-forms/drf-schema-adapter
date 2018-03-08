@@ -4,8 +4,11 @@
 // you can make changes in app/models/{{application_name}}/{{model_name}}.js
 // or regenerate this file by running
 // `./manage.py export{%if target_app %} --target_app {{target_app}}{% endif %} {{endpoint}}`
-
-import Model from 'ember-data/model';
+{% if base %}
+  import Model from '../../{{base.1}}/{{base.0}}';
+{% else %}
+  import Model from 'ember-data/model';
+{% endif %}
 {% if fields|length > 0 %}
 import attr from 'ember-data/attr';
 {% endif %}
