@@ -1,3 +1,4 @@
+from django.core.exceptions import FieldDoesNotExist
 from django.utils.module_loading import import_string
 
 from rest_framework.serializers import PrimaryKeyRelatedField, ManyRelatedField, ModelSerializer, ListSerializer
@@ -78,13 +79,25 @@ class SerializerExporterWithFields(BaseSerializerExporter):
         }
         if isinstance(field, PrimaryKeyRelatedField) or isinstance(field, ManyRelatedField) \
                 or isinstance(field, ModelSerializer):
-            if model is None:
-                field_item['related_model'] = field.queryset.model._meta.model_name.lower()
+
+            model_field = None
+            if model is not None:
+                try:
+                    model_field = model._meta.get_field(field_name)
+                except FieldDoesNotExist:
+                    pass
+
+            if model_field is None:
+                if isinstance(field, PrimaryKeyRelatedField):
+                    queryset = field.queryset
+                else:
+                    queryset = field._kwargs['child_relation'].queryset
+
+                field_item['related_model'] = queryset.model._meta.model_name.lower()
                 field_item['app'] = target_app if target_app is not None else \
-                    field.queryset.model._meta.app_label.lower()
+                    queryset.model._meta.app_label.lower()
                 relationships.append(field_item)
             else:
-                model_field = model._meta.get_field(field_name)
                 field_item['related_model'] = model_field.related_model._meta.model_name.lower()
                 field_item['app'] = target_app if target_app is not None else \
                     model_field.related_model._meta.app_label.lower()
