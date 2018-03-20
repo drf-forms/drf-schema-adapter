@@ -93,10 +93,13 @@ class SerializerExporterWithFields(BaseSerializerExporter):
                 else:
                     queryset = field._kwargs['child_relation'].queryset
 
-                field_item['related_model'] = queryset.model._meta.model_name.lower()
-                field_item['app'] = target_app if target_app is not None else \
-                    queryset.model._meta.app_label.lower()
-                relationships.append(field_item)
+                if queryset is not None:
+                    field_item['related_model'] = queryset.model._meta.model_name.lower()
+                    field_item['app'] = target_app if target_app is not None else \
+                        queryset.model._meta.app_label.lower()
+                    relationships.append(field_item)
+                else:
+                    field_item['type'] = 'CharField'
             else:
                 field_item['related_model'] = model_field.related_model._meta.model_name.lower()
                 field_item['app'] = target_app if target_app is not None else \
