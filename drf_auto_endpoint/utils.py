@@ -99,17 +99,21 @@ def get_field_dict(field, serializer, translated_fields=None, fields_annotation=
             rv['default'] = default
 
     if isinstance(field_instance, (relations.PrimaryKeyRelatedField, relations.ManyRelatedField)):
+        related_model = None
         if model_field:
             related_model = model_field.related_model
             rv['type'] = settings.WIDGET_MAPPING[model_field.__class__.__name__]
-        else:
+        elif hasattr(field_instance, 'related_model'):
             related_model = field_instance.queryset.model
+
         if model_field and model_field.__class__.__name__ == 'ManyToManyRel':
             rv['validation']['required'] = False
-        rv['related_endpoint'] = '{}/{}'.format(
-            related_model._meta.app_label,
-            related_model._meta.model_name.lower()
-        )
+
+        if related_model is not None:
+            rv['related_endpoint'] = '{}/{}'.format(
+                related_model._meta.app_label,
+                related_model._meta.model_name.lower()
+            )
     elif hasattr(field_instance, 'choices'):
         rv['type'] = settings.WIDGET_MAPPING['choice']
         rv['choices'] = [
