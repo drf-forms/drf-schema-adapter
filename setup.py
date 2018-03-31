@@ -7,7 +7,7 @@ try:
     README = pypandoc.convert_file('README.md', 'rst')
 except OSError:
     # pandoc is not installed, fallback to using raw contents
-    README= open('README.md').read()
+    README = open('README.md').read()
 
 
 # allow setup.py to be run from any path
