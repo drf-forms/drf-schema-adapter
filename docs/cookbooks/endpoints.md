@@ -382,3 +382,43 @@ class ProductEndpoint(Endpoint):
 As you can see, again here, we only had to define whatever was not standard in
 our serializer, we didn't have to declare a `Meta` class as drf-schema-adapter
 does this for us.
+
+But wait... since we don't have to manually create a full seriliazer for
+the `Product` or `Category` endpoints, it is a bit sad to have to create one
+(very similar to the one used on the endpoint) for the nested `Category` inside
+the `Product` endpoint!
+
+Indeed and we don't *have* to create it manually we can use the same factory
+function invoke by `Endpooint` classes in order to create one for us.
+
+```python
+## catalog/endpoints.py
+
+from rest_framework import viewsets, serializers
+
+from drf_auto_endpoint.endpoints import Endpoint
+from drf_auto_endpoint.factories import serializer_factory
+from drf_auto_endpoint.router import register
+
+from .models import Category, Product
+
+...
+
+# class SimpleCategorySerializer(serializers.ModelSerializer):
+# 
+#     class Meta:
+#         model = Category
+#         fields = (
+#             'id',
+#             'name',
+#         )
+
+
+class ProductSerializer(serializers.ModelSerializer):
+
+    category = serializer_factory(model=Category, fields=('id', 'name'))()
+```
+
+The call `serializer_factory` function returns a serializer class for the
+`Category` model. It is therefore important to remember to instanciate the
+value returned from that call (notice the `()` at the end of the class)
