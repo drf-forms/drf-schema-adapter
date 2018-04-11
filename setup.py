@@ -5,9 +5,13 @@ try:
     import pypandoc
 
     README = pypandoc.convert_file('README.md', 'rst')
+except ImportError:
+    with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
+    README = readme.read()
 except OSError:
     # pandoc is not installed, fallback to using raw contents
     README = open('README.md').read()
+
 
 
 # allow setup.py to be run from any path
