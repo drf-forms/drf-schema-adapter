@@ -103,7 +103,7 @@ def get_field_dict(field, serializer, translated_fields=None, fields_annotation=
         if model_field:
             related_model = model_field.related_model
             rv['type'] = settings.WIDGET_MAPPING[model_field.__class__.__name__]
-        elif hasattr(field_instance, 'related_model'):
+        elif hasattr(field_instance, 'queryset') and field_instance.queryset is not None:
             related_model = field_instance.queryset.model
 
         if model_field and model_field.__class__.__name__ == 'ManyToManyRel':
