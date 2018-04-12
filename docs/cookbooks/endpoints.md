@@ -421,4 +421,4 @@ class ProductSerializer(serializers.ModelSerializer):
 
 The call `serializer_factory` function returns a serializer class for the
 `Category` model. It is therefore important to remember to instanciate the
-value returned from that call (notice the `()` at the end of the class)
+value returned from that call (notice the `()` at the end of the call)
