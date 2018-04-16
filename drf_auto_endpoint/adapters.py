@@ -399,3 +399,31 @@ class ReactJsonSchemaAdapter(BaseAdapter):
         config['ui'] = ui
 
         return config
+
+
+class TypesFiltersAdapter(BaseAdapter):
+    """
+    Custom adapter from DRF-schema-adapter to provide fields, their types
+    and if they are filter fields within endpoint OPTIONS.
+    """
+
+    metadata_info = [
+        MetaDataInfo('fields', GETTER, []),
+        MetaDataInfo('viewset', GETTER, []),
+    ]
+
+    def render(self, config):
+        options = OrderedDict()
+        options['name'] = config['name']
+        options['description'] = config['description']
+        options['renders'] = config['renders']
+        options['parses'] = config['parses']
+        options['fields'] = OrderedDict()
+
+        for field in config['fields']:
+            options['fields'][field['key']] = {
+                'type': field['type'],
+                'filter': field['key'] in config['viewset'].filter_fields
+            }
+
+        return options

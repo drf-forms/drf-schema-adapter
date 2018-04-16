@@ -504,6 +504,64 @@ not just single forms; it looks like this.
 }
 ```
 
+### TypesFiltersAdapter
+
+The `TypesFiltersAdapter` provides a list of all fields, their types, and if they are a filter field.
+
+To use the `TypesFiltersAdapter`, enable it in your settings.
+
+```
+## settings.py
+
+...
+DRF_AUTO_METADATA_ADAPTER = 'drf_auto_endpoint.adapters.TypesFiltersAdapter'
+```
+
+It provides the standard DRF OPTIONS along with a `fields` structure:
+
+```
+{
+    "name": "Crsp Msf List",
+    "description": "",
+    "renders": [
+        "application/json",
+        "text/html"
+    ],
+    "parses": [
+        "application/json",
+        "application/x-www-form-urlencoded",
+        "multipart/form-data"
+    ],
+    "fields": {
+        "ticker": {
+            "filter": true,
+            "type": "text"
+        },
+        "date": {
+            "filter": true,
+            "type": "date"
+        },
+        "bidlo": {
+            "filter": false,
+            "type": "number"
+        },
+        "askhi": {
+            "filter": false,
+            "type": "number"
+        },
+        "price": {
+            "filter": false,
+            "type": "number"
+        },
+        "volume": {
+            "filter": false,
+            "type": "number"
+        },
+    }
+}
+```
+
+
 ## Creating a custom adapter
 
 When creating a custom adapter, the first thing you'll want to do is import the base class and tools you will need:
