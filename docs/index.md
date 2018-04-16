@@ -16,7 +16,7 @@ frontend tools it can even help you to build a full-fledge admin.
 | **Django 1.10** | DRF 3.4+ | DRF 3.4+ | DRF 3.4+ | DRF 3.4+ |
 | **Django 1.11** | DRF 3.4+ | DRF 3.4+ | DRF 3.4+ | DRF 3.4+ |
 | **Django 2.0** | No | No | DRF 3.7+ | DRF 3.7+ |
-| **Master** | No | No | DRF 3.4+ | DRF 3.4+ |
+| **Master** | No | No | DRF 3.7+ | DRF 3.7+ |
 
 ## Installation
 
