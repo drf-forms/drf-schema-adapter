@@ -108,6 +108,7 @@ def wizard(target_model, serializer=None, icon_class=None, btn_class=None, text=
 
             return func(self, request, *args, **kwargs)
 
+        wizard_func.__name__ = func.__name__
         if meta_type == 'custom':
             detail = True
         else:
@@ -119,7 +120,6 @@ def wizard(target_model, serializer=None, icon_class=None, btn_class=None, text=
             wizard_func.detail = detail
         wizard_func.action_type = meta_type
         wizard_func.wizard = True
-        wizard_func.__name__ = func.__name__
         wizard_func.action_kwargs = action_kwargs(icon_class, btn_class, text, wizard_func, kwargs)
         wizard_func.kwargs = {}
         if target_model is not None:
