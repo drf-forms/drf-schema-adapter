@@ -23,7 +23,7 @@ def custom_action(method='GET', type='request', icon_class=None, btn_class=None,
         if action is not None:
             func = action(methods=[method], detail=True, **kwargs)(func)
         else:
-            func.detail=True
+            func.detail = True
             func.bind_to_methods = [method]
         func.action_type = 'custom'
         func.action_kwargs = action_kwargs(icon_class, btn_class, text, func, kwargs)
@@ -115,6 +115,7 @@ def wizard(target_model, serializer=None, icon_class=None, btn_class=None, text=
             detail = False
         if action is not None:
             wizard_func = action(methods=[kwargs.pop('method', 'post')], detail=detail, **kwargs)  # NoQA
+            wizard_func.__name__ = func.__name__
         else:
             wizard_func.bind_to_methods = [kwargs.pop('method', 'POST'), ]
             wizard_func.detail = detail
