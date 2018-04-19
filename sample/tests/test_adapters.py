@@ -62,7 +62,7 @@ class AdapterTestCase(TestCase):
     def test_ember_adapter(self):
         adapter = EmberAdapter()
         ember_input = dict(**self._input)
-        ember_input['fields'][0]["related_endpoint"] = "test"
+        ember_input['fields'][0]["related_endpoint"] = {"singular": "test"}
         output = adapter(ember_input)
 
         expected = {

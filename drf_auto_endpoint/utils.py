@@ -2,12 +2,18 @@ from django.conf import settings as django_settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import FieldDoesNotExist
 from django.db.models.fields import NOT_PROVIDED
+from django.utils.module_loading import import_string
 from django.utils.text import capfirst
+
+from inflector import Inflector
 
 from rest_framework import serializers, relations
 from rest_framework.fields import empty
 
 from .app_settings import settings
+
+inflector_language = import_string(settings.INFLECTOR_LANGUAGE)
+inflector = Inflector(inflector_language)
 
 
 def reverse(*args, **kwargs):
@@ -110,10 +116,12 @@ def get_field_dict(field, serializer, translated_fields=None, fields_annotation=
             rv['validation']['required'] = False
 
         if related_model is not None:
-            rv['related_endpoint'] = '{}/{}'.format(
-                related_model._meta.app_label,
-                related_model._meta.model_name.lower()
-            )
+            rv['related_endpoint'] = {
+                'app': related_model._meta.app_label,
+                'singular': related_model._meta.model_name.lower(),
+                'plural': inflector.pluralize(related_model._meta.model_name.lower())
+            }
+
     elif hasattr(field_instance, 'choices'):
         rv['type'] = settings.WIDGET_MAPPING['choice']
         rv['choices'] = [
