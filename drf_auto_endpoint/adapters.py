@@ -183,8 +183,9 @@ class EmberAdapter(BaseAdapter):
             new_field['extra']['choices'] = field['choices']
 
         if 'related_endpoint' in field:
-            new_field['extra']['related_model'] = field['related_endpoint'].replace('_', '-')
-
+            new_field['extra']['related_model'] = '/'.join(
+                filter(bool, [field['related_endpoint'].get('app'), field['related_endpoint'].get('singular')])
+            ).replace('_', '-')
         if 'placeholder' in field.get('ui', {}):
             new_field['extra']['placeholder'] = field['ui']['placeholder']
 
@@ -300,9 +301,6 @@ class ReactJsonSchemaAdapter(BaseAdapter):
         if 'choices' in field:
             new_field['schema']['enum'] = [x[0] for x in field['choices']]
             new_field['schema']['enumNames'] = [x[1] for x in field['choices']]
-
-        # if 'related_endpoint' in field:
-        #     new_field['extra']['related_model'] = field['related_endpoint'].replace('_', '-')
 
         if 'placeholder' in field['ui']:
             new_field['ui']['ui:placeholder'] = field['ui']['placeholder']

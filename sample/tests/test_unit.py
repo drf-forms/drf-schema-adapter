@@ -71,7 +71,7 @@ class EndpointTestCase(TestCase):
             self.assertIn('extra', field_dict)
             if field == 'category':
                 self.assertIn('related_endpoint', field_dict)
-                self.assertEqual(field_dict['related_endpoint'], 'sample/category')
+                self.assertEqual(field_dict['related_endpoint'], {'app': 'sample', 'singular': 'category', 'plural': 'categories'})
                 self.assertNotIn('choices', field_dict)
             elif field == 'product_type':
                 self.assertIn('choices', field_dict)
