@@ -82,7 +82,11 @@ def serializer_factory(endpoint=None, fields=None, base_class=None, model=None):
             except FieldDoesNotExist:
                 cls_attrs[meta_field] = serializers.ReadOnlyField()
 
-    return type(cls_name, (NullToDefaultMixin, base_class, ), cls_attrs)
+    try:
+        return type(cls_name, (NullToDefaultMixin, base_class, ), cls_attrs)
+    except TypeError:
+        # MRO issue, let's try the other way around
+        return type(cls_name, (base_class, NullToDefaultMixin, ), cls_attrs)
 
 
 def pagination_factory(endpoint):
