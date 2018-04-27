@@ -113,12 +113,14 @@ def wizard(target_model, serializer=None, icon_class=None, btn_class=None, text=
             detail = True
         else:
             detail = False
+
         if action is not None:
-            wizard_func = action(methods=[kwargs.pop('method', 'post')], detail=detail, **kwargs)  # NoQA
+            wizard_func = action(methods=[kwargs.pop('method', 'post')], detail=detail, **kwargs)(wizard_func)  # NoQA
             wizard_func.__name__ = func.__name__
         else:
             wizard_func.bind_to_methods = [kwargs.pop('method', 'POST'), ]
             wizard_func.detail = detail
+
         wizard_func.action_type = meta_type
         wizard_func.wizard = True
         wizard_func.action_kwargs = action_kwargs(icon_class, btn_class, text, wizard_func, kwargs)
@@ -129,7 +131,6 @@ def wizard(target_model, serializer=None, icon_class=None, btn_class=None, text=
                 inflector.pluralize(target_model._meta.model_name.lower()),
                 wizard_func.__name__
             )
-            print(wizard_func.action_kwargs['params']['model'])
         wizard_func.serializer = serializer
 
         return Adapter.adapt_wizard(wizard_func)
