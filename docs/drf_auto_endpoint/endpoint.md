@@ -1,13 +1,14 @@
 # The `Endpoint` class
 
-As with Django's `ModelAdmin` class you can also define your own `Endpoint` class and
-register it with the router instead of registering a model.
+As with Django's `ModelAdmin` class you can also define your own `Endpoint`
+class and register it with the router instead of registering a model.
 
 In simple terms, `Endpoint`'s are a wrapper around a DRF's `ModelViewSet` and
 `ModelSerializer`.
 
-**DRF-Schema-Adapter** allows for auto-discovery of `Endpoint`'s located in `endpoints.py` file. You can
-either register them directly on the `router` or use the `@register` decorator.
+**DRF-Schema-Adapter** allows for auto-discovery of `Endpoint`'s located in
+`endpoints.py` file. You can either register them directly on the `router` or use
+the `@register` decorator.
 
 ```
 # my_app/endpoints.py
@@ -53,21 +54,22 @@ The `Model` class the endpoint should represent
 
 *defaults to all fields from the model*
 
-A tuple or list of field that should be present. This is the same attribute as what you would give
-to a `ModelSerializer`'s Meta class.
+A tuple or list of field that should be present. This is the same attribute as
+what you would give to a `ModelSerializer`'s Meta class.
 
 ### `extra_fields`
 
 *defaults to an empty list*
 
-A tuple or list of extra fields that are not detected by the default `Endpoint` class. This is generally
-used to add model `@property`'s to your serializer.
+A tuple or list of extra fields that are not detected by the default `Endpoint`
+class. This is generally used to add model `@property`'s to your serializer.
 
 ### `include_str`
 
 *default:* `True`
 
-Boolean indicated whether or not `__str__` should be included in the automatically-generated list of fields.
+Boolean indicated whether or not `__str__` should be included in the
+automatically-generated list of fields.
 
 ### `read_only`
 
@@ -88,45 +90,48 @@ Similar to the `permission_classes` attribute you would use on a
 *default*: `ModelSerializer` (from `settings.DRF_AUTO_BASE_SERIALIZER`)
 
 `Endpoint`'s will automatically generate serializers based on `ModelSerializer`.
-You can override this behavior and pass in your own `base_serializer` tha will be used to generate
-the serializer associated with the `Endpoint`.
+You can override this behavior and pass in your own `base_serializer` tha will be
+used to generate the serializer associated with the `Endpoint`.
 
-If all your `Endpoint`'s are going to be using the same `base_serializer`, you may also want to change
-the default `DRF_AUTO_BASE_SERIALIZER` in your settings.
+If all your `Endpoint`'s are going to be using the same `base_serializer`, you may
+also want to change the default `DRF_AUTO_BASE_SERIALIZER` in your settings.
 
 ### `serializer`
 
 *default:* `None`
 
-Instead of letting the `Endpoint` automatically generate a serializer you can pass in a serializer class
-of your own using the `serializer` attribute
+Instead of letting the `Endpoint` automatically generate a serializer you can
+pass in a serializer class of your own using the `serializer` attribute
 
 
 ### `base_viewset`
 
 *default:* `ReadOnlyModelViewSet` *(if* `read_only = True` *) or* `ModelViewSet`
-(from `settings.DRF_AUTO_BASE_VIEWSET` and `settings.DRF_AUTO_BASE_READONLY_VIEWSET`)
+(from `settings.DRF_AUTO_BASE_VIEWSET` and
+`settings.DRF_AUTO_BASE_READONLY_VIEWSET`)
 
-`Endpoint`'s will automatically generate viewsets based on `ModelViewSet` or `ReadOnlyModelViewSet`.
-You can override this behavior and pass in your own `base_viewset` that will be used to generate
-the viewset associated with the `Endpoint`.
+`Endpoint`'s will automatically generate viewsets based on `ModelViewSet` or
+`ReadOnlyModelViewSet`.
+You can override this behavior and pass in your own `base_viewset` that will be
+used to generate the viewset associated with the `Endpoint`.
 
-If all your `Endpoint`'s are going to be using the same `base_viewset` (readonly or not), you may also
-want to change the default `DRF_AUTO_BASE_VIEWSET` and/or `DRF_AUTO_BASE_READONLY_VIEWSET` in your
-settings.
+If all your `Endpoint`'s are going to be using the same `base_viewset` (readonly
+or not), you may also want to change the default `DRF_AUTO_BASE_VIEWSET` and/or
+`DRF_AUTO_BASE_READONLY_VIEWSET` in your settings.
 
 ### `viewset`
 
 *default:* `None`
 
-Instead of letting the `Endpoint` automatically generate a viewset you can pass in a viewset class
-of your own using the `viewset` attribute.
+Instead of letting the `Endpoint` automatically generate a viewset you can pass
+in a viewset class of your own using the `viewset` attribute.
 
 ### `filter_fields`
 
 *default:* `None`
 
-A list or tuple containing a list of fields the `Endpoint` should be able to filter on.
+A list or tuple containing a list of fields the `Endpoint` should be able to
+filter on.
 Similar to the `filter_fields` attribute you would pass to a ViewSet using a
 [`DjangoFilterBackend`](http://www.django-rest-framework.org/api-guide/filtering/#djangofilterbackend)
 
@@ -134,7 +139,8 @@ Similar to the `filter_fields` attribute you would pass to a ViewSet using a
 
 *default:* `None`
 
-A list or tuple containing a list of textual fields the `Endpoint` should be able to search on.
+A list or tuple containing a list of textual fields the `Endpoint` should be able
+to search on.
 Similar to the `search_fields` attribute you would pass to a ViewSet using a
 [`SearchFilter` backend](http://www.django-rest-framework.org/api-guide/filtering/#searchfilter)
 
@@ -150,25 +156,30 @@ Similar to the `oredering_fields` attribute you would pass to a ViewSet using an
 
 *default:* `None`
 
-An integer representing the number of records that should be present per result page.
+An integer representing the number of records that should be present per result
+page.
 Similiar to the `page_size` attribute you would set on a custom
 [`PageNumberPagination`](http://www.django-rest-framework.org/api-guide/pagination/#pagenumberpagination)
 class.
 
 ### `fieldsets` :warning: Only used by [metadata](./metadata.md)
 
-*defaults to a single fieldset without title containing the same fields as the `fields` attribute*
+*defaults to a single fieldset without title containing the same fields as the
+`fields` attribute*
 
-A list or tuple containing the list of fields to use. Somewhat similar to the list of fields you would
+A list or tuple containing the list of fields to use. Somewhat similar to the list
+of fields you would
 set as
 [`fieldsets` attribute of a `ModelAdmin` class](https://docs.djangoproject.com/en/1.10/ref/contrib/admin/#django.contrib.admin.ModelAdmin.fieldsets)
-while more powerfull as you are free to describe any number of levels of nested records here.
+while more powerfull as you are free to describe any number of levels of nested
+records here.
 
 ### `fields_annotation` :warning: Only used by [metadata](./metadata.md)
 
-*default to an empty dict*
+*defaults to an empty dict*
 
-A dictionary containain field annotations. annotation can be `placeholder` and/or `help`. Those values
+A dictionary containain field annotations. annotation can be `placeholder`
+and/or `help`.
 
 Example:
 ```
@@ -187,88 +198,100 @@ Example:
 
 *defaults to an empty list*
 
-A list or tuple of dictionaries descibing custom actions available on each reacord. You can also declare
-custom actions by using the [`@custom_action`](./endpoint.md#custom-action) or
+A list or tuple of dictionaries descibing custom actions available on each record.
+You can also declare custom actions by using the
+[`@custom_action`](./endpoint.md#custom-action) or
 [`@wizard`](./endpoint.md#wizard) decorators.
-Custom actions declared using any of these 2 decorators will automatically be added to the list of
-`custom_actions` at runtime.
+Custom actions declared using any of these 2 decorators will automatically be
+added to the list of `custom_actions` at runtime.
 
 ### `bulk_actions` :warning: Only used by [metadata](./metadata.md)
 
 *defaults to an empty list*
 
-A list or tuple of dictionaries descibing bulk actions available on a set of reacords. You can also
-declare bulk actions by using the [`@bulk_action`](./endpoint.md#bulk-action) decorator.
-Bulk actions declared using this decorator will automatically be added to the list of `bulk_actions` at
-runtime.
+A list or tuple of dictionaries descibing bulk actions available on a set of
+records. You can also declare bulk actions by using the
+[`@bulk_action`](./endpoint.md#bulk-action) decorator.
+Bulk actions declared using this decorator will automatically be added to the
+list of `bulk_actions` at runtime.
 
 ### `save_twice` :warning: Only used by [metadata](./metadata.md)
 
 *default:* `False`
 
-Used to indicated to the frontend that this model should be saved twice (once before and once after related models) for new records or after having saved the related models for existing records.
-This is useful for models that have a oneToMany
-relationship to a model (let's call it employees) and a foreignKey to that same model (let's call it favourite).
+Used to indicated to the frontend that this model should be saved twice (once
+before and once after related models) for new records or after having saved the
+related models for existing records.
+This is useful for models that have a oneToMany relationship to a model (let's
+call it employees) and a foreignKey to that same model (let's call it favourite).
 
 ### `sortable_by` :warning: Only used by [metadata](./metadata.md)
 
 *default:* `None`
 
-The name of the field by which models in this endpoint can be re-ordered (usually `position`).
+The name of the field by which models in this endpoint can be re-ordered (usually
+`position`).
 
 ### `list_me` :warning: Only used by [metadata](./metadata.md)
 
 *default:* `True`
 
-Whether or not this endpoint should eb listed by the `OPTIONS` call to the api root.
+Whether or not this endpoint should eb listed by the `OPTIONS` call to the api
+root.
 
 ## Decorators for cutom `Endpoint`'s
 
-All decorators accept any number of keyword arguments. Those arguments will be translated into a
-dictionary and made available as such for `OPTIONS` call to their relative `Endpoint` when using
+All decorators accept any number of keyword arguments. Those arguments will be
+translated into a dictionary and made available as such for `OPTIONS` call to
+their relative `Endpoint` when using
 [DRF-schema-adapter's metadata capailities](./metadata.md).
 
-Although, you can pass any number of keyword arguments to the decorator, some of those arguments will
-be interpreted in a special manner:
+Although, you can pass any number of keyword arguments to the decorator, some of
+those arguments will be interpreted in a special manner:
 
 ### Decorator special keyword arguments
 
 #### `method`
 
-This keyword argument will not be added to the dictionary published by [metadata](./metadata.md) but
-will be used instead to determine what HTTP method/verb this action should be linked to. It defaults to
-`'GET'` for custom and bulk actions and `'POST'` for wizard's.
+This keyword argument will not be added to the dictionary published by
+[metadata](./metadata.md) but will be used instead to determine what HTTP
+method/verb this action should be linked to. It defaults to `'GET'` for custom
+and bulk actions and `'POST'` for wizard's.
 
 #### `type`
 
-This keyword argument will be added to the dictonary published by [metadata](./metadata.md) even if not
-provided. It defaults to `'request'` for custom and bulk actions and to to `'wizard'` for wizards.
+This keyword argument will be added to the dictonary published by
+[metadata](./metadata.md) even if not provided. It defaults to `'request'`
+for custom and bulk actions and to to `'wizard'` for wizards.
 
 #### `icon_class`
 
-This keyword argument will be added to the dictonary published by [metadata](./metadata.md) even if not
-provided. It defaults to the value of the `DRF_AUTO_ACTION_ICON_CLASS` setting (`'fa fa-cog'`) by
-default.
+This keyword argument will be added to the dictonary published by
+[metadata](./metadata.md) even if not provided. It defaults to the value of the
+`DRF_AUTO_ACTION_ICON_CLASS` setting (`'fa fa-cog'`) by default.
 
 #### `btn_class`
 
-This keyword argument will be added to the dictonary published by [metadata](./metadata.md) even if not
-provided. It defaults to the value of the `DRF_AUTO_ACTION_BTN_CLASS` setting (`'btn btn-default'`) by
-default.
+This keyword argument will be added to the dictonary published by
+[metadata](./metadata.md) even if not provided. It defaults to the value of the
+`DRF_AUTO_ACTION_BTN_CLASS` setting (`'btn btn-default'`) by default.
 
 #### `text`
 
-This keyword argument will be added to the dictonary published by [metadata](./metadata.md) even if not
-provided. It defaults to the "capfirst'd" name of the decorated method.
+This keyword argument will be added to the dictonary published by
+[metadata](./metadata.md) even if not provided. It defaults to the "capfirst'd"
+name of the decorated method.
 
 ### `@custom_action`
 
 This decorator has somewhat similar properties than
 [DRF's ViewSet method decorator `@detail_route`](http://www.django-rest-framework.org/api-guide/viewsets/#marking-extra-actions-for-routing)
-except it is meant to be use ond `Endpoint`'s and with the added functionality of adding that particular
-method directly to the `custom_actions` of the `Endpoint`.
+except it is meant to be used on `Endpoint`'s and with the added functionality of
+adding that particular method directly to the `custom_actions` of the `Endpoint`
+(used for metadata generation).
 
-Custom actions created with this decorator will also yield two extra property to their output dictionary (metadata):
+Custom actions created with this decorator will also yield two extra property to
+their output dictionary (metadata):
 
 - `url`: the url this action is linked to
 - `verb`: the HTTP verb to be used to call this method
@@ -277,33 +300,35 @@ Custom actions created with this decorator will also yield two extra property to
 
 This decorator has somewhat similar properties than
 [DRF's ViewSet method decorator `@list_route`](http://www.django-rest-framework.org/api-guide/viewsets/#marking-extra-actions-for-routing)
-except it is meant to be used on `Endpoint`'s and with the added functionality of adding that particular
-method directly to the `bulk_actions` of the `Endpoint`.
+except it is meant to be used on `Endpoint`'s and with the added functionality of
+adding that particular method directly to the `bulk_actions` of the `Endpoint`
+(used for metadata generation).
 
-As with the `@custom_action` decorator, bulk actions created with this `@bulk_action` will yield two
-extra property to their output dictionary(metadata):
+As with the `@custom_action` decorator, bulk actions created with this
+`@bulk_action` will yield two extra property to their output dictionary(metadata):
 
 - `url`: the url this action is linked to
 - `verb`: the HTTP verb to be used to call this method
 
 ### `@wizard`
 
-Wizard's are meant to be used for actions that require extra input on the frontend. Like moving a
-calendar appointment would require the "target date".
+Wizard's are meant to be used for actions that require extra input on the
+frontend. Like moving a calendar appointment would require the "target date".
 
 Wizard's are also somewhat similar to 
-v[DRF's ViewSet method decorator `@detail_route`](http://www.django-rest-framework.org/api-guide/viewsets/#marking-extra-actions-for-routing)
-with the difference that they use an extra serializer to validate the data sent from the frontend. This validated data
-will be set to the `validated_data` attribute on the `request` passed to the wizard method.
+[DRF's ViewSet method decorator `@detail_route`](http://www.django-rest-framework.org/api-guide/viewsets/#marking-extra-actions-for-routing)
+with the difference that they use an extra serializer to validate the data sent
+from the frontend. This validated data will be set to the `validated_data`
+attribute on the `request` passed to the wizard method.
 
 `@wizard` decorators (unlike the previous 2) take 2 required arguments:
 
-- target_model: the model class this wizard relates to. This will most likely be the
-same class as the `Endpoint`'s model.
-- serializer: the serializer class used to validate the data comming from the frontend. This serializer will be availaible from inside the method using `EndpointClass.method_name.serializer`
+- serializer: the serializer class used to validate the data comming from the
+frontend. This serializer's `validated_data` will accissible directly on the
+resquest object as `request.validated_data`
 
-Similarly to the other decorators in this package, `@wizard` will yield extra information into their
-metadata output dictionary:
+Similarly to the other decorators in this package, `@wizard` will yield extra
+information into their metadata output dictionary:
 
 - `url`: the url this action is linked to
 - `verb`: the HTTP verb to be used to call this method
