@@ -33,6 +33,7 @@ class Product(models.Model):
 class HowItWorks(models.Model):
 
     name = models.CharField(max_length=255)
+    count = models.PositiveIntegerField(default=0)
 
     class Meta:
         verbose_name = _('How it works')

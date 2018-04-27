@@ -7,7 +7,8 @@ from rest_framework.test import APITestCase
 from .factories import CategoryFactory, ProductFactory, HowItWorksFactory
 from .base import EndpointAPITestCase
 
-from ..views import AbstractHowItWorksViewSet
+from ..models import HowItWorks
+
 from urls import router
 
 
@@ -15,13 +16,13 @@ class ItRendersAPITest(APITestCase):
 
     def _do_test(self):
 
-        response = self.client.get('/api/');
+        response = self.client.get('/api/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response = self.client.options('/api/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.client.get('/api/sample/categories/');
+        response = self.client.get('/api/sample/categories/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response = self.client.options('/api/sample/categories/')
@@ -107,6 +108,48 @@ class HowItWorksAPITest(EndpointAPITestCase, APITestCase):
         super(HowItWorksAPITest, self).test_list_view()
         self.assertTrue(self.called < router._endpoints[self.endpoint_url].viewset.called_counter,
                         router._endpoints[self.endpoint_url].viewset.called_counter)
+
+    def test_custom_action(self):
+        self.test_model.count = 0
+        self.test_model.save()
+        response = self.client.post(
+            '/api/sample/howitworks/{}/increment/'.format(self.test_model.id),
+            {}
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.test_model.refresh_from_db()
+        self.assertEqual(self.test_model.count, 1)
+
+    def test_bulk_action(self):
+        self.test_model.count = 10
+        self.test_model.save()
+
+        other_record = HowItWorksFactory(count=23)
+        other_record.save()
+
+        record_with_zero = HowItWorks(count=0)
+        record_with_zero.save()
+
+        response = self.client.post('/api/sample/howitworks/decrement/', {})
+        self.assertEqual(response.status_code, 204)
+
+        for record, expected in ((self.test_model, 9), (other_record, 22), (record_with_zero, 0)):
+            record.refresh_from_db()
+            self.assertEqual(record.count, expected)
+
+    def test_wizard(self):
+        self.test_model.count = 40
+        self.test_model.save()
+
+        response = self.client.post(
+            '/api/sample/howitworks/{}/add/'.format(self.test_model.id),
+            {'amount': 2}
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.test_model.refresh_from_db()
+        self.assertEqual(self.test_model.count, 42)
 
 
 class PaginationTestCase(APITestCase):

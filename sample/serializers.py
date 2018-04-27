@@ -17,3 +17,11 @@ class ProductSerializer(SampleSerializer):
     class Meta:
         model = Product
         fields = ('name', 'category', 'product_type', )
+
+
+class AddSerializer(serializers.Serializer):
+
+    amount = serializers.IntegerField()
+
+    class Meta:
+        fields = ('amount', )
