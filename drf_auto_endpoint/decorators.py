@@ -81,16 +81,15 @@ def wizard(target_model, serializer=None, icon_class=None, btn_class=None, text=
     needs = []
     fields = []
     Adapter = import_string(settings.METADATA_ADAPTER)
-    for field in serializer.Meta.fields:
-        field_instance = serializer_instance.fields[field]
-        if isinstance(field_instance, PrimaryKeyRelatedField):
-            model = field_instance.queryset.model
+    for field_name, field in serializer_instance.fields.items():
+        if isinstance(field, PrimaryKeyRelatedField):
+            model = field.queryset.model
             needs.append({
                 'app': model._meta.app_label,
                 'singular': model._meta.model_name.lower(),
                 'plural': inflector.pluralize(model._meta.model_name.lower()),
             })
-        fields.append(Adapter.adapt_field(get_field_dict(field, serializer)))
+        fields.append(Adapter.adapt_field(get_field_dict(field_name, serializer)))
     kwargs['params']['needs'] = needs
     kwargs['params']['fields'] = fields
     kwargs['languages'] = get_languages()

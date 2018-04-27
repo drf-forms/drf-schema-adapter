@@ -88,7 +88,7 @@ class EndpointMetaClass(type):
                             value.action_kwargs['params'] = value.action_kwargs.get('params', {})
                             value.action_kwargs['params']['fieldsets'] = [
                                 {'name': field}
-                                for field in value.serializer.Meta.fields
+                                for field in value.serializer().fields.keys()
                             ]
 
         if new_class.fieldsets is None and new_class.model is not None:
@@ -172,7 +172,7 @@ class BaseEndpoint(object):
 
         if self.fields is None:
             if self.serializer is not None:
-                return self.serializer.Meta.fields
+                return self.serializer().fields.keys()
 
             self.fields = tuple([f for f in get_all_field_names(self.model)
                                  if f not in self.default_language_field_names and
