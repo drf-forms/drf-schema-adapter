@@ -299,8 +299,8 @@ class ReactJsonSchemaAdapter(BaseAdapter):
             new_field['ui']['ui:widget'] = widget
 
         if 'choices' in field:
-            new_field['schema']['enum'] = [x[0] for x in field['choices']]
-            new_field['schema']['enumNames'] = [x[1] for x in field['choices']]
+            new_field['schema']['enum'] = [x['value'] for x in field['choices']]
+            new_field['schema']['enumNames'] = [x['label'] for x in field['choices']]
 
         if 'placeholder' in field['ui']:
             new_field['ui']['ui:placeholder'] = field['ui']['placeholder']
