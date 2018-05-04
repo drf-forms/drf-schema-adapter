@@ -28,3 +28,9 @@ class DummyProductViewSet(viewsets.ModelViewSet):
 class DummyProductSerializerWithField(serializers.ModelSerializer):
 
     name = serializers.CharField(read_only=True)
+
+
+class DummyProductSerializerWithAllFields(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'

@@ -4,7 +4,7 @@ from drf_auto_endpoint.metadata import AutoMetadataMixin
 
 from sample.endpoints import ProductEndpoint
 
-from .data import DummyProductSerializer, DummyProductViewSet
+from .data import DummyProductSerializer, DummyProductViewSet, DummyProductSerializerWithAllFields
 
 
 class TestMetadata(TestCase):
@@ -61,3 +61,18 @@ class TestMetadata(TestCase):
         endpoint = ProductEndpoint(viewset=DummyProductViewSet)
         self.assertTrue(endpoint.search_enabled)
         self.assertIn('name', endpoint.get_filter_fields())
+
+    def test__all__fields_in_serializer(self):
+        metadata_mixin = AutoMetadataMixin()
+
+        class MockView(object):
+            serializer_class = DummyProductSerializerWithAllFields
+            endpoint = ProductEndpoint(serializer=DummyProductSerializerWithAllFields)
+
+            def get_serializer_class(self):
+                return self.serializer_class
+
+        request = None
+        view = MockView()
+        metadata = metadata_mixin.determine_metadata(request, view)
+        self.assertEqual(['id', 'name', 'product_type', 'category'], [item['key'] for item in metadata])

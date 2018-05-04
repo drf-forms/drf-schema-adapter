@@ -14,8 +14,6 @@ script:
 matrix:
   include:
     - python: "2.7"
-      env: DJANGO_DRF="django18-drf32"
-    - python: "2.7"
       env: DJANGO_DRF="django18-drf33"
     - python: "2.7"
       env: DJANGO_DRF="django18-drf34"
@@ -35,8 +33,6 @@ matrix:
       env: DJANGO_DRF="django111-drf35"
     - python: "2.7"
       env: DJANGO_DRF="django111-drf36"
-    - python: "3.5"
-      env: DJANGO_DRF="django18-drf32"
     - python: "3.5"
       env: DJANGO_DRF="django18-drf33"
     - python: "3.5"
@@ -65,8 +61,6 @@ matrix:
       env: DJANGO_DRF="django20-drf38"
     # - python: "3.5"
     # - env: DJANGO_DRF="django21-drf37"
-    - python: "3.6"
-      env: DJANGO_DRF="django18-drf32"
     - python: "3.6"
       env: DJANGO_DRF="django18-drf33"
     - python: "3.6"

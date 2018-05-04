@@ -70,7 +70,7 @@ class AutoMetadataMixin(object):
         if endpoint is None:
             fields_metadata = []
 
-            for field in serializer().fields.keys():
+            for field in serializer_instance.fields.keys():
                 if field in {'id', '__str__'}:
                     continue
 
@@ -92,7 +92,7 @@ class AutoMetadataMixin(object):
                             'title': None,
                             'fields': [
                                 {'key': field}
-                                for field in serializer().fields.keys()
+                                for field in serializer_instance.fields.keys()
                                 if field != 'id' and field != '__str__'
                             ]
                         }]
