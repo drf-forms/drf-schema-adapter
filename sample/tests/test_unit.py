@@ -12,7 +12,7 @@ except ImportError:
 
 from ..models import Product, Category, PRODUCT_TYPES
 
-from .data import DummyProductSerializer, DummyProductViewSet, DummyProductSerializerWithField
+from .data import AllFieldDummyProductSerializer, DummyProductSerializer, DummyProductViewSet, DummyProductSerializerWithField
 
 from drf_auto_endpoint.endpoints import Endpoint
 from drf_auto_endpoint.router import router
@@ -106,6 +106,9 @@ class EndpointTestCase(TestCase):
 
         self.assertEqual(endpoint.get_serializer(), DummyProductSerializer)
 
+        endpoint = Endpoint(model=Product, serializer=AllFieldDummyProductSerializer)
+        self.assertEqual(len(endpoint.get_fields_for_serializer()), len(self.fields))
+
     def test_viewset_factory(self):
         viewset = self.endpoint.get_viewset()
         self.assertEqual(viewset.serializer_class, self.endpoint.get_serializer())
@@ -155,7 +158,7 @@ class EndpointTestCase(TestCase):
 
         serializer = endpoint.get_serializer()
         self.assertEqual(serializer.Meta.model, Product)
-        self.assertEqual(len(serializer.Meta.fields), len(self.endpoint.get_fields_for_serializer()))
+        self.assertEqual(len(serializer().fields.items()), len(self.endpoint.get_fields_for_serializer()))
 
         viewset = endpoint.get_viewset()
 

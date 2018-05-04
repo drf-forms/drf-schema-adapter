@@ -10,6 +10,13 @@ class DummyProductSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'category')
 
 
+class AllFieldDummyProductSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+
 class DummyProductViewSet(viewsets.ModelViewSet):
 
     serializer_class = DummyProductSerializer
@@ -21,3 +28,9 @@ class DummyProductViewSet(viewsets.ModelViewSet):
 class DummyProductSerializerWithField(serializers.ModelSerializer):
 
     name = serializers.CharField(read_only=True)
+
+
+class DummyProductSerializerWithAllFields(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'
