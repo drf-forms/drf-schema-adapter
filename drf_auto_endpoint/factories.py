@@ -9,7 +9,7 @@ except ImportError:
 from django.core.exceptions import FieldDoesNotExist
 
 try:
-    from django.db.models.fields.reverse_related import ManyToOneRel, OneToOneRel
+    from django.db.models.fields.reverse_related import ManyToOneRel, OneToOneRel, ManyToManyRel
 except ImportError:
     # Django 1.8
     from django.db.models.fields.related import ManyToOneRel, OneToOneRel
@@ -79,6 +79,16 @@ def serializer_factory(endpoint=None, fields=None, base_class=None, model=None):
                     cls_attrs[meta_field] = serializers.PrimaryKeyRelatedField(read_only=True)
                 elif isinstance(model_field, ManyToOneRel):
                     cls_attrs[meta_field] = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+                elif isinstance(model_field, ManyToManyRel):
+                    # related ManyToMany should not be required
+                    print(model_field.__dict__)
+                    cls_attrs[meta_field] = serializers.PrimaryKeyRelatedField(
+                        many=True,
+                        required=False,
+                        queryset=model_field.related_model.objects.all()
+                    )
+                else:
+                    print(meta_field, model_field.__class__.__name__)
             except FieldDoesNotExist:
                 cls_attrs[meta_field] = serializers.ReadOnlyField()
 
