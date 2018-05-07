@@ -81,7 +81,6 @@ def serializer_factory(endpoint=None, fields=None, base_class=None, model=None):
                     cls_attrs[meta_field] = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
                 elif isinstance(model_field, ManyToManyRel):
                     # related ManyToMany should not be required
-                    print(model_field.__dict__)
                     cls_attrs[meta_field] = serializers.PrimaryKeyRelatedField(
                         many=True,
                         required=False,
