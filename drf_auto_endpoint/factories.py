@@ -12,7 +12,7 @@ try:
     from django.db.models.fields.reverse_related import ManyToOneRel, OneToOneRel, ManyToManyRel
 except ImportError:
     # Django 1.8
-    from django.db.models.fields.related import ManyToOneRel, OneToOneRel
+    from django.db.models.fields.related import ManyToOneRel, OneToOneRel, ManyToManyRel
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
