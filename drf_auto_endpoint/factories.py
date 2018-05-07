@@ -86,8 +86,6 @@ def serializer_factory(endpoint=None, fields=None, base_class=None, model=None):
                         required=False,
                         queryset=model_field.related_model.objects.all()
                     )
-                else:
-                    print(meta_field, model_field.__class__.__name__)
             except FieldDoesNotExist:
                 cls_attrs[meta_field] = serializers.ReadOnlyField()
 
