@@ -136,7 +136,7 @@ class SerializerExporterWithFields(BaseSerializerExporter):
                     item.pop('inverse', None)
                     relationships.append(item)
             else:
-                field_item['type'] = adapter.field_type_mapping('ListField')
+                field_item['type'] = adapter.field_type_mapping['ListField']
                 fields.append(field_item)
 
         else:
