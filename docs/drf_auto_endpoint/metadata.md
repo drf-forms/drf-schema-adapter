@@ -171,7 +171,7 @@ The exact output depends on the `Adapter` you choose to use. Currently **DRF-sch
 
 ### `BaseAdapter`
 
-The `BaseAdapter` produces an output usuable with [JSON Schema](http://json-schema.org/).
+The `BaseAdapter` produces an output usable with [JSON Schema](http://json-schema.org/).
 This is the default adapter.
 
 `BaseAdapter` will produce an output similar to the one above.
