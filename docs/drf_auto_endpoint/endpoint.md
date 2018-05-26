@@ -285,7 +285,7 @@ name of the decorated method.
 ### `@custom_action`
 
 This decorator has somewhat similar properties than
-[DRF's ViewSet method decorator `@detail_route`](http://www.django-rest-framework.org/api-guide/viewsets/#marking-extra-actions-for-routing)
+[DRF's ViewSet method decorator `@action` (with `detail=True`)](http://www.django-rest-framework.org/api-guide/viewsets/#marking-extra-actions-for-routing)
 except it is meant to be used on `Endpoint`'s and with the added functionality of
 adding that particular method directly to the `custom_actions` of the `Endpoint`
 (used for metadata generation).
@@ -299,7 +299,7 @@ their output dictionary (metadata):
 ### `@bulk_action`
 
 This decorator has somewhat similar properties than
-[DRF's ViewSet method decorator `@list_route`](http://www.django-rest-framework.org/api-guide/viewsets/#marking-extra-actions-for-routing)
+[DRF's ViewSet method decorator `@action` (with `detail=False`)](http://www.django-rest-framework.org/api-guide/viewsets/#marking-extra-actions-for-routing)
 except it is meant to be used on `Endpoint`'s and with the added functionality of
 adding that particular method directly to the `bulk_actions` of the `Endpoint`
 (used for metadata generation).
@@ -316,16 +316,20 @@ Wizard's are meant to be used for actions that require extra input on the
 frontend. Like moving a calendar appointment would require the "target date".
 
 Wizard's are also somewhat similar to 
-[DRF's ViewSet method decorator `@detail_route`](http://www.django-rest-framework.org/api-guide/viewsets/#marking-extra-actions-for-routing)
+[DRF's ViewSet method decorator `@action`](http://www.django-rest-framework.org/api-guide/viewsets/#marking-extra-actions-for-routing)
 with the difference that they use an extra serializer to validate the data sent
 from the frontend. This validated data will be set to the `validated_data`
 attribute on the `request` passed to the wizard method.
 
-`@wizard` decorators (unlike the previous 2) take 2 required arguments:
+`@wizard` decorators (unlike the previous 2) take a single required arguments:
 
-- serializer: the serializer class used to validate the data comming from the
+- `serializer`: the serializer class used to validate the data comming from the
 frontend. This serializer's `validated_data` will accissible directly on the
-resquest object as `request.validated_data`
+resquest object as `request.validated_data`.
+
+`@wizard` decorators also take an optional argument:
+
+- `meta_type`: can be either `custom` (default) or `list`. `custom` will have this decorator act like `@action(detail=True)` while `list` will have it behave like `@action(detail=False)`.
 
 Similarly to the other decorators in this package, `@wizard` will yield extra
 information into their metadata output dictionary:
