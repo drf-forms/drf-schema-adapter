@@ -1,4 +1,4 @@
-# Exporter-app
+# Export-app
 
 **DRF-schema-adapters** also allows you to export your endpoint ('s serialier definition) to frontend
 frameworks models (Ember.data models, Angular modules, angular-formly json files, Mobx+Axios models and
@@ -37,7 +37,7 @@ have to configure it in your `settings.py` as well:
 EXPORTER_ADAPTER = 'export_app.adapters.MobxAxiosAdapter'
 ```
 
-or specify it on the command-line with `--adapter &lt;adapter_name&gt;`.
+or specify it on the command-line with `--adapter <adapter_name>`.
 
 If you are using one of the provided adapter, you can simply specify them using their classname eg:
 
@@ -97,7 +97,7 @@ A dictionary mapping DRF field serializer class names to frontend property types
 
 ## Usage
 
-### On-the-fly generation *(currently only available with `EmberAdapter`)*
+### On-the-fly generation *(:warning: currently only available with `EmberAdapter`)*
 
 In order to generate js files on the fly, you'll have import the urls from the project and add them
 to your urlpatterns.
@@ -127,7 +127,7 @@ http://localhost:8000/models/categories.js
 This functionality is meant to be used with
 [ember-cli-dynamic-model](https://bitbucket.org/levit_scs/ember-cli-dynamic-model) and
 the recommended usage is to register all your `ViewSet`'s or `Endpoint`'s using the
- &lt;app_name&gt;/&lt;model_name_correct_english_plural&gt; as in `my_app/categories`.
+ <app_name>/<model_name_correct_english_plural> as in `my_app/categories`.
 (This is automatically done for you if you are using `drf_auto_endpoint`'s router registration
 capabilities with `Model`'s or `Endpoint`'s)
 
@@ -160,25 +160,25 @@ Ember.data model definition.
 Since you might want to add computed properties or other features to an Ember model, this is done using
 3 files:
 
-- `models/base/&lt;app_name&gt;/&ltmodel_name&gt;.js` &lt;- always overwritten
-- `models/&lt;app_name&gt;/&lt;model_name&gt;.js` &lt; inherits from the base model, never overwritten
-- `tests/unit/models/&lt;app_name&gt;/&lt;model_name&gt;-test.js` &lt; overwritten on confirmation
+- `models/base/<app_name>/<model_name>.js` <- always overwritten
+- `models/<app_name>/<model_name>.js` < inherits from the base model, never overwritten
+- `tests/unit/models/<app_name>/<model_name>-test.js` < overwritten on confirmation
 
 ### `AngularAdapter`
 
 Using the `AngularAdapter` will export an Angular1 resource definition file into
-`modules/resources/&lt;application_name&gt;-&lt;model_name&gt;.js`.
+`modules/resources/<application_name>-<model_name>.js`.
 
 ### `Angular2Adapter`
 
 Using the `Angular2Adapter` will export an Angular2+ typescript model class as well as a service in
-`app/models/&lt;application_name&gt/`. DRF-schema adapter will also create base files with code that
+`app/models/<application_name>/`. DRF-schema adapter will also create base files with code that
 will be overwritten with each export.
 
 ### `MetadataAdapter`
 
 Using this adapter you'll be able to dump the content of the Metadata (`OPTIONS` call) of an endpoint
-into your frontend application in a file named `data/&lt;application_name&gt;-&lt;model_name&gt;.json`.
+into your frontend application in a file named `data/<application_name>-<model_name>.json`.
 
 The created output will depend on the adapter you chose for `drf_auto_endpoint` using the
 [`DRF_AUTO_METADATA_ADAPTER`](../drf_auto_endpoint/metadata.md#adapters)
@@ -188,7 +188,7 @@ The created output will depend on the adapter you chose for `drf_auto_endpoint` 
 This adapter is very similar to the `MetadataAdapter` with the difference that it will export your
 metadata as ES6 modules rather than JSON files.
 
-The eported files will be exported to `data/&lt;application_name&gt;/&lt;model_name&gt;.js`.
+The eported files will be exported to `data/<application_name>/<model_name>.js`.
 It will also create a `data/index.js` which exports a pojo which in turn imports each of the exported
 files as:
 ```
@@ -215,12 +215,12 @@ set of mobx "model" and mobx+axios "store".
 Since you might want to ass computed value or other features to a mobx model, this will yield up to 6
 different files:
 
-- `config/axios-config.js` &lt;- configuration of the endpoint base and CSRF settings: never overwritten
-- `stores/_base.js` &lt;- a base definition of how stores work: never overwritten
-- `stores/&lt;app_name&gt;&lt;model_name&gt;` &lt;- specific definition for this store: overwritten on
+- `config/axios-config.js` <- configuration of the endpoint base and CSRF settings: never overwritten
+- `stores/_base.js` <- a base definition of how stores work: never overwritten
+- `stores/<app_name><model_name>` <- specific definition for this store: overwritten on
 confirmation
-- `models/base/_base.js` &lt;- a base definition of how models work: never overwritten
-- `models/base/&lt;app_name&gt;&lt;model_name&gt;` &lt;- a model containing the same list of fields as
+- `models/base/_base.js` <- a base definition of how models work: never overwritten
+- `models/base/<app_name><model_name>` <- a model containing the same list of fields as
 the serializer: always overwritten
-- `models/&lt;app_name&gt;&lt;model_name&gt;` &lt; a enpty model that inherits from it base counterpart:
+- `models/<app_name><model_name>` < a enpty model that inherits from it base counterpart:
 never overwritten
