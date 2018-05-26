@@ -8,7 +8,12 @@ pages:
     - 'Metadata': drf_auto_endpoint/metadata.md
   - 'Export-app': export_app/index.md
   - 'Cookbooks':
-    - 'Creating endpoints from models': cookbooks/endpoints.md
-    - 'Using drf-schema-adapter with Ember.js': cookbooks/ember.md
+    - 'Basics':
+      - 'Quick start': cookbooks/basics/quickstart.md
+      - 'Creating endpoints from models': cookbooks/endpoints.md
+      - 'Using drf-schema-adapter with Ember.js': cookbooks/ember.md
+    - 'Topics':
+      - 'Custom MetaData Adapter': cookbooks/topics/custom_metadata_adapter.md
+      - 'Custom Export Adapter': cookbooks/topics/custom_export_adapter.md
   - License: LICENSE.md
   - 'Code of conduct': COC.md
