@@ -52,7 +52,7 @@ You can see a demo application running at
 - [Use custom viewsets](./cookbooks/topics/viewsets.md)
 - [Use custom serializers](./cookbooks/topics/serializers.md)
 - [Actions without extra data](./cookbooks/topics/actions.md)
-- [Actions with extra data](./cookbooks/topics/serializers.md)
+- [Actions with extra data](./cookbooks/topics/wizards.md)
 
 ### Specifications
 
