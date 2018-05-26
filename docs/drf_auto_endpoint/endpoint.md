@@ -174,6 +174,23 @@ set as
 while more powerfull as you are free to describe any number of levels of nested
 records here.
 
+If the value for `fieldsets` becomes too bloated for your code, you can also move it to a
+`fieldsets.json` file inside the application directory.
+`fielsets.json` should have a property for each `Endpoint`, teh name of the property being the name
+of the `Endpoint`'s `Model`.
+
+```
+{
+  "Category": [
+    {"name": "name"},
+    ...
+  ],
+  "Product":[
+    ...
+  ]
+}
+```
+
 ### `fields_annotation` :warning: Only used by [metadata](./metadata.md)
 
 *defaults to an empty dict*
