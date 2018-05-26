@@ -10,8 +10,8 @@ pages:
   - 'Cookbooks':
     - 'Basics':
       - 'Quick start': cookbooks/basics/quickstart.md
-      - 'Creating endpoints from models': cookbooks/endpoints.md
-      - 'Using drf-schema-adapter with Ember.js': cookbooks/ember.md
+      - 'Creating endpoints from models': cookbooks/basics/endpoints.md
+      - 'Using drf-schema-adapter with Ember.js': cookbooks/basics/ember.md
     - 'Topics':
       - 'Custom MetaData Adapter': cookbooks/topics/custom_metadata_adapter.md
       - 'Custom Export Adapter': cookbooks/topics/custom_export_adapter.md
