@@ -15,5 +15,9 @@ pages:
     - 'Topics':
       - 'Custom MetaData Adapter': cookbooks/topics/custom_metadata_adapter.md
       - 'Custom Export Adapter': cookbooks/topics/custom_export_adapter.md
+      - 'Custom ViewSets': cookbooks/topics/viewsets.md
+      - 'Custom Serializers': cookbooks/topics/serializers.md
+      - 'Custom Actions': cookbooks/topics/actions.md
+      - 'Custom Actions With Specialized Serializers': cookbooks/topics/wizards.md
   - License: LICENSE.md
   - 'Code of conduct': COC.md
