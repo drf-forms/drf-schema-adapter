@@ -1,8 +1,8 @@
-# Creating a custom adapter
+# Creating a custom MetaData adapter
 
 When creating a custom adapter, the first thing you'll want to do is import the base class and tools you will need:
 
-```
+```python
 from drf_auto_endpoint.adapters import BaseAdapter, MetaDataInfo, PROPERTY, GETTER
 ```
 
