@@ -161,6 +161,13 @@ class BaseEndpoint(object):
     def model_name(self):
         return self.inflector.pluralize(self.singular_model_name)
 
+    def get_singular_full_name(self):
+
+        return '{}/{}'.format(
+            self.application_name.replace('_', '-'),
+            self.singular_model_name.replace('_', '-')
+        )
+
     @property
     def application_name(self):
         return self.model._meta.app_label.lower()
