@@ -138,7 +138,8 @@ def viewset_factory(endpoint):
     cls_name = '{}ViewSet'.format(endpoint.model.__name__)
     tmp_cls_attrs = {
         'serializer_class': endpoint.get_serializer(),
-        'queryset': endpoint.model.objects.all(),
+        'queryset': endpoint.queryset if getattr(endpoint, 'queryset', None) is not None \
+            else endpoint.model.objects.all(),
         'endpoint': endpoint,
         '__doc__': base_viewset.__doc__
     }
