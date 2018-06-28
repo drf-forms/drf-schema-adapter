@@ -8,6 +8,8 @@ except ImportError:
     from rest_framework.filters import DjangoFilterBackend
 from django.core.exceptions import FieldDoesNotExist
 
+from django_filters import FilterSet
+
 try:
     from django.db.models.fields.reverse_related import ManyToOneRel, OneToOneRel, ManyToManyRel
 except ImportError:
@@ -130,6 +132,31 @@ def pagination_factory(endpoint):
     return type(pg_cls_name, (BasePagination, ), pg_cls_attrs)
 
 
+def filter_factory(endpoint):
+
+    base_class = endpoint.base_filter_class
+
+    cls_name = '{}FilterSet'.format(endpoint.model.__name__)
+
+    meta_attrs = {
+        'model': endpoint.model,
+        'fields': [field if not isinstance(field, dict) else field.get('key', field['name'])
+                   for field in endpoint.filter_fields]
+    }
+
+    meta_parents = (object, )
+    if hasattr(base_class, 'Meta'):
+        meta_parents = (base_class.Meta, ) + meta_parents
+
+    Meta = type('Meta', meta_parents, meta_attrs)
+
+    cls_attrs = {
+        'Meta': Meta,
+    }
+
+    return type(cls_name, (base_class, ), cls_attrs)
+
+
 def viewset_factory(endpoint):
     from .endpoints import BaseEndpoint
 
@@ -149,6 +176,9 @@ def viewset_factory(endpoint):
         for key, value in tmp_cls_attrs.items() if key == '__doc__' or
         getattr(base_viewset, key, None) is None
     }
+
+    if 'filter_class' in cls_attrs or 'base_filter_class' in cls_attrs:
+        cls_attrs.pop('filter_fields', None)
 
     if endpoint.permission_classes is not None:
         cls_attrs['permission_classes'] = endpoint.permission_classes
@@ -170,10 +200,13 @@ def viewset_factory(endpoint):
             cls_attrs[filter_type] = getattr(endpoint, filter_type)
 
     if hasattr(endpoint, 'filter_class'):
-        if DjangoFilterBackend not in filter_backends:
-            filter_backends.append(DjangoFilterBackend)
         cls_attrs['filter_class'] = endpoint.filter_class
-    elif hasattr(base_viewset, 'filter_class') and DjangoFilterBackend not in filter_backends:
+    elif hasattr(endpoint, 'base_filter_class'):
+        cls_attrs['filter_class'] = filter_factory(endpoint)
+
+    if DjangoFilterBackend not in filter_backends and (hasattr(endpoint, 'filter_class') or
+                                                       hasattr(base_viewset, 'filter_class') or
+                                                       hasattr(endpoint, 'base_filter_class')):
         filter_backends.append(DjangoFilterBackend)
 
     if len(filter_backends) > 0:
