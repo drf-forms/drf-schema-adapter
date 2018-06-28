@@ -135,8 +135,8 @@ We will make sure to add a link to your application in this README.
 
 - [ ] Write better documentation
 - [ ] Write more/better tests
-- [ ] Enable admin-like registration mechanism
-- [ ] Add languages information when django-model-translation is installed
+- [X] Enable admin-like registration mechanism
+- [X] Add languages information when django-model-translation is installed
 
 ---
 
