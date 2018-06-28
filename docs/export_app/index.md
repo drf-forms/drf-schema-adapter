@@ -150,6 +150,15 @@ in order to generate the corresponding model.
 This command will generate on or more files (once again depending on the chosen adapter)
 in you frontend application.
 
+### On-disk files re-generation
+
+It is prefered not to add auto-generated files to your SCM, this includes base frontend
+models.
+To create those base models after a fresh clone of a project, after pull changes from a
+co-worker or after making changes to several previously exported backend models, use:
+
+```./manage.py reexport```
+
 ## Adapters
 
 ### `EmberAdapter`
