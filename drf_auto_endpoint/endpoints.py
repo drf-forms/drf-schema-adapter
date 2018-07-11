@@ -1,7 +1,9 @@
+from collections import Iterable
 import json
 import os
 from six import with_metaclass
 
+from django.db.models.fields.related import ForeignKey
 from django.conf import settings as django_settings
 from django.utils.module_loading import import_string
 
@@ -69,6 +71,7 @@ class EndpointMetaClass(type):
 
                         fieldsets_path = os.path.join(
                             django_settings.BASE_DIR,
+                            new_class._fieldsets_location,
                             new_class.__module__.rsplit('.', 1)[0],
                             'fieldsets.json'
                         )
@@ -119,6 +122,7 @@ class BaseEndpoint(object):
     fields = None
     exclude_fields = ()
     extra_fields = None
+    foreign_key_as_list = False
 
     serializer = None
     fieldsets = None
@@ -149,6 +153,7 @@ class BaseEndpoint(object):
     _translated_fields = None
     _translated_field_names = None
     _default_language_field_names = None
+    _fieldsets_location = ''
 
     def get_languages(self):
         return get_languages()
@@ -233,7 +238,12 @@ class BaseEndpoint(object):
 
     def _get_field_dict(self, field):
         return get_field_dict(field, self.get_serializer(), self.get_translated_fields(),
-                              self.fields_annotation, self.model)
+                              self.fields_annotation, self.model,
+                              foreign_key_as_list=((isinstance(self.foreign_key_as_list, Iterable) and
+                                                    field in self.foreign_key_as_list) or
+                                                   (not isinstance(self.foreign_key_as_list, Iterable)
+                                                    and self.foreign_key_as_list)))
+
 
     def get_fields(self):
         return [
@@ -283,12 +293,22 @@ class BaseEndpoint(object):
         return fields
 
     def get_needs(self):
+        model_fields = [
+            f
+            for f in self.model._meta.get_fields()
+            if f.is_relation and f.name in self.get_fields_for_serializer() and (
+                not isinstance(f, ForeignKey) or
+                self.foreign_key_as_list is False or (
+                   isinstance(self.foreign_key_as_list, Iterable) and
+                   f.name not in self.foreign_key_as_list
+                )
+            )
+        ]
         related_models = [
             f.related_model
             if f.related_model and f.related_model != self.model
             else f.model if f.model and f.model != self.model else None
-            for f in self.model._meta.get_fields()
-            if f.is_relation and f.name in self.get_fields_for_serializer()
+            for f in model_fields
         ]
         return [
             {

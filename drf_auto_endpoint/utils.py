@@ -48,7 +48,8 @@ def get_validation_attrs(instance_field):
     return rv
 
 
-def get_field_dict(field, serializer, translated_fields=None, fields_annotation=False, model=None):
+def get_field_dict(field, serializer, translated_fields=None, fields_annotation=False, model=None,
+                   foreign_key_as_list=False):
     if translated_fields is None:
         translated_fields = []
 
@@ -108,7 +109,6 @@ def get_field_dict(field, serializer, translated_fields=None, fields_annotation=
         related_model = None
         if model_field:
             related_model = model_field.related_model
-            rv['type'] = settings.WIDGET_MAPPING[model_field.__class__.__name__]
         elif hasattr(field_instance, 'queryset') and field_instance.queryset is not None:
             related_model = field_instance.queryset.model
 
@@ -116,11 +116,31 @@ def get_field_dict(field, serializer, translated_fields=None, fields_annotation=
             rv['validation']['required'] = False
 
         if related_model is not None:
-            rv['related_endpoint'] = {
-                'app': related_model._meta.app_label,
-                'singular': related_model._meta.model_name.lower(),
-                'plural': inflector.pluralize(related_model._meta.model_name.lower())
-            }
+            if not foreign_key_as_list:
+                rv['type'] = settings.WIDGET_MAPPING[model_field.__class__.__name__]
+                rv['related_endpoint'] = {
+                    'app': related_model._meta.app_label,
+                    'singular': related_model._meta.model_name.lower(),
+                    'plural': inflector.pluralize(related_model._meta.model_name.lower())
+                }
+
+            else:
+                rv['type'] = settings.WIDGET_MAPPING['choice']
+                qs = related_model.objects
+                if hasattr(field_instance, 'queryset') and field_instance.queryset is not None:
+                    qs = field_instance.queryset
+
+                key_attr = 'pk'
+                if model_field and hasattr(model_field, 'to_fields') and model_field.to_fields is not None \
+                        and len(model_field.to_fields) > 0:
+                    key_attr = model_field.to_fields[0]
+
+                rv['choices'] = [
+                    {
+                        'label': record.__str__(),
+                        'value': getattr(record, key_attr)
+                    } for record in qs.all()
+                ]
 
     elif hasattr(field_instance, 'choices'):
         rv['type'] = settings.WIDGET_MAPPING['choice']
