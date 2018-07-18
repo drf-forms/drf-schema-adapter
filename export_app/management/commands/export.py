@@ -87,7 +87,8 @@ class Command(SerializerExporterWithFields, BaseCommand):
 
                 if adapter.works_with in ['serializer', 'both']:
                     base = None
-                    if model and model.__bases__[0].__name__ != 'django.db.models.base' and \
+                    if not settings.IGNORE_BASE and  model and \
+                            model.__bases__[0].__name__ != 'django.db.models.base' and \
                             model.__bases__[0].__name__ != 'Model' and len(model.__bases__) == 1 and \
                             not model.__bases__[0]._meta.abstract:
                         base = (

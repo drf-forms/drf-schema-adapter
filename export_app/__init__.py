@@ -13,6 +13,7 @@ DEFAULT_SETTINGS = {
     'DEFAULT_MAPPING': None,
     'ADAPTER': 'export_app.adapters.EmberAdapter',
     'EXCLUDE': {},
+    'IGNORE_BASE': False
 }
 
 
