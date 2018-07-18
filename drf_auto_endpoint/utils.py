@@ -105,7 +105,8 @@ def get_field_dict(field, serializer, translated_fields=None, fields_annotation=
                 default = default()
             rv['default'] = default
 
-    if isinstance(field_instance, (relations.PrimaryKeyRelatedField, relations.ManyRelatedField)):
+    if isinstance(field_instance, (relations.PrimaryKeyRelatedField, relations.ManyRelatedField,
+                                   relations.SlugRelatedField)):
         related_model = None
         if model_field:
             related_model = model_field.related_model

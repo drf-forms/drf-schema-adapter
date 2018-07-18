@@ -63,6 +63,7 @@ class Command(SerializerExporterWithFields, BaseCommand):
                         viewset, model_name, application_name = \
                             self.get_viewset_for_basename(endpoint, dasherize=adapter.dasherize)
                         viewset = viewset()
+                    endpoint_instance = self.get_endpoint_for_basename(endpoint)
                 except ModelNotFoundException as e:
                     raise CommandError('No viewset found for {}'.format(e.model))
 
@@ -70,7 +71,7 @@ class Command(SerializerExporterWithFields, BaseCommand):
 
                 if adapter.requires_fields:
                     fields, rels = self.get_fields_for_model(model, serializer_instance, adapter,
-                                                            target_app)
+                                                            target_app, endpoint=endpoint_instance)
 
                 belongsTo = False
                 hasMany = False

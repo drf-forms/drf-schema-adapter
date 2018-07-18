@@ -1,7 +1,8 @@
 from django.core.exceptions import FieldDoesNotExist
 from django.utils.module_loading import import_string
 
-from rest_framework.serializers import PrimaryKeyRelatedField, ManyRelatedField, ModelSerializer, ListSerializer
+from rest_framework.serializers import (PrimaryKeyRelatedField, ManyRelatedField, ModelSerializer,
+                                        ListSerializer, SlugRelatedField)
 
 from export_app import settings
 
@@ -64,21 +65,24 @@ class BaseSerializerExporter(object):
 
         return model, serializer_instance, model_name, application_name
 
-    def get_fields_for_model(self, model, serializer_instance, adapter, target_app=None):
+    def get_fields_for_model(self, model, serializer_instance, adapter, target_app=None, endpoint=None):
         return [], []
 
 
 class SerializerExporterWithFields(BaseSerializerExporter):
 
-    def _extract_field_info(self, model, field_name, field, fields, relationships, adapter, target_app, allow_recursion=False):
+    def _extract_field_info(self, model, field_name, field, fields, relationships, adapter, target_app,
+                            allow_recursion=False, relationship_as_attribute=False):
         if field_name == 'id':
             return None
         field_item = {
             'name': field_name,
             'type': adapter.field_type_mapping[field.__class__.__name__]
         }
-        if isinstance(field, PrimaryKeyRelatedField) or isinstance(field, ManyRelatedField) \
-                or isinstance(field, ModelSerializer):
+        if not relationship_as_attribute and (isinstance(field, PrimaryKeyRelatedField) or
+                                              isinstance(field, SlugRelatedField) or
+                                              isinstance(field, ManyRelatedField) or
+                                              isinstance(field, ModelSerializer)):
 
             model_field = None
             if model is not None:
@@ -88,7 +92,7 @@ class SerializerExporterWithFields(BaseSerializerExporter):
                     pass
 
             if model_field is None:
-                if isinstance(field, PrimaryKeyRelatedField):
+                if isinstance(field, PrimaryKeyRelatedField) or isinstance(field, SlugRelatedField):
                     queryset = field.queryset
                 else:
                     queryset = field._kwargs['child_relation'].queryset
@@ -140,16 +144,26 @@ class SerializerExporterWithFields(BaseSerializerExporter):
                 fields.append(field_item)
 
         else:
+            if relationship_as_attribute:
+                field_item['type'] = adapter.field_type_mapping[None]
             fields.append(field_item)
 
         return field_item
 
-    def get_fields_for_model(self, model, serializer_instance, adapter, target_app=None):
+    def get_fields_for_model(self, model, serializer_instance, adapter, target_app=None, endpoint=None):
 
         fields = []
         relationships = []
 
         for field_name, field in serializer_instance.get_fields().items():
-            self._extract_field_info(model, field_name, field, fields, relationships, adapter, target_app, True)
+            relationship_as_attribute = False
+            if endpoint is not None:
+                if getattr(endpoint, 'foreign_key_as_list', False):
+                    if endpoint.foreign_key_as_list is True:
+                        relationship_as_attribute = True
+                    else:
+                        relationship_as_attribute = field_name in endpoint.foreign_key_as_list
+            self._extract_field_info(model, field_name, field, fields, relationships, adapter, target_app, True,
+                                     relationship_as_attribute=relationship_as_attribute)
 
         return fields, relationships

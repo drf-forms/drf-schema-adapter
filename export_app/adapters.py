@@ -103,6 +103,7 @@ class EmberAdapter(BaseAdapter):
         'DictField': None,
         'JSONField': None,
         'PrimaryKeyRelatedField': 'belongsTo',
+        'SlugRelatedField': 'belongsTo',
         'ManyRelatedField': 'hasMany',
         'DateField': 'nullable',
         'DateTimeField': 'nullable',
