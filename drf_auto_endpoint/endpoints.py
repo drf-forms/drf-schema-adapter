@@ -268,6 +268,8 @@ class BaseEndpoint(object):
             if '__str__' in self.get_fields_for_serializer():
                 return ['__str__', ]
             return [self.get_fields()[0]['key']]
+        elif self.list_display == '__all__':
+            return self.get_fields_for_serializer()
         return self.list_display
 
     def _get_endpoint_list(self, name, check_viewset_if_none=False):
