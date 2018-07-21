@@ -6,7 +6,7 @@ from django.conf import settings as django_settings
 DEFAULT_SETTINGS = {
     'WIDGET_MAPPING': {
         'BooleanField': 'checkbox',
-        'NullBooleanField': 'checkbox',
+        'NullBooleanField': 'null-boolean',
         'IntegerField': 'number',
         'FloatField': 'number',
         'DecimalField': 'number',

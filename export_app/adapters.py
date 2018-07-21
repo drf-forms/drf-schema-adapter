@@ -95,7 +95,7 @@ class EmberAdapter(BaseAdapter):
 
     FIELD_TYPE_MAPPING = {
         'BooleanField': 'boolean',
-        'NullBooleanField': 'boolean',
+        'NullBooleanField': None,
         'IntegerField': 'number',
         'FloatField': 'number',
         'DecimalField': 'number',
