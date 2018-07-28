@@ -11,10 +11,14 @@ frameworks and libraries.
 |                 | Py 2.7      | Py 3.4      | Py 3.5      | Py 3.6      |
 | --------------- | ----------- | ----------- | ----------- | ----------- |
 | **Django 1.8**  | DRF 3.3-3.6 | DRF 3.3-3.6 | DRF 3.3-3.6 | DRF 3.3-3.6 |
-| **Django 1.9**  | DRF 3.3+    | DRF 3.3+    | DRF 3.3+    | DRF 3.3+    |
+| **Django 1.9**  | DRF 3.3-3.6 | DRF 3.3-3.6 | DRF 3.3-3.6 | DRF 3.3-3.6 |
 | **Django 1.10** | DRF 3.4+    | DRF 3.4+    | DRF 3.4+    | DRF 3.4+    |
 | **Django 1.11** | DRF 3.4+    | DRF 3.4+    | DRF 3.4+    | DRF 3.4+    |
 | **Django 2.0**  | No          | No          | DRF 3.7+    | DRF 3.7+    |
+
+`django-filter` version 2.0 gives further support to Django 2+ and drop support for Python2 (and Django < 2).
+
+If you're using a Django < 2, ensure your `django-filter` version is also under 2.
 
 :warning: For DRF 3.2, (Django 1.8 only), use version 0.9.56 or prior
 
