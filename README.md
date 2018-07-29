@@ -18,6 +18,9 @@ frameworks and libraries.
 
 :warning: For DRF 3.2, (Django 1.8 only), use version 0.9.56 or prior
 
+:warning: Django-filter 2.x dropped support for Python2 and Django < 1.11,
+update your requirements accordingly if this affects you
+
 ## Installation
 
 ### With pip
