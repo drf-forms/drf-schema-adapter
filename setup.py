@@ -52,7 +52,8 @@ setup(
     install_requires=[
         'Django>=1.8',
         'djangorestframework<4.0.0',
-        'django-filter>=0.13.0',
+        'django-filter<2.0; python_version<"3.0"',
+        'django-filter>=0.13.0; python_version>="3.0"',
         'Inflector>=2.0.11',
         'six'
     ]
