@@ -27,6 +27,7 @@ DEFAULT_SETTINGS = {
         'URLField': 'url',
         'ManyToManyField': 'manytomany-lists',
         'ManyToManyRel': 'manytomany-lists',
+        'DurationField': 'duration',
     },
     'DEFAULT_WIDGET': 'text',
     'METADATA_ADAPTER': 'drf_auto_endpoint.adapters.BaseAdapter',
