@@ -27,6 +27,7 @@ DEFAULT_SETTINGS = {
         'URLField': 'url',
         'ManyToManyField': 'manytomany-lists',
         'ManyToManyRel': 'manytomany-lists',
+        'GenericRelatedField': 'generic-foreignkey',
         'DurationField': 'duration',
     },
     'DEFAULT_WIDGET': 'text',
