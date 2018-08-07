@@ -273,6 +273,11 @@ The name of the field by which models in this endpoint can be re-ordered (usuall
 Whether or not this endpoint should eb listed by the `OPTIONS` call to the api
 root.
 
+### `conditional_formatting` :warning: Only used by [metadata](./metadata.md)
+
+A dictionary with keys corresponding to css class names and values being a list
+of condition dictionaries to be ealuated on the frontend.
+
 ## Decorators for cutom `Endpoint`'s
 
 All decorators accept any number of keyword arguments. Those arguments will be
