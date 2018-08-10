@@ -108,7 +108,7 @@ class EmberAdapter(BaseAdapter):
         'DateField': 'nullable',
         'DateTimeField': 'nullable',
         'TimeField': 'nullable',
-        'DurationField': 'nullable',
+        'DurationField': 'duration',
         'UUIDField': 'nullable',
     }
     DEFAULT_MAPPING = 'string'
