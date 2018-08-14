@@ -194,10 +194,21 @@ def viewset_factory(endpoint):
         ('search_fields', SearchFilter),
         ('ordering_fields', OrderingFilter),
     ):
-
-        if getattr(endpoint, filter_type, None) is not None:
+        if hasattr(endpoint, 'get_{}'.format(filter_type)):
+            val = getattr(endpoint, 'get_{}'.format(filter_type))(False)
+        else:
+            val = []
+        if val is not None and val != []:
             filter_backends.append(backend)
-            cls_attrs[filter_type] = getattr(endpoint, filter_type)
+
+            if filter_type == 'filter_fields':
+                cls_attrs['filter_fields'] = [field['name'] if isinstance(field, dict) else field
+                                              for field in val]
+            elif filter_type == 'ordering_fields':
+                cls_attrs['ordering_fields'] = [field['filter'] if isinstance(field, dict) else field
+                                                for field in val]
+            else:
+                cls_attrs[filter_type] = getattr(endpoint, filter_type)
 
     if hasattr(endpoint, 'filter_class'):
         cls_attrs['filter_class'] = endpoint.filter_class

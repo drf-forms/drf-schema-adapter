@@ -121,7 +121,7 @@ class EndpointTestCase(TestCase):
         viewset = self.alternate_endpoint.get_viewset()
 
         for attr in ('permission_classes', 'filter_fields', 'search_fields', 'ordering_fields'):
-            self.assertEqual(getattr(viewset, attr), getattr(self, attr))
+            self.assertEqual(list(getattr(viewset, attr)), list(getattr(self, attr)))
 
         for backend in ('DjangoFilterBackend', 'SearchFilter', 'OrderingFilter'):
             self.assertIn(backend, [be.__name__ for be in viewset.filter_backends])
@@ -163,7 +163,7 @@ class EndpointTestCase(TestCase):
         viewset = endpoint.get_viewset()
 
         for attr in ('permission_classes', 'filter_fields', 'search_fields', 'ordering_fields'):
-            self.assertEqual(getattr(viewset, attr), getattr(self, attr))
+            self.assertEqual(list(getattr(viewset, attr)), list(getattr(self, attr)))
 
         for backend in ('DjangoFilterBackend', 'SearchFilter', 'OrderingFilter'):
             self.assertIn(backend, [be.__name__ for be in viewset.filter_backends])

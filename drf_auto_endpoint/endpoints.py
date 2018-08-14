@@ -285,9 +285,13 @@ class BaseEndpoint(object):
         fields = self._get_endpoint_list('filter_fields', check_viewset_if_none)
         return fields
 
+    def get_search_fields(self, check_viewset_if_none=True):
+        fields = self._get_endpoint_list('search_fields', check_viewset_if_none)
+        return fields
+
     @property
     def search_enabled(self, check_viewset_if_none=True):
-        fields = self._get_endpoint_list('search_fields', check_viewset_if_none)
+        fields = self.get_search_fields(check_viewset_if_none=True)
         return len(fields) > 0
 
     def get_ordering_fields(self, check_viewset_if_none=True):
