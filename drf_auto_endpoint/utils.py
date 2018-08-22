@@ -96,6 +96,9 @@ def get_field_dict(field, serializer, translated_fields=None, fields_annotation=
         except FieldDoesNotExist:
             pass
 
+    if model_field is not None:
+        rv['ui']['label'] = model_field.verbose_name
+
     if default and default != empty and not callable(default):
         rv['default'] = default
     elif default == empty and hasattr(model_field, 'default'):
