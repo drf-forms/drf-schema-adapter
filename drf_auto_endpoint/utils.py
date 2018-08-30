@@ -97,7 +97,10 @@ def get_field_dict(field, serializer, translated_fields=None, fields_annotation=
             pass
 
     if model_field is not None:
-        rv['ui']['label'] = model_field.verbose_name
+        try:
+            rv['ui']['label'] = model_field.verbose_name
+        except AttributeError:
+            rv['ui']['label'] = model_field.name
 
     if default and default != empty and not callable(default):
         rv['default'] = default
