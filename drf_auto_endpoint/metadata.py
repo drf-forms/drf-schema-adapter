@@ -38,6 +38,9 @@ class AutoMetadataMixin(object):
         metadata.update(adapter.render_root(rv))
         return metadata
 
+    def get_field_dict(self, *args, **kwargs):
+        return get_field_dict(*args, **kwargs)
+
     def determine_metadata(self, request, view):
 
         try:
@@ -80,7 +83,7 @@ class AutoMetadataMixin(object):
                 if type_ is None:
                     raise NotImplementedError()
 
-                field_metadata = get_field_dict(field, serializer)
+                field_metadata = self.get_field_dict(field, serializer)
 
                 fields_metadata.append(field_metadata)
 
