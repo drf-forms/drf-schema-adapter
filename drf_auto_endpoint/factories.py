@@ -195,7 +195,12 @@ def viewset_factory(endpoint):
         ('ordering_fields', OrderingFilter),
     ):
         if hasattr(endpoint, 'get_{}'.format(filter_type)):
-            val = getattr(endpoint, 'get_{}'.format(filter_type))(False)
+            method = getattr(endpoint, 'get_{}'.format(filter_type))
+            try:
+                val = method(check_viewset_if_none=False)
+            except TypeError:
+                val = method(request=None, check_viewset_if_none=False)
+
         else:
             val = []
         if val is not None and val != []:

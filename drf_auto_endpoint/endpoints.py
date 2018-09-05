@@ -244,7 +244,6 @@ class BaseEndpoint(object):
                                                    (not isinstance(self.foreign_key_as_list, Iterable)
                                                     and self.foreign_key_as_list)))
 
-
     def get_fields(self):
         return [
             self._get_field_dict(field)
