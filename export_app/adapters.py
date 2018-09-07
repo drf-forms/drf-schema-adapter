@@ -90,6 +90,10 @@ class BaseAdapter(object):
     def rebuild_index(self):
         pass
 
+    @classmethod
+    def adapt_fields_for_model(cls, fields, relationships):
+        return fields, relationships
+
 
 class EmberAdapter(BaseAdapter):
 

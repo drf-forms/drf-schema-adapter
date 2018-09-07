@@ -49,9 +49,17 @@ class Command(SerializerExporterWithFields, BaseCommand):
 
         for endpoint in endpoints:
             if endpoint not in excludes:
-                print('Exporting {} using {}'.format(endpoint, adapter_name))
+                endpoint_instance = self.get_endpoint_for_basename(endpoint)
+                if adapter_name == settings.ADAPTER and \
+                        getattr(endpoint_instance, 'default_export_adapter', None) is not None:
+                    local_adapter_name = endpoint_instance.default_export_adapter.__name__
+                    local_adapter = endpoint_instance.default_export_adapter()
+                else:
+                    local_adapter_name = adapter_name
+                    local_adapter = adapter
+                print('Exporting {} using {}'.format(endpoint, local_adapter_name))
                 try:
-                    if adapter.works_with in ['serializer', 'both']:
+                    if local_adapter.works_with in ['serializer', 'both']:
                         model, serializer_instance, model_name, application_name = \
                             self.get_serializer_for_basename(endpoint)
 
@@ -59,19 +67,18 @@ class Command(SerializerExporterWithFields, BaseCommand):
                             pagination_class = None
 
                         viewset = BogusViewSet()
-                    if adapter.works_with in ['viewset', 'both']:
+                    if local_adapter.works_with in ['viewset', 'both']:
                         viewset, model_name, application_name = \
-                            self.get_viewset_for_basename(endpoint, dasherize=adapter.dasherize)
+                            self.get_viewset_for_basename(endpoint, dasherize=local_adapter.dasherize)
                         viewset = viewset()
-                    endpoint_instance = self.get_endpoint_for_basename(endpoint)
                 except ModelNotFoundException as e:
                     raise CommandError('No viewset found for {}'.format(e.model))
 
                 fields, rels = [], []
 
-                if adapter.requires_fields:
-                    fields, rels = self.get_fields_for_model(model, serializer_instance, adapter,
-                                                            target_app, endpoint=endpoint_instance)
+                if local_adapter.requires_fields:
+                    fields, rels = self.get_fields_for_model(model, serializer_instance, local_adapter,
+                                                             target_app, endpoint=endpoint_instance)
 
                 belongsTo = False
                 hasMany = False
@@ -86,7 +93,7 @@ class Command(SerializerExporterWithFields, BaseCommand):
                         if belongsTo:
                             break
 
-                if adapter.works_with in ['serializer', 'both']:
+                if local_adapter.works_with in ['serializer', 'both']:
                     base = None
                     if not settings.IGNORE_BASE and  model and \
                             model.__bases__[0].__name__ != 'django.db.models.base' and \
@@ -109,8 +116,8 @@ class Command(SerializerExporterWithFields, BaseCommand):
                         'base': base,
                     }
 
-                    adapter.write_to_file(application_name, model_name, context, options['noinput'])
+                    local_adapter.write_to_file(application_name, model_name, context, options['noinput'])
                 else:
-                    adapter.write_to_file(application_name, model_name, viewset, options['noinput'])
+                    local_adapter.write_to_file(application_name, model_name, viewset, options['noinput'])
 
         adapter.rebuild_index()

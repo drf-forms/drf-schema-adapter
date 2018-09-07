@@ -7,8 +7,18 @@ from export_app.base import SerializerExporterWithFields, ModelNotFoundException
 
 
 class BaseModelView(SerializerExporterWithFields, TemplateView):
-    adapter_class = import_string(settings.ADAPTER)
     content_type = 'text/javascript'
+    endpoint = None
+
+    @property
+    def adapter_class(self):
+        if self.endpoint is not None and getattr(self.endpoint, 'default_export_adapter', None) is not None:
+            return self.endpoint.default_export_adapter
+        return import_string(settings.ADAPTER)
+
+    def get_endpoint_for_basename(self, *args, **kwargs):
+        self.endpoint = super(BaseModelView, self).get_endpoint_for_basename(*args, **kwargs)
+        return self.endpoint
 
     def get_template_names(self):
         return [self.adapter_class.dynamic_template_name]

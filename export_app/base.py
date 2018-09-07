@@ -166,4 +166,4 @@ class SerializerExporterWithFields(BaseSerializerExporter):
             self._extract_field_info(model, field_name, field, fields, relationships, adapter, target_app, True,
                                      relationship_as_attribute=relationship_as_attribute)
 
-        return fields, relationships
+        return adapter.adapt_fields_for_model(fields, relationships)
