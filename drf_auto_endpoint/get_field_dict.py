@@ -158,7 +158,7 @@ class GetFieldDict():
                     and len(model_field.to_fields) > 0:
                 key_attr = model_field.to_fields[0]
 
-            self.set_choices_from_qs(self, qs, key_attr)
+            self.set_choices_from_qs(rv, qs, key_attr)
 
     def update_relationship_from_serializer(self, rv, field_instance, foreign_key_as_list):
         if not isinstance(field_instance, (relations.PrimaryKeyRelatedField, relations.ManyRelatedField,
@@ -176,7 +176,7 @@ class GetFieldDict():
             if not hasattr(field_instance, 'queryset') or field_instance.queryset is None:
                 return
             # FIXME: we may not need this code as the serializer field has a 'choices' attribute
-            self.set_choices_from_qs(field_instance.queryset)
+            self.set_choices_from_qs(rv, field_instance.queryset)
 
     def update_choices_from_serializer(self, rv, field_instance, force=False):
         if field_instance.__class__.__name__ != 'ChoiceField' and force is False:
