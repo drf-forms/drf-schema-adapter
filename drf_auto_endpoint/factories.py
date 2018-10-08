@@ -8,8 +8,6 @@ except ImportError:
     from rest_framework.filters import DjangoFilterBackend
 from django.core.exceptions import FieldDoesNotExist
 
-from django_filters import FilterSet
-
 try:
     from django.db.models.fields.reverse_related import ManyToOneRel, OneToOneRel, ManyToManyRel
 except ImportError:
@@ -165,8 +163,7 @@ def viewset_factory(endpoint):
     cls_name = '{}ViewSet'.format(endpoint.model.__name__)
     tmp_cls_attrs = {
         'serializer_class': endpoint.get_serializer(),
-        'queryset': endpoint.queryset if getattr(endpoint, 'queryset', None) is not None \
-            else endpoint.model.objects.all(),
+        'queryset': endpoint.model.objects.all() if getattr(endpoint, 'queryset', None) is None else endpoint.queryset,
         'endpoint': endpoint,
         '__doc__': base_viewset.__doc__
     }

@@ -237,12 +237,11 @@ class BaseEndpoint(object):
         )
 
     def _get_field_dict(self, field):
+        foreign_key_as_list = (isinstance(self.foreign_key_as_list, Iterable) and field in self.foreign_key_as_list) \
+            or (not isinstance(self.foreign_key_as_list, Iterable) and self.foreign_key_as_list)
+
         return get_field_dict(field, self.get_serializer(), self.get_translated_fields(),
-                              self.fields_annotation, self.model,
-                              foreign_key_as_list=((isinstance(self.foreign_key_as_list, Iterable) and
-                                                    field in self.foreign_key_as_list) or
-                                                   (not isinstance(self.foreign_key_as_list, Iterable)
-                                                    and self.foreign_key_as_list)))
+                              self.fields_annotation, self.model, foreign_key_as_list=foreign_key_as_list)
 
     def get_fields(self):
         return [
@@ -348,8 +347,8 @@ class BaseEndpoint(object):
             rv = []
             for field in self.get_translated_fields():
                 for language in self.get_languages():
-                    l = language.replace('-', '_')
-                    rv.append('{}_{}'.format(field, l))
+                    lang = language.replace('-', '_')
+                    rv.append('{}_{}'.format(field, lang))
             self._translated_field_names = rv
         return self._translated_field_names
 
@@ -357,10 +356,10 @@ class BaseEndpoint(object):
     def default_language_field_names(self):
         from django.conf import settings as django_settings
         if self._default_language_field_names is None:
-            l = django_settings.LANGUAGE_CODE.replace('-', '_')
+            lang = django_settings.LANGUAGE_CODE.replace('-', '_')
             rv = []
             for field in self.get_translated_fields():
-                rv.append('{}_{}'.format(field, l))
+                rv.append('{}_{}'.format(field, lang))
             self._default_language_field_names = rv
         return self._default_language_field_names
 

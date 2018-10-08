@@ -12,7 +12,8 @@ except ImportError:
 
 from ..models import Product, Category, PRODUCT_TYPES
 
-from .data import AllFieldDummyProductSerializer, DummyProductSerializer, DummyProductViewSet, DummyProductSerializerWithField
+from .data import (AllFieldDummyProductSerializer, DummyProductSerializer, DummyProductViewSet,
+                   DummyProductSerializerWithField)
 
 from drf_auto_endpoint.endpoints import Endpoint
 from drf_auto_endpoint.router import router
@@ -71,7 +72,10 @@ class EndpointTestCase(TestCase):
             self.assertIn('extra', field_dict)
             if field == 'category':
                 self.assertIn('related_endpoint', field_dict)
-                self.assertEqual(field_dict['related_endpoint'], {'app': 'sample', 'singular': 'category', 'plural': 'categories'})
+                self.assertEqual(
+                    field_dict['related_endpoint'],
+                    {'app': 'sample', 'singular': 'category', 'plural': 'categories'}
+                )
                 self.assertNotIn('choices', field_dict)
             elif field == 'product_type':
                 self.assertIn('choices', field_dict)
@@ -252,7 +256,7 @@ class UtilsTestCase(TestCase):
         )
 
         for input_field, expected in data:
-            result = utils.get_validation_attrs(input_field)
+            result = utils.get_field_dict.get_validation_attrs(input_field)
             self.assertEqual(result, expected,
                              'got {} while expecting {} when comparing validation attrs for {}'.format(
                                  result,
