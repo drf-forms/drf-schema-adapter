@@ -9,3 +9,6 @@ db.sqlite3
 .idea/
 environ.py
 venv/
+
+.coverage
+.tox/
