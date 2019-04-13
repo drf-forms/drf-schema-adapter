@@ -5,7 +5,7 @@ python:
   - "3.6"
   - "3.7"  
 env:
-  - DJANGO_DRF=django110-drf35
+  - DJANGO_DRF=django22-drf39
 # command to install dependencies
 install: "pip install tox"
 # command to run tests
@@ -134,21 +134,6 @@ matrix:
       env: DJANGO_DRF="django22-drf38"
     - python: "3.6"
       env: DJANGO_DRF="django22-drf39"
-    - python: "3.6"
-      env: DJANGO_DRF="django20-drfmaster"
-    - python: "3.6"
-      env: DJANGO_DRF="djangomaster-drf38"
-    - python: "3.6"
-      env: DJANGO_DRF="djangomaster-drfmaster"
-  allow_failures:
-    - python: "3.6"
-      env: DJANGO_DRF="django20-drfmaster"
-    # - python: "3.6"
-    # - env: DJANGO_DRF="django21-drfmaster"
-    - python: "3.7"
-      env: DJANGO_DRF="djangomaster-drf38"
-    - python: "3.7"
-      env: DJANGO_DRF="djangomaster-drfmaster"
     - python: "3.7"
       env: DJANGO_DRF="django20-drf37"
     - python: "3.7"
@@ -167,3 +152,19 @@ matrix:
       env: DJANGO_DRF="django22-drf38"
     - python: "3.7"
       env: DJANGO_DRF="django22-drf39"
+  allow_failures:
+    - python: "3.6"
+      env: DJANGO_DRF="django20-drfmaster"
+    # - python: "3.6"
+    # - env: DJANGO_DRF="django21-drfmaster"
+    - python: "3.7"
+      env: DJANGO_DRF="djangomaster-drf38"
+    - python: "3.7"
+      env: DJANGO_DRF="djangomaster-drfmaster"
+    - python: "3.6"
+      env: DJANGO_DRF="django20-drfmaster"
+    - python: "3.6"
+      env: DJANGO_DRF="djangomaster-drf38"
+    - python: "3.6"
+      env: DJANGO_DRF="djangomaster-drfmaster"
+
