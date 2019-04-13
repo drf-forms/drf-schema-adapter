@@ -5,7 +5,7 @@ python:
   - "3.6"
   - "3.7"  
 env:
-  - DJANGO_DRF=django22-drf39
+  - DJANGO_DRF=django111-drf37
 # command to install dependencies
 install: "pip install tox"
 # command to run tests
