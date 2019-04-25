@@ -155,7 +155,7 @@ class BaseEndpoint(object):
     _default_language_field_names = None
     _fieldsets_location = ''
 
-    def get_languages(self):
+    def get_languages(self, request=None):
         return get_languages()
 
     @property
@@ -183,6 +183,7 @@ class BaseEndpoint(object):
     def get_fields_for_serializer(self):
 
         if self.fields is None:
+            # TODO delete maybe? We dont have a serializer yet (because we are collecting fields for it).
             if self.serializer is not None:
                 return self.serializer().fields.keys()
 
@@ -208,9 +209,12 @@ class BaseEndpoint(object):
                 self.serializer = self.viewset.get_serializer_class()
 
         if data is None:
-           return self.serializer
+            return self.serializer
 
         return self.serializer(data)
+
+    def get_serializer_instance(self, request):
+        return self.get_serializer()()
 
     def get_base_viewset(self):
         if not self.read_only:
@@ -236,38 +240,43 @@ class BaseEndpoint(object):
             self.model_name.replace('_', '-')
         )
 
-    def _get_field_dict(self, field):
+    def _get_field_dict(self, field, serializer_instance):
         foreign_key_as_list = (isinstance(self.foreign_key_as_list, Iterable) and field in self.foreign_key_as_list) \
             or (not isinstance(self.foreign_key_as_list, Iterable) and self.foreign_key_as_list)
 
-        return get_field_dict(field, self.get_serializer(), self.get_translated_fields(),
+        return get_field_dict(field, serializer_instance, self.get_translated_fields(),
                               self.fields_annotation, self.model, foreign_key_as_list=foreign_key_as_list)
 
-    def get_fields(self):
+    def get_field_names(self, request=None):
+        return self.get_serializer_instance(request).fields.keys()
+
+    def get_fields(self, request=None):
+        serializer_instance = self.get_serializer_instance(request)
         return [
-            self._get_field_dict(field)
-            for field in self.get_fields_for_serializer()
+            self._get_field_dict(field, serializer_instance)
+            for field in self.get_field_names(request)
         ]
 
-    def get_fieldsets(self):
+    def get_fieldsets(self, request=None):
         if self.fieldsets is not None:
             return [{'key': field} if not isinstance(field, dict)
                     else field
                     for field in self.fieldsets]
 
+        serializer_instance = self.get_serializer_instance(request)
         return [{'key': field}
-                for field in self.get_fields_for_serializer()
+                for field in self.get_field_names(request)
                 if field != 'id' and field != '__str__' and
                 field not in self.translated_field_names and
-                self._get_field_dict(field).get('type', '')[:6] != 'tomany']
+                self._get_field_dict(field, serializer_instance).get('type', '')[:6] != 'tomany']
 
-    def get_list_display(self):
+    def get_list_display(self, request=None):
         if self.list_display is None:
-            if '__str__' in self.get_fields_for_serializer():
+            if '__str__' in self.get_field_names(request):
                 return ['__str__', ]
             return [self.get_fields()[0]['key']]
         elif self.list_display == '__all__':
-            return self.get_fields_for_serializer()
+            return self.get_field_names(request)
         return self.list_display
 
     def _get_endpoint_list(self, name, check_viewset_if_none=False):
@@ -296,11 +305,11 @@ class BaseEndpoint(object):
         fields = self._get_endpoint_list('ordering_fields', check_viewset_if_none)
         return fields
 
-    def get_needs(self):
+    def get_needs(self, request=None):
         model_fields = [
             f
             for f in self.model._meta.get_fields()
-            if f.is_relation and f.name in self.get_fields_for_serializer() and (
+            if f.is_relation and f.name in self.get_field_names(request) and (
                 not isinstance(f, ForeignKey) or
                 self.foreign_key_as_list is False or (
                    isinstance(self.foreign_key_as_list, Iterable) and
@@ -322,15 +331,15 @@ class BaseEndpoint(object):
             } for model in related_models if model is not None
         ]
 
-    def get_list_editable(self):
+    def get_list_editable(self, request=None):
         if self.list_editable is None:
             return []
         return self.list_editable
 
-    def get_sortable_by(self):
+    def get_sortable_by(self, request=None):
         return self.sortable_by
 
-    def get_translated_fields(self):
+    def get_translated_fields(self, request=None):
         if self._translated_fields is None:
             models = translator.get_registered_models()
             if self.model in models:
@@ -363,7 +372,7 @@ class BaseEndpoint(object):
             self._default_language_field_names = rv
         return self._default_language_field_names
 
-    def get_custom_actions(self):
+    def get_custom_actions(self, request=None):
         rv = []
         viewset = self.get_viewset()
 
@@ -383,7 +392,7 @@ class BaseEndpoint(object):
 
         return rv
 
-    def get_bulk_actions(self):
+    def get_bulk_actions(self, request=None):
         rv = []
         viewset = self.get_viewset()
 
@@ -402,7 +411,7 @@ class BaseEndpoint(object):
 
         return rv
 
-    def get_list_actions(self):
+    def get_list_actions(self, request=None):
         rv = []
         viewset = self.get_viewset()
 

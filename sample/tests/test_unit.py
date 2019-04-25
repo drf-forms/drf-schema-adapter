@@ -66,7 +66,7 @@ class EndpointTestCase(TestCase):
         }
 
         for field, expected_widget in data.items():
-            field_dict = self.endpoint._get_field_dict(field)
+            field_dict = self.endpoint._get_field_dict(field, self.endpoint.get_serializer_instance(None))
             self.assertIn('type', field_dict)
             self.assertEqual(field_dict['type'], expected_widget)
             self.assertIn('extra', field_dict)

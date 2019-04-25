@@ -44,7 +44,7 @@ class AutoMetadataMixin(object):
     def determine_metadata(self, request, view):
 
         try:
-             metadata = super(AutoMetadataMixin, self).determine_metadata(request, view)
+            metadata = super(AutoMetadataMixin, self).determine_metadata(request, view)
         except NotImplementedError:
             metadata = {}
         except AttributeError:
@@ -54,13 +54,13 @@ class AutoMetadataMixin(object):
         if view.__class__.__name__ in root_view_names or view in root_view_names:
             return self.root_metadata(metadata, view)
 
-        serializer = view.get_serializer_class()
-
         try:
             serializer_instance = view.get_serializer()
         except Exception:
             # Custom viewset is expecting something we can't guess
+            serializer = view.get_serializer_class()
             serializer_instance = serializer()
+
         endpoint = None
         if hasattr(view, 'endpoint'):
             endpoint = view.endpoint
@@ -103,17 +103,11 @@ class AutoMetadataMixin(object):
                         metadata[meta_info.attr] = meta_info.default
         else:
             for meta_info in adapter.metadata_info:
-                try:
-                    if meta_info.attr_type == GETTER:
-                        method = getattr(endpoint, 'get_{}'.format(meta_info.attr))
-                        try:
-                            metadata[meta_info.attr] = method(request)
-                        except TypeError:
-                            metadata[meta_info.attr] = method()
-                    else:
-                        metadata[meta_info.attr] = getattr(endpoint, meta_info.attr, meta_info.default)
-                except AttributeError:
-                    metadata[meta_info.attr] = meta_info.default
+                if meta_info.attr_type == GETTER:
+                    method = getattr(endpoint, 'get_{}'.format(meta_info.attr))
+                    metadata[meta_info.attr] = method(request)
+                else:
+                    metadata[meta_info.attr] = getattr(endpoint, meta_info.attr, meta_info.default)
 
         return adapter(metadata)
 
