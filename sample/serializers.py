@@ -33,7 +33,7 @@ class RequestAwareCategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_field_names(self, *args, **kwargs):
-        field_names = super().get_field_names(*args, **kwargs)
+        field_names = super(RequestAwareCategorySerializer, self).get_field_names(*args, **kwargs)
 
         # Joe is banned from seeing category names. Poor Joe.
         if self.context['request'].META.get('USERNAME') == 'Joe':
