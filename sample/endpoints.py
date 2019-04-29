@@ -7,7 +7,7 @@ from drf_auto_endpoint.endpoints import Endpoint
 from drf_auto_endpoint.router import router, register
 
 from .models import Product, Category, HowItWorks
-from .serializers import AddSerializer
+from .serializers import AddSerializer, RequestAwareCategorySerializer
 from .views import AbstractHowItWorksViewSet, ProductViewSet
 
 
@@ -48,3 +48,15 @@ class HowItWorksEndpoint(Endpoint):
 
 
 router.register(Category)
+
+
+@register
+class RequestAwareCategoryEndpoint(Endpoint):
+    model = Category
+    serializer = RequestAwareCategorySerializer
+
+    def get_url(self):
+        return 'sample/request_aware_categories'
+
+    def get_serializer_instance(self, request):
+        return self.get_serializer()(context={'request': request})

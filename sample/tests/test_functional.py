@@ -45,6 +45,8 @@ class ItRendersAPITest(APITestCase):
         self._do_test()
 
 
+# We exclude request_aware_endpoint because it requires request to operate, and during export there is no such thing.
+@override_settings(EXPORTER_EXCLUDE=('sample/request_aware_categories',))
 class ItExportsTest(TestCase):
 
     def _do_test(self):
@@ -178,3 +180,14 @@ class PaginationTestCase(APITestCase):
         page_size = 250
         response = self.client.get('{}?page_size={}'.format(self.url, page_size), format='json')
         self.assertEqual(len(self.get_response_data(response)['results']), page_size)
+
+
+class RequestAwareEndpointTestCase(APITestCase):
+    url = '/api/sample/request_aware_categories/'
+
+    def test_options_depend_on_request(self):
+        """Serializer fields (reported in OTIPNS) is based on incoming request"""
+        response = self.client.options(self.url, USERNAME='Joe')
+        self.assertNotIn('name', (field['key'] for field in response.json()))
+        response = self.client.options(self.url, USERNAME='Pirx')
+        self.assertIn('name', (field['key'] for field in response.json()))

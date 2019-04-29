@@ -2,7 +2,7 @@ from django.db.models.fields import NOT_PROVIDED
 
 from rest_framework import serializers
 
-from sample.models import Product
+from sample.models import Product, Category
 
 
 class SampleSerializer(serializers.ModelSerializer):
@@ -25,3 +25,18 @@ class AddSerializer(serializers.Serializer):
 
     class Meta:
         fields = ('amount', )
+
+
+class RequestAwareCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'
+
+    def get_field_names(self, *args, **kwargs):
+        field_names = super().get_field_names(*args, **kwargs)
+
+        # Joe is banned from seeing category names. Poor Joe.
+        if self.context['request'].META.get('USERNAME') == 'Joe':
+            field_names.remove('name')
+
+        return field_names
