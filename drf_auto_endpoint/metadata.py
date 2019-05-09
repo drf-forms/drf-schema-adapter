@@ -54,11 +54,12 @@ class AutoMetadataMixin(object):
         if view.__class__.__name__ in root_view_names or view in root_view_names:
             return self.root_metadata(metadata, view)
 
+        serializer = view.get_serializer_class()
+
         try:
             serializer_instance = view.get_serializer()
         except Exception:
             # Custom viewset is expecting something we can't guess
-            serializer = view.get_serializer_class()
             serializer_instance = serializer()
 
         endpoint = None
