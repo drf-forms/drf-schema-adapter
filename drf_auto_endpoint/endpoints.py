@@ -1,7 +1,6 @@
 from collections import Iterable
 import json
 import os
-from six import with_metaclass
 
 from django.db.models.fields.related import ForeignKey
 from django.conf import settings as django_settings
@@ -422,7 +421,7 @@ class BaseEndpoint(object):
         return rv
 
 
-class Endpoint(with_metaclass(EndpointMetaClass, BaseEndpoint)):
+class Endpoint(BaseEndpoint, metaclass=EndpointMetaClass):
 
     def __init__(self, model=None, **kwargs):
         self.inflector = Inflector(self.inflector_language)
