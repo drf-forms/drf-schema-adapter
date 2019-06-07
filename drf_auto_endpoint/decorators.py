@@ -2,10 +2,7 @@ from django.utils.module_loading import import_string
 
 from inflector import Inflector
 
-try:
-    from rest_framework.decorators import action
-except ImportError:
-    action = None
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.serializers import PrimaryKeyRelatedField
 
@@ -20,11 +17,7 @@ def custom_action(method='GET', type='request', icon_class=None, btn_class=None,
     })
 
     def decorator(func):
-        if action is not None:
-            func = action(methods=[method], detail=True, **kwargs)(func)
-        else:
-            func.detail = True
-            func.bind_to_methods = [method]
+        func = action(methods=[method], detail=True, **kwargs)(func)
         func.action_type = 'custom'
         func.action_kwargs = action_kwargs(icon_class, btn_class, text, func, kwargs)
         func.kwargs = {}
@@ -41,11 +34,7 @@ def bulk_action(method='GET', type='request', icon_class=None, btn_class=None, t
     })
 
     def decorator(func):
-        if action is not None:
-            func = action(methods=[method], detail=False, **kwargs)(func)
-        else:
-            func.bind_to_methods = [method, ]
-            func.detail = False
+        func = action(methods=[method], detail=False, **kwargs)(func)
         func.action_type = 'bulk'
         func.action_kwargs = action_kwargs(icon_class, btn_class, text, func, kwargs)
         func.action_kwargs['atOnce'] = func.action_kwargs.get('atOnce', True)
@@ -113,12 +102,8 @@ def wizard(target_model, serializer=None, icon_class=None, btn_class=None, text=
         else:
             detail = False
 
-        if action is not None:
-            wizard_func = action(methods=[kwargs.pop('method', 'post')], detail=detail, **kwargs)(wizard_func)  # NoQA
-            wizard_func.__name__ = func.__name__
-        else:
-            wizard_func.bind_to_methods = [kwargs.pop('method', 'POST'), ]
-            wizard_func.detail = detail
+        wizard_func = action(methods=[kwargs.pop('method', 'post')], detail=detail, **kwargs)(wizard_func)  # NoQA
+        wizard_func.__name__ = func.__name__
 
         wizard_func.action_type = meta_type
         wizard_func.wizard = True

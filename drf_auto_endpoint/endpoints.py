@@ -4,18 +4,14 @@ import os
 
 from django.db.models.fields.related import ForeignKey
 from django.conf import settings as django_settings
+from django.urls import reverse
 from django.utils.module_loading import import_string
 
 from inflector import Inflector
 
 from .factories import serializer_factory, viewset_factory
-from .utils import get_languages, get_field_dict, reverse
+from .utils import get_languages, get_field_dict
 from .app_settings import settings
-
-try:
-    FileNotFoundError
-except NameError:
-    FileNotFoundError = IOError
 
 try:
     from modeltranslation.translator import translator
