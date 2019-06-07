@@ -1,6 +1,6 @@
-Django>=1.10.3
-djangorestframework
-django-filter>=0.15.3
+Django>=2.0
+djangorestframework>=3.8
+django-filter>=2.0
 Inflector>=2.0.11
 factory-boy>=2.8.1
 tox

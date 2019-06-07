@@ -39,7 +39,6 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Topic :: Internet :: WWW/HTTP',
@@ -47,7 +46,7 @@ setup(
     ],
     install_requires=[
         'Django>=2.0',
-        'djangorestframework<4.0.0',
+        'djangorestframework>=3.8<4.0',
         'django-filter>=0.13.0',
         'Inflector>=2.0.11',
     ]
