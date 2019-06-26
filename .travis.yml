@@ -1,9 +1,4 @@
 language: python
-python:
-  - "3.5"
-  - "3.6"
-env:
-  - DJANGO_DRF=django110-drf35
 # command to install dependencies
 install: "pip install tox"
 # command to run tests
@@ -20,10 +15,6 @@ matrix:
       env: DJANGO_DRF="django21-drf38"
     - python: "3.5"
       env: DJANGO_DRF="django21-drf39"
-    - python: "3.5"
-      env: DJANGO_DRF="django22-drf38"
-    - python: "3.5"
-      env: DJANGO_DRF="django22-drf39"
     - python: "3.6"
       env: DJANGO_DRF="django20-drf38"
     - python: "3.6"
@@ -42,6 +33,18 @@ matrix:
       env: DJANGO_DRF="djangomaster-drf39"
     - python: "3.6"
       env: DJANGO_DRF="djangomaster-drfmaster"
+    - python: "3.7"
+      env: DJANGO_DRF="django20-drf38"
+    - python: "3.7"
+      env: DJANGO_DRF="django20-drf39"
+    - python: "3.7"
+      env: DJANGO_DRF="django21-drf38"
+    - python: "3.7"
+      env: DJANGO_DRF="django21-drf39"
+    - python: "3.7"
+      env: DJANGO_DRF="django22-drf38"
+    - python: "3.7"
+      env: DJANGO_DRF="django22-drf39"
   allow_failures:
     - python: "3.6"
       env: DJANGO_DRF="django22-drfmaster"
