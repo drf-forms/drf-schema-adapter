@@ -14,9 +14,7 @@ frameworks and libraries.
 | **Django 2.1**  | DRF 3.8+    | DRF 3.8+    | DRF 3.8+    |
 | **Django 2.2**  | No          | DRF 3.8+    | DRF 3.8+    |
 
-:warning: For DRF 3.2, (Django 1.8 only), use version 0.9.56 or prior
-
-:warning: For Python 2.7 or Django 1.x support, user version 1.0 or prior
+:warning: For Python 2.7 or Django 1.x support, please use version 1.0 or prior
 
 ## Installation
 
