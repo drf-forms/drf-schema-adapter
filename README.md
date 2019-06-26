@@ -16,7 +16,7 @@ frameworks and libraries.
 | **Django 1.11** | DRF 3.4-3.7 | DRF 3.4-3.7 | DRF 3.4-3.7 | DRF 3.4-3.7 | No          |
 | **Django 2.0**  | No          | No          | DRF 3.7+    | DRF 3.7+    | DRF 3.7+    |
 | **Django 2.1**  | No          | No          | DRF 3.7+    | DRF 3.7+    | DRF 3.7+    |
-| **Django 2.2**  | No          | No          | DRF 3.7+    | DRF 3.7+    | DRF 3.7+    |
+| **Django 2.2**  | No          | No          | No          | DRF 3.7+    | DRF 3.7+    |
 
 
 :warning: For DRF 3.2, (Django 1.8 only), use version 0.9.56 or prior
