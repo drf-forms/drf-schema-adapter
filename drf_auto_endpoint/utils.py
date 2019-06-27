@@ -12,22 +12,6 @@ inflector_language = import_string(settings.INFLECTOR_LANGUAGE)
 inflector = Inflector(inflector_language)
 
 
-def reverse(*args, **kwargs):
-    try:
-        exception = ModuleNotFoundError
-    except:  # NoQA
-        ## py 3.6+
-        exception = ImportError
-
-    try:
-        from django.core.urlresolvers import reverse
-    except exception:
-        # Django 1.11+
-        from django.urls import reverse
-
-    return reverse(*args, **kwargs)
-
-
 def action_kwargs(icon_class, btn_class, text, func, kwargs):
 
     kwargs.update({

@@ -1,22 +1,17 @@
 from collections import Iterable
 import json
 import os
-from six import with_metaclass
 
 from django.db.models.fields.related import ForeignKey
 from django.conf import settings as django_settings
+from django.urls import reverse
 from django.utils.module_loading import import_string
 
 from inflector import Inflector
 
 from .factories import serializer_factory, viewset_factory
-from .utils import get_languages, get_field_dict, reverse
+from .utils import get_languages, get_field_dict
 from .app_settings import settings
-
-try:
-    FileNotFoundError
-except NameError:
-    FileNotFoundError = IOError
 
 try:
     from modeltranslation.translator import translator
@@ -422,7 +417,7 @@ class BaseEndpoint(object):
         return rv
 
 
-class Endpoint(with_metaclass(EndpointMetaClass, BaseEndpoint)):
+class Endpoint(BaseEndpoint, metaclass=EndpointMetaClass):
 
     def __init__(self, model=None, **kwargs):
         self.inflector = Inflector(self.inflector_language)

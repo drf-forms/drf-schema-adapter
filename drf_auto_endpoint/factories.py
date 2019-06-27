@@ -1,18 +1,10 @@
 from rest_framework import pagination, serializers
 from rest_framework.filters import OrderingFilter, SearchFilter
 
-try:
-    from django_filters.rest_framework import DjangoFilterBackend
-except ImportError:
-    # Older versions of DRF and django_filters
-    from rest_framework.filters import DjangoFilterBackend
+from django_filters.rest_framework import DjangoFilterBackend
 from django.core.exceptions import FieldDoesNotExist
 
-try:
-    from django.db.models.fields.reverse_related import ManyToOneRel, OneToOneRel, ManyToManyRel
-except ImportError:
-    # Django 1.8
-    from django.db.models.fields.related import ManyToOneRel, OneToOneRel, ManyToManyRel
+from django.db.models.fields.reverse_related import ManyToOneRel, OneToOneRel, ManyToManyRel
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured

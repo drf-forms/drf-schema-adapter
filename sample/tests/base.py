@@ -1,6 +1,6 @@
 from six import iteritems
 
-from drf_auto_endpoint.utils import reverse
+from django.urls import reverse
 
 from rest_framework import status
 
