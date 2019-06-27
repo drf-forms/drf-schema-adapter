@@ -1,16 +1,8 @@
 import os
 from setuptools import setup
 
-try:
-    import pypandoc
-
-    README = pypandoc.convert_file('README.md', 'rst')
-except ImportError:
-    with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
-        README = readme.read()
-except OSError:
-    # pandoc is not installed, fallback to using raw contents
-    README = open('README.md').read()
+with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
+    README = readme.read()
 
 
 # allow setup.py to be run from any path
@@ -24,6 +16,7 @@ setup(
     include_package_data=True,
     license='MIT License',
     description='Making using Django with frontend libraries and frameworks DRYer',
+    long_description_content_type="text/markdown",
     long_description=README,
     url='https://github.com/drf-forms/drf-schema-adapter',
     author='Emmanuelle Delescolle, Adrien Brunet, Mauro Bianchi, Mattia Larentis, Aaron Elliot Ross',
