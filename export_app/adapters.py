@@ -58,7 +58,7 @@ class BaseAdapter(object):
         return rv
 
     def write_to_file(self, application_name, model_name, context, force_overwrite=False):
-        raise NotImplemented("You need to implement your Adapter")
+        raise NotImplementedError("You need to implement your Adapter")
 
     def create_dirs(self, *args):
         for directory in args:

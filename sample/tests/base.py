@@ -63,8 +63,8 @@ class BaseAPITestCase(object):
 
         if self.api_base_name is None:
             return '{}{}/'.format(
-                 self.api_base_url,
-                 self.test_model.pk
+                self.api_base_url,
+                self.test_model.pk
             )
 
         return reverse(
@@ -154,7 +154,7 @@ class BaseAPITestCase(object):
             )
 
             foreign_keys = [field.name for field in self.serializer_class.Meta.model._meta.get_fields()
-                                         if field.one_to_one or (field.many_to_one and field.related_model)]
+                            if field.one_to_one or (field.many_to_one and field.related_model)]
 
             if self.create_serializer_class is not None:
                 serializer = self.create_serializer_class(dummy)
@@ -166,8 +166,8 @@ class BaseAPITestCase(object):
             for field in foreign_keys:
                 related = getattr(dummy, field, None)
                 if related is not None:
-                        related.save()
-                        data[field] = related.id
+                    related.save()
+                    data[field] = related.id
 
             for field, value in iteritems(self.extra_create_fields):
                 data[field] = value
@@ -196,7 +196,7 @@ class EndpointAPITestCase(BaseAPITestCase):
 
     def __init__(self, *args, **kwargs):
         from urls import router
-        self.api_base_url =  '{}{}/'.format(self.api_url_prefix, self.endpoint_url)
+        self.api_base_url = '{}{}/'.format(self.api_url_prefix, self.endpoint_url)
         self.endpoint = router.get_endpoint(self.endpoint_url)
         self.model = self.endpoint.model
         self.serializer_class = self.endpoint.get_serializer()

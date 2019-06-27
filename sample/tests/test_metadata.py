@@ -38,7 +38,7 @@ class TestMetadata(TestCase):
         view = MockView()
         try:
             metadata_mixin.determine_metadata(request, view)
-        except:
+        except Exception:
             self.fail('Unable to produce metatdata')
 
     def test_produce_metadata_withoutendpoint(self):
@@ -54,7 +54,7 @@ class TestMetadata(TestCase):
         view = MockView()
         try:
             metadata_mixin.determine_metadata(request, view)
-        except:
+        except Exception:
             self.fail('Unable to produce metatdata')
 
     def test_filter_and_search_fields_defined_on_viewset(self):

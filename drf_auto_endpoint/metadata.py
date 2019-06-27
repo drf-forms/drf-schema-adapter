@@ -44,7 +44,7 @@ class AutoMetadataMixin(object):
     def determine_metadata(self, request, view):
 
         try:
-             metadata = super(AutoMetadataMixin, self).determine_metadata(request, view)
+            metadata = super(AutoMetadataMixin, self).determine_metadata(request, view)
         except NotImplementedError:
             metadata = {}
         except AttributeError:
