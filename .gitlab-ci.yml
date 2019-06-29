@@ -1,6 +1,6 @@
 test:
   script:
-    - tox
+    - "tox -p auto"
   tags:
     - python 3.5
     - python 3.6
