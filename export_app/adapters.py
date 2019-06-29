@@ -63,7 +63,12 @@ class BaseAdapter(object):
     def create_dirs(self, *args):
         for directory in args:
             if not os.path.exists(directory):
-                os.makedirs(directory)
+                try:
+                    os.makedirs(directory)
+                except FileExistsError:
+                    # someone created the directory in the meantime
+                    # tis can happen in parrallel tests
+                    pass
 
     def write_file(self, context, target_dir, filename, template, overwrite='confirm'):
         target_file = os.path.join(target_dir, filename)
