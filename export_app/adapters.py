@@ -234,7 +234,7 @@ class MetadataES6Adapter(BaseMetadataAdapter):
         context['items'] = self.walk_dir(directory, True)
         context['root_metadata'] = self.render(
             MetadataClass().determine_metadata(None, 'APIRootView')
-        )
+        ).decode('utf-8')
         self.write_file(context, directory, 'index.js', self.index_template_name, True)
 
     def write_to_file(self, application_name, model_name, viewset, force_overwrite=False):
