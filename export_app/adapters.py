@@ -247,7 +247,7 @@ class MetadataES6Adapter(BaseMetadataAdapter):
         output = self.get_json(viewset)
 
         context = {
-            'json': output
+            'json': output.decode('utf-8')
         }
 
         self.write_file(context, target_dir, filename, self.template_name, True)
