@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from drf_auto_endpoint.metadata import AutoMetadataMixin
 
-from sample.endpoints import ProductEndpoint
+from sample.endpoints import ProductEndpoint, HowItWorksEndpoint
 
 from .data import DummyProductSerializer, DummyProductViewSet, DummyProductSerializerWithAllFields
 
@@ -76,3 +76,8 @@ class TestMetadata(TestCase):
         view = MockView()
         metadata = metadata_mixin.determine_metadata(request, view)
         self.assertEqual(['id', 'name', 'product_type', 'category'], [item['key'] for item in metadata])
+
+    def test_custom_actions_are_present(self):
+        endpoint = HowItWorksEndpoint()
+        custom_actions = endpoint.get_custom_actions()
+        self.assertGreater(len(custom_actions), 0)
