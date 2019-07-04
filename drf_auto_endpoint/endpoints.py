@@ -358,6 +358,14 @@ class BaseEndpoint(object):
             self._default_language_field_names = rv
         return self._default_language_field_names
 
+    def _verb_for_action(self, action):
+        if hasattr(action, 'bind_to_methods'):
+            # DRF38
+            verb = action.bind_to_methods[0]
+        else:
+            verb = list(action.mapping.keys())[0]
+        return verb
+
     def get_custom_actions(self):
         rv = []
         viewset = self.get_viewset()
@@ -368,7 +376,7 @@ class BaseEndpoint(object):
                 custom_action = {
                     'url': reverse('{}-{}'.format(self.get_url(), action.__name__.lower().replace('_', '-')),
                                    kwargs={getattr(viewset, 'lookup_field', 'pk'): ':id'}),
-                    'verb': action.bind_to_methods[0],
+                    'verb': self._verb_for_action(action),
                 }
                 custom_action.update(action.action_kwargs)
                 rv.append(custom_action)
@@ -387,7 +395,7 @@ class BaseEndpoint(object):
             if getattr(action, 'action_type', None) == 'bulk':
                 bulk_action = {
                     'url': reverse('{}-{}'.format(self.get_url(), action.__name__.lower())),
-                    'verb': action.bind_to_methods[0],
+                    'verb': self._verb_for_action(action),
                 }
                 bulk_action.update(action.action_kwargs)
                 rv.append(bulk_action)
@@ -406,7 +414,7 @@ class BaseEndpoint(object):
             if getattr(action, 'action_type', None) == 'list':
                 list_action = {
                     'url': reverse('{}-{}'.format(self.get_url(), action.__name__.lower())),
-                    'verb': action.bind_to_methods[0],
+                    'verb': self._verb_for_action(action),
                 }
                 list_action.update(action.action_kwargs)
                 rv.append(list_action)
