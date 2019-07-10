@@ -371,7 +371,10 @@ class BaseEndpoint(object):
         viewset = self.get_viewset()
 
         for action_name in dir(viewset):
-            action = getattr(viewset, action_name)
+            try:
+                action = getattr(viewset, action_name)
+            except AttributeError:
+                continue
             if getattr(action, 'action_type', None) == 'custom':
                 custom_action = {
                     'url': reverse('{}-{}'.format(self.get_url(), action.__name__.lower().replace('_', '-')),
@@ -391,7 +394,10 @@ class BaseEndpoint(object):
         viewset = self.get_viewset()
 
         for action_name in dir(viewset):
-            action = getattr(viewset, action_name)
+            try:
+                action = getattr(viewset, action_name)
+            except AttributeError:
+                continue
             if getattr(action, 'action_type', None) == 'bulk':
                 bulk_action = {
                     'url': reverse('{}-{}'.format(self.get_url(), action.__name__.lower())),
@@ -410,7 +416,10 @@ class BaseEndpoint(object):
         viewset = self.get_viewset()
 
         for action_name in dir(viewset):
-            action = getattr(viewset, action_name)
+            try:
+                action = getattr(viewset, action_name)
+            except AttributeError:
+                continue
             if getattr(action, 'action_type', None) == 'list':
                 list_action = {
                     'url': reverse('{}-{}'.format(self.get_url(), action.__name__.lower())),
