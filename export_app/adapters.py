@@ -241,7 +241,7 @@ class MetadataES6Adapter(BaseMetadataAdapter):
         target_dir = os.path.join(django_settings.BASE_DIR, settings.FRONT_APPLICATION_PATH,
                                   'app', 'data', application_name)
 
-        self.create_dirs(target_dir, application_name)
+        self.create_dirs(target_dir)
         filename = '{}.js'.format(model_name)
 
         output = self.get_json(viewset)
