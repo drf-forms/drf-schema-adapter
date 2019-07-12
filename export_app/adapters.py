@@ -83,7 +83,7 @@ class BaseAdapter(object):
                     ))
                     if answer.lower() in ('', 'no', 'n'):
                         return
-        with open(target_file, 'w') as f:
+        with open(target_file, 'w', encoding='utf-8') as f:
             output = render_to_string(template, context)
             f.write(output)
 
