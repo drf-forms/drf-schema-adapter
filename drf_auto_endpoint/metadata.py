@@ -105,10 +105,19 @@ class AutoMetadataMixin(object):
         else:
             for meta_info in adapter.metadata_info:
                 if meta_info.attr_type == GETTER:
-                    method = getattr(endpoint, 'get_{}'.format(meta_info.attr))
-                    metadata[meta_info.attr] = method(request)
-                else:
+                    method_name = 'get_{}'.format(meta_info.attr)
+                    if not hasattr(endpoint, method_name):
+                        metadata[meta_info.attr] = meta_info.default
+                        continue
+                    method = getattr(endpoint, method_name)
+                    try:
+                        metadata[meta_info.attr] = method(request)
+                    except TypeError:
+                        metadata[meta_info.attr] = method()
+                elif hasattr(endpoint, meta_info.attr):
                     metadata[meta_info.attr] = getattr(endpoint, meta_info.attr, meta_info.default)
+                else:
+                    metadata[meta_info.attr] = meta_info.default
 
         return adapter(metadata)
 

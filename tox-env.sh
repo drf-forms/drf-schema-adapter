@@ -4,4 +4,4 @@ if [ ! -f "environ.py"  ]; then
   cp environ.py.dist environ.py
 fi
 
-pip install `tail requirements.txt -n+4`
+pip install `tail requirements.txt -n+3`

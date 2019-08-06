@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.module_loading import import_string
-from django.conf import settings as django_settings
 
 from export_app import settings
 from export_app.base import SerializerExporterWithFields, ModelNotFoundException
@@ -11,7 +10,8 @@ class Command(SerializerExporterWithFields, BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('wizard_endpoint', nargs='*',
-                            help="The shorthand url(s) of the endpoint(s) for which you'd like to export models. Eg: 'sample/products'")
+                            help="The shorthand url(s) of the endpoint(s) for which you'd like to export models."
+                                 " Eg: 'sample/products'")
         parser.add_argument('--all', default=False, action='store_true',
                             help="Export all models corresponding to endpoints registered with your router")
         parser.add_argument('--adapter_name', default=settings.ADAPTER,
@@ -38,7 +38,8 @@ class Command(SerializerExporterWithFields, BaseCommand):
             self.print_help('drf_auto_endpoint', 'export')
             return
         elif options['all'] and len(endpoints) > 0:
-            raise CommandError('You need to specify either wizard_endpoint(s) or use --all but you cannot use both at the same time')
+            raise CommandError('You need to specify either wizard_endpoint(s) or use --all but you'
+                               ' cannot use both at the same time')
         elif options['all']:
             endpoints = []
             for path, endpoint in getattr(self.router, '_endpoints', {}).items():
@@ -94,4 +95,3 @@ class Command(SerializerExporterWithFields, BaseCommand):
 
             print('writing {}/{}'.format(base_name, method_name))
             adapter.write_to_file(base_name, method_name, context, options['noinput'])
-

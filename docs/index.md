@@ -9,20 +9,13 @@ frontend tools it can even help you to build a full-fledge admin.
 
 **DRF-schema-adapter** is compatible with the following matrix
 
-|                 | Py 2.7      | Py 3.4      | Py 3.5      | Py 3.6      | Py 3.7      |
-| --------------- | ----------- | ----------- | ----------- | ----------- | ----------- |
-| **Django 1.8**  | DRF 3.3-3.6 | DRF 3.3-3.6 | DRF 3.3-3.6 | DRF 3.3-3.6 | No          |
-| **Django 1.9**  | DRF 3.3-3.6 | DRF 3.3-3.6 | DRF 3.3-3.6 | DRF 3.3-3.6 | No          |
-| **Django 1.10** | DRF 3.4-3.7 | DRF 3.4-3.7 | DRF 3.4-3.7 | DRF 3.4-3.7 | No          |
-| **Django 1.11** | DRF 3.4-3.7 | DRF 3.4-3.7 | DRF 3.4-3.7 | DRF 3.4-3.7 | No          |
-| **Django 2.0**  | No          | No          | DRF 3.7+    | DRF 3.7+    | DRF 3.7+    |
-| **Django 2.1**  | No          | No          | DRF 3.7+    | DRF 3.7+    | DRF 3.7+    |
-| **Django 2.2**  | No          | No          | DRF 3.7+    | DRF 3.7+    | DRF 3.7+    |
+|                 | Py 3.5      | Py 3.6      | Py 3.7      |
+| --------------- | ----------- | ----------- | ----------- |
+| **Django 2.0**  | DRF 3.8+    | DRF 3.8+    | DRF 3.8+    |
+| **Django 2.1**  | DRF 3.8+    | DRF 3.8+    | DRF 3.8+    |
+| **Django 2.2**  | No          | DRF 3.8+    | DRF 3.8+    |
 
-:warning: For DRF 3.2, (Django 1.8 only), use version 0.9.56 or prior
-
-:warning: Django-filter 2.x dropped support for Python2 and Django < 1.11,
-update your requirements accordingly if this affects you
+:warning: For Python 2.7 or Django 1.x support, user version 1.0 or prior
 
 ## Installation
 

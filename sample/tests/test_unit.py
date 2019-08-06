@@ -239,10 +239,6 @@ class ViewSetFactoryTestCase(TestCase):
 
 class UtilsTestCase(TestCase):
 
-    def test_reverse(self):
-        utils.reverse('sample/products-list')
-        self.assertTrue(True)
-
     def test_validation_attrs(self):
         data = (
             (CharField(), {}),

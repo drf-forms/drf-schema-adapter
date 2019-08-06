@@ -1,7 +1,4 @@
-from importlib import import_module
-
 from django.apps import AppConfig
-from django.conf import settings as django_settings
 from django.utils.module_loading import autodiscover_modules
 
 

@@ -1,22 +1,17 @@
 from collections import Iterable
 import json
 import os
-from six import with_metaclass
 
 from django.db.models.fields.related import ForeignKey
 from django.conf import settings as django_settings
+from django.urls import reverse
 from django.utils.module_loading import import_string
 
 from inflector import Inflector
 
 from .factories import serializer_factory, viewset_factory
-from .utils import get_languages, get_field_dict, reverse
+from .utils import get_languages, get_field_dict
 from .app_settings import settings
-
-try:
-    FileNotFoundError
-except NameError:
-    FileNotFoundError = IOError
 
 try:
     from modeltranslation.translator import translator
@@ -372,17 +367,28 @@ class BaseEndpoint(object):
             self._default_language_field_names = rv
         return self._default_language_field_names
 
+    def _verb_for_action(self, action):
+        if hasattr(action, 'bind_to_methods'):
+            # DRF38
+            verb = action.bind_to_methods[0]
+        else:
+            verb = list(action.mapping.keys())[0]
+        return verb
+
     def get_custom_actions(self, request=None):
         rv = []
         viewset = self.get_viewset()
 
         for action_name in dir(viewset):
-            action = getattr(viewset, action_name)
+            try:
+                action = getattr(viewset, action_name)
+            except AttributeError:
+                continue
             if getattr(action, 'action_type', None) == 'custom':
                 custom_action = {
                     'url': reverse('{}-{}'.format(self.get_url(), action.__name__.lower().replace('_', '-')),
                                    kwargs={getattr(viewset, 'lookup_field', 'pk'): ':id'}),
-                    'verb': action.bind_to_methods[0],
+                    'verb': self._verb_for_action(action),
                 }
                 custom_action.update(action.action_kwargs)
                 rv.append(custom_action)
@@ -397,11 +403,14 @@ class BaseEndpoint(object):
         viewset = self.get_viewset()
 
         for action_name in dir(viewset):
-            action = getattr(viewset, action_name)
+            try:
+                action = getattr(viewset, action_name)
+            except AttributeError:
+                continue
             if getattr(action, 'action_type', None) == 'bulk':
                 bulk_action = {
                     'url': reverse('{}-{}'.format(self.get_url(), action.__name__.lower())),
-                    'verb': action.bind_to_methods[0],
+                    'verb': self._verb_for_action(action),
                 }
                 bulk_action.update(action.action_kwargs)
                 rv.append(bulk_action)
@@ -416,11 +425,14 @@ class BaseEndpoint(object):
         viewset = self.get_viewset()
 
         for action_name in dir(viewset):
-            action = getattr(viewset, action_name)
+            try:
+                action = getattr(viewset, action_name)
+            except AttributeError:
+                continue
             if getattr(action, 'action_type', None) == 'list':
                 list_action = {
                     'url': reverse('{}-{}'.format(self.get_url(), action.__name__.lower())),
-                    'verb': action.bind_to_methods[0],
+                    'verb': self._verb_for_action(action),
                 }
                 list_action.update(action.action_kwargs)
                 rv.append(list_action)
@@ -431,7 +443,7 @@ class BaseEndpoint(object):
         return rv
 
 
-class Endpoint(with_metaclass(EndpointMetaClass, BaseEndpoint)):
+class Endpoint(BaseEndpoint, metaclass=EndpointMetaClass):
 
     def __init__(self, model=None, **kwargs):
         self.inflector = Inflector(self.inflector_language)

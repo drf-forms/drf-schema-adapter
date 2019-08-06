@@ -58,12 +58,17 @@ class BaseAdapter(object):
         return rv
 
     def write_to_file(self, application_name, model_name, context, force_overwrite=False):
-        raise NotImplemented("You need to implement your Adapter")
+        raise NotImplementedError("You need to implement your Adapter")
 
     def create_dirs(self, *args):
         for directory in args:
             if not os.path.exists(directory):
-                os.makedirs(directory)
+                try:
+                    os.makedirs(directory)
+                except FileExistsError:
+                    # someone created the directory in the meantime
+                    # tis can happen in parrallel tests
+                    pass
 
     def write_file(self, context, target_dir, filename, template, overwrite='confirm'):
         target_file = os.path.join(target_dir, filename)
@@ -78,7 +83,7 @@ class BaseAdapter(object):
                     ))
                     if answer.lower() in ('', 'no', 'n'):
                         return
-        with open(target_file, 'w') as f:
+        with open(target_file, 'w', encoding='utf-8') as f:
             output = render_to_string(template, context)
             f.write(output)
 
@@ -229,20 +234,20 @@ class MetadataES6Adapter(BaseMetadataAdapter):
         context['items'] = self.walk_dir(directory, True)
         context['root_metadata'] = self.render(
             MetadataClass().determine_metadata(None, 'APIRootView')
-        )
+        ).decode('utf-8')
         self.write_file(context, directory, 'index.js', self.index_template_name, True)
 
     def write_to_file(self, application_name, model_name, viewset, force_overwrite=False):
         target_dir = os.path.join(django_settings.BASE_DIR, settings.FRONT_APPLICATION_PATH,
                                   'app', 'data', application_name)
 
-        self.create_dirs(target_dir, application_name)
+        self.create_dirs(target_dir)
         filename = '{}.js'.format(model_name)
 
         output = self.get_json(viewset)
 
         context = {
-            'json': output
+            'json': output.decode('utf-8')
         }
 
         self.write_file(context, target_dir, filename, self.template_name, True)

@@ -1,7 +1,8 @@
 test:
   script:
-    - ./test.sh
+    - "tox -p auto"
   tags:
     - python 3.5
-    - local
+    - python 3.6
+    - python 3.7
 
