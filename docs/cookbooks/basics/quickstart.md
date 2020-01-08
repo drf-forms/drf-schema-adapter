@@ -90,15 +90,15 @@ see [the metadata section of this documentation](drf_auto_endpoint/metadata.md).
 ### Exporting serializers definition to frontend models
 
 One of the major burdens when writing applications with a backend and a javascript
-frontend is having to re-define, at least part of, your models/serialiers both on the
+frontend is having to re-define, at least part of, your models/serialiers on both the
 frontend and backend.
 
-Thanks to **DRF-schema-adapter**'s `export_app`, you can export those definition to your
-frontend framework, either "on-the-fly" or as concrete files. in order to do that,
+Thanks to **DRF-schema-adapter**'s `export_app`, you can export those definitions to your
+frontend framework, either "on-the-fly" or as concrete files. In order to do that,
 you'll first have to add `export_app` to your `INSTALLED_APPS` as well as your frontend
-appalication's root path.
-Decpending on your project's directory structure, you may also need to add the
-fully-qulified dotted-path to the location of your drf_auto_endpoint router.
+application's root path.
+Depending on your project's directory structure, you may also need to add the
+fully-qualified dotted-path to the location of your drf_auto_endpoint router.
 
 
 ```
@@ -139,7 +139,7 @@ urlpatterns = [
 ]
 ```
 
-Depeding on your backend and frontend application setup, you may also need to update
+Depending on your backend and frontend application setup, you may also need to update
 some more parameters. Please, see
 [export_app's configuration section](../../export_app/index.md#configuration).
 
