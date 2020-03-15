@@ -48,9 +48,11 @@ matrix:
     - python: "3.7"
       env: DJANGO_DRF="django30-drf310"
     - python: "3.7"
+      env: DJANGO_DRF="django30-drf311"
+    - python: "3.7"
       env: DJANGO_DRF="django30-drfmaster"
     - python: "3.7"
-      env: DJANGO_DRF="djangomaster-drf310"
+      env: DJANGO_DRF="djangomaster-drf311"
     - python: "3.7"
       env: DJANGO_DRF="djangomaster-drfmaster"
   allow_failures:
