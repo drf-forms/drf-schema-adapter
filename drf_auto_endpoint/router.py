@@ -57,12 +57,21 @@ class EndpointRouter(DefaultRouter):
         if base_name is None:
             base_name = url
 
-        super(EndpointRouter, self).register(
-            url,
-            endpoint.get_viewset(),
-            base_name=prefix + base_name,
-            **kwargs
-        )
+        try:
+            super(EndpointRouter, self).register(
+                url,
+                endpoint.get_viewset(),
+                basename=prefix + base_name,
+                **kwargs
+            )
+        except TypeError:
+            # DRF < 3.10
+            super(EndpointRouter, self).register(
+                url,
+                endpoint.get_viewset(),
+                base_name=prefix + base_name,
+                **kwargs
+            )
 
     def override_registry_entry(self, endpoint):
         url = endpoint.get_url()
