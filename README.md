@@ -21,13 +21,17 @@ frameworks and libraries.
 
 ### With pip
 
-`pip install drf-schema-adapter`
+```bash
+pip install drf-schema-adapter
+```
 
 ### From source
 
 Within the source directory:
 
-`python setup.py install`
+```bash
+python setup.py install
+```
 
 
 ## Demo application
@@ -39,12 +43,14 @@ You can see a demo application running at
 
 First of all you'll need to import the default EndpointRouter in your urls.py file.
 
-`from drf_auto_endpoint.router import router`
+```python
+from drf_auto_endpoint.router import router
+```
 
 As well as add its urls to your `urlpatterns` in `urls.py`, the same way you would with DRF's
 `DefaultRouter`.
 
-```
+```python
 urlpatterns = [
     ...
     url(r'^api/', include(router.urls)),
@@ -58,7 +64,7 @@ The quickest way to get a working endpoint is to register a model with the route
 an optional keyword argument for the `url` associated to that endpoint. By default the url for an
 endpoint willbe `app_label/verbose_name_plural`
 
-```
+```python
 from drf_auto_endpoint.router import router
 from my_app.models import MyModel, OtherModel
 
@@ -77,7 +83,7 @@ Django REST framework provides the ability to customize those calls thanks to
 
 Setup DRF to use one of **DRF-schema-adapter**'s metadata classes to get schema information:
 
-```
+```python
 ## settings.py
 
 ...
@@ -91,7 +97,9 @@ REST_FRAMEWORK = {
 
 First add `'export_app'` to your setting's `INSTALLED_APPS`, then run:
 
-`./manage.py export --adapter_name EmberAdapter samples/products`
+```bash
+./manage.py export --adapter_name EmberAdapter samples/products
+```
 
 ## Full documentation
 
