@@ -326,3 +326,81 @@ class Angular2Adapter(BaseAdapter):
             (target_dir, service_filename, self.service_template_name, False if force_overwrite else 'confirm'),
         ]
         self.write_files(context, files)
+
+
+class VuexORMAxiosAdapter(BaseAdapter):
+
+    FIELD_TYPE_MAPPING = {
+        'ListField': None,
+        'DictField': None,
+        'JSONField': None,
+        'BooleanField': 'boolean',
+        'NullBooleanField': 'boolean',
+        'IntegerField': 'number',
+        'DecimalField': 'number',
+        'PrimaryKeyRelatedField': 'number',
+        'SludRelatedField': 'string',
+        'UUIDField': 'uid',
+        'ManyRelatedField': None,
+    }
+    DEFAULT_MAPPING = 'string'
+
+    works_with = 'both'
+    requires_fields = True
+
+    database_template_name = 'export_app/vuexorm_axios_database.js'
+    base_model_template_name = 'export_app/vuexorm_axios_base_model.js'
+    model_base_template_name = 'export_app/vuexorm_axios_model_base.js'
+    model_template_name = 'export_app/vuexorm_axios_model.js'
+
+    def write_to_file(self, application_name, model_name, context, force_overwrite=False):
+        base_target_dir = os.path.join(django_settings.BASE_DIR, settings.FRONT_APPLICATION_PATH)
+        base_model_target_dir = os.path.join(base_target_dir, 'models')
+        model_target_dir = os.path.join(base_model_target_dir, application_name)
+
+        filename = '{}.js'.format(model_name)
+
+        files = [
+            # (database_target_dir, 'database.js', self.database_template_name, True),
+            (base_model_target_dir, 'Base.js', self.base_model_template_name, True),
+            (os.path.join(model_target_dir, 'base'), filename, self.model_base_template_name, True),
+            (model_target_dir, filename, self.model_template_name, False),
+        ]
+
+        self.write_files(context, files)
+
+    def walk_dir(self, base, ignore_index=False, prefix=''):
+        imports = []
+
+        for item in os.listdir(base):
+            filename = os.path.join(base, item)
+            if os.path.isdir(filename):
+                if item == 'base':
+                    continue
+                imports += self.walk_dir(filename, prefix=os.path.join(prefix, item.replace('_', '-')))
+            elif item == 'Base.js':
+                continue
+            else:
+                try:
+                    base_name, extension = item.rsplit('.', 1)
+                except ValueError:
+                    # a file without extension
+                    continue
+                if extension != 'js':
+                    continue
+                imports.append((
+                    os.path.join(prefix, base_name).replace('/', '_').replace('-', '_'),
+                    os.path.join(prefix.replace('-', '_'), base_name)
+                ))
+        return imports
+
+    def rebuild_index(self):
+        base_target_dir = os.path.join(django_settings.BASE_DIR, settings.FRONT_APPLICATION_PATH)
+        directory = os.path.join(base_target_dir, 'models')
+        database_target_dir = os.path.join(base_target_dir, 'store')
+
+        context = {
+            'items': self.walk_dir(directory, True)
+        }
+
+        self.write_file(context, database_target_dir, 'database.js', self.database_template_name, True)
