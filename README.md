@@ -62,7 +62,7 @@ urlpatterns = [
 
 The quickest way to get a working endpoint is to register a model with the router. Register accepts
 an optional keyword argument for the `url` associated to that endpoint. By default the url for an
-endpoint willbe `app_label/verbose_name_plural`
+endpoint willbe `app_label/model_name`
 
 ```python
 from drf_auto_endpoint.router import router
