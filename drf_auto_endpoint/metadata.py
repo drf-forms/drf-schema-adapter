@@ -64,6 +64,8 @@ class AutoMetadataMixin(object):
         endpoint = None
         if hasattr(view, 'endpoint'):
             endpoint = view.endpoint
+        elif hasattr(view, 'endpoint_class'):
+            endpoint = view.endpoint_class(viewset=view)
         else:
             if hasattr(serializer.Meta, 'model'):
                 from .endpoints import Endpoint
@@ -87,20 +89,20 @@ class AutoMetadataMixin(object):
 
                 fields_metadata.append(field_metadata)
 
-                for meta_info in adapter.metadata_info:
-                    if meta_info.attr == 'fields':
-                        metadata['fields'] = fields_metadata,
-                    elif meta_info.attr == 'fieldsets':
-                        metadata['fieldsets'] = [{
-                            'title': None,
-                            'fields': [
-                                {'key': field}
-                                for field in serializer_instance.fields.keys()
-                                if field != 'id' and field != '__str__'
-                            ]
-                        }]
-                    else:
-                        metadata[meta_info.attr] = meta_info.default
+            for meta_info in adapter.metadata_info:
+                if meta_info.attr == 'fields':
+                    metadata['fields'] = fields_metadata
+                elif meta_info.attr == 'fieldsets':
+                    metadata['fieldsets'] = [{
+                        'title': None,
+                        'fields': [
+                            {'key': field}
+                            for field in serializer_instance.fields.keys()
+                            if field != 'id' and field != '__str__'
+                        ]
+                    }]
+                else:
+                    metadata[meta_info.attr] = meta_info.default
         else:
             for meta_info in adapter.metadata_info:
                 if meta_info.attr_type == GETTER:
