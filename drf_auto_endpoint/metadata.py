@@ -64,12 +64,13 @@ class AutoMetadataMixin(object):
         endpoint = None
         if hasattr(view, 'endpoint'):
             endpoint = view.endpoint
-        elif hasattr(view, 'endpoint_class'):
-            endpoint = view.endpoint_class(viewset=view)
         else:
             if hasattr(serializer.Meta, 'model'):
-                from .endpoints import Endpoint
-                endpoint = Endpoint(serializer.Meta.model, viewset=view)
+                if hasattr(view, 'endpoint_class'):
+                    endpoint = view.endpoint_class(viewset=view)
+                else:
+                    from .endpoints import Endpoint
+                    endpoint = Endpoint(serializer.Meta.model, viewset=view)
 
         adapter = import_string(settings.METADATA_ADAPTER)()
         if endpoint is None:
