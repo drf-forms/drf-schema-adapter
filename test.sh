@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ ! -d "venv/"  ]; then
-  virtualenv -p python3.5 venv
+  virtualenv -p python3.9 venv
   source venv/bin/activate
   pip install -U pip setuptools
 else
