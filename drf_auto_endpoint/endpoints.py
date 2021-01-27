@@ -155,7 +155,10 @@ class BaseEndpoint(object):
 
     @property
     def singular_model_name(self):
-        return self.model._meta.model_name.lower()
+        try:
+            return self.model._meta.model_name.lower()
+        except AttributeError:
+            return self.url.lower()
 
     @property
     def model_name(self):
@@ -170,7 +173,10 @@ class BaseEndpoint(object):
 
     @property
     def application_name(self):
-        return self.model._meta.app_label.lower()
+        try:
+            return self.model._meta.app_label.lower()
+        except AttributeError:
+            return ''
 
     def get_exclude_fields(self):
         return self.exclude_fields
@@ -225,6 +231,9 @@ class BaseEndpoint(object):
         return self.viewset
 
     def get_url(self):
+
+        if self.url is not None:
+            return self.url
 
         return '{}/{}'.format(
             self.application_name.replace('_', '-'),
@@ -470,4 +479,7 @@ class Endpoint(BaseEndpoint, metaclass=EndpointMetaClass):
             self.get_viewset()
 
         if self.model is None:
-            self.model = self.get_serializer().Meta.model
+            try:
+                self.model = self.get_serializer().Meta.model
+            except:
+                pass
