@@ -1,6 +1,7 @@
 from copy import deepcopy
 
-from collections import namedtuple, defaultdict, Mapping
+from collections import namedtuple, defaultdict
+from collections.abc import Mapping
 
 
 PROPERTY = 1
