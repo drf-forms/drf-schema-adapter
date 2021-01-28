@@ -2,7 +2,7 @@
 
 ## Setup
 
-In this cookbook, we will see how to create enpoints from models without
+In this cookbook, we will see how to create endpoints from models without
 building any frontend yet.
 
 First let's kickstart our project by installing
