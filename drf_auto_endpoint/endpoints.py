@@ -130,6 +130,7 @@ class BaseEndpoint(object):
     search_fields = None
     ordering_fields = None
     page_size = None
+    url = None
     viewset = None
 
     read_only = False
