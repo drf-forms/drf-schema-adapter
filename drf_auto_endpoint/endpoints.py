@@ -232,7 +232,7 @@ class BaseEndpoint(object):
 
     def get_url(self):
 
-        if self.url is not None:
+        if hasattr(self, 'url') and self.url is not None:
             return self.url
 
         return '{}/{}'.format(

@@ -65,7 +65,7 @@ class AutoMetadataMixin(object):
         if hasattr(view, 'endpoint'):
             endpoint = view.endpoint
         else:
-            if hasattr(serializer.Meta, 'model'):
+            if hasattr(serializer, 'Meta') and hasattr(serializer.Meta, 'model'):
                 from .endpoints import Endpoint
                 endpoint = Endpoint(serializer.Meta.model, viewset=view)
 
@@ -89,7 +89,7 @@ class AutoMetadataMixin(object):
 
                 for meta_info in adapter.metadata_info:
                     if meta_info.attr == 'fields':
-                        metadata['fields'] = fields_metadata,
+                        metadata['fields'] = fields_metadata
                     elif meta_info.attr == 'fieldsets':
                         metadata['fieldsets'] = [{
                             'title': None,

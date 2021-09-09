@@ -390,8 +390,14 @@ class ReactJsonSchemaAdapter(BaseAdapter):
         config['fields'] = super(ReactJsonSchemaAdapter, self).render(config)
         fieldsets = config.pop('fieldsets')
 
-        schema = self.map_fieldset_schema({'fields': fieldsets}, config['fields'], fieldsets[0].get('title', None))
-        ui = self.map_fieldset_ui({'fields': fieldsets}, config['fields'])
+        try:
+            schema = self.map_fieldset_schema({'fields': fieldsets}, config['fields'], fieldsets[0].get('title', None))
+            ui = self.map_fieldset_ui({'fields': fieldsets}, config['fields'])
+        except KeyError:
+            # We are dealing with a Serializer, not an Endpoint
+            schema = self.map_fieldset_schema(fieldsets[0], config['fields'], fieldsets[0].get('title', None))
+            ui = self.map_fieldset_ui(fieldsets[0], config['fields'])
+
 
         config['schema'] = schema
         config['ui'] = ui
