@@ -98,7 +98,10 @@ class EndpointMetaClass(type):
             try:
                 with open(fieldsets_path, 'r') as f:
                     fieldsets = json.load(f)
-                    new_class.fieldsets = fieldsets[new_class.model.__name__]
+                    if hasattr(new_class, 'fieldset_name'):
+                        new_class.fieldsets = fieldsets[new_class.fieldset_name]
+                    else:
+                        new_class.fieldsets = fieldsets[new_class.model.__name__]
             except FileNotFoundError:
                 pass
             except KeyError:
@@ -254,6 +257,30 @@ class BaseEndpoint(object):
         ]
 
     def get_fieldsets(self):
+
+        if django_settings.DEBUG:
+            fieldsets_path = os.path.join(
+                django_settings.BASE_DIR,
+                self._fieldsets_location,
+                self.__module__.rsplit('.', 1)[0],
+                'fieldsets.json'
+            )
+
+            try:
+                with open(fieldsets_path, 'r') as f:
+                    fieldsets = json.load(f)
+                    if hasattr(self, 'fieldset_name'):
+                        self.fieldsets = fieldsets[self.fieldset_name]
+                    else:
+                        self.fieldsets = fieldsets[self.model.__name__]
+            except FileNotFoundError:
+                print('FILE NOT FOUND', fieldsets_path)
+                pass
+            except KeyError:
+                print('KEY NOT FOUND', self.model.__name__)
+                pass
+
+
         if self.fieldsets is not None:
             return [{'key': field} if not isinstance(field, dict)
                     else field
