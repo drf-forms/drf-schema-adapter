@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from drf_auto_endpoint.metadata import AutoMetadataMixin
 
-from sample.endpoints import ProductEndpoint, HowItWorksEndpoint
+from sample.endpoints import ProductEndpoint, HowItWorksEndpoint, FirstFieldEndpoint, SecondFieldEndpoint
 
 from .data import DummyProductSerializer, DummyProductViewSet, DummyProductSerializerWithAllFields
 
@@ -81,3 +81,17 @@ class TestMetadata(TestCase):
         endpoint = HowItWorksEndpoint()
         custom_actions = endpoint.get_custom_actions()
         self.assertGreater(len(custom_actions), 0)
+
+    def test_named_fieldsets(self):
+        endpoint = FirstFieldEndpoint()
+        fieldsets = endpoint.get_fieldsets()
+
+        self.assertEqual(len(fieldsets), 1)
+        self.assertIn('first_field', [fs.get('key', None) for fs in fieldsets])
+
+        endpoint = SecondFieldEndpoint()
+        fieldsets = endpoint.get_fieldsets()
+
+        self.assertEqual(len(fieldsets), 2)
+        self.assertIn('third_field', [fs.get('key', None) for fs in fieldsets])
+

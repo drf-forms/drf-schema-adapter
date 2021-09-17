@@ -1,0 +1,13 @@
+{
+  "NamedFieldsets": [{
+    "key": "second_field"
+  }],
+  "FirstField": [{
+    "key": "first_field"
+  }],
+  "SecondField": [{
+    "key": "second_field"
+  }, {
+    "key": "third_field"
+  }]
+}
