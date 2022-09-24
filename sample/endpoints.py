@@ -6,7 +6,7 @@ from drf_auto_endpoint.decorators import bulk_action, custom_action, wizard
 from drf_auto_endpoint.endpoints import Endpoint
 from drf_auto_endpoint.router import router, register
 
-from .models import Product, Category, HowItWorks
+from .models import Product, Category, HowItWorks, NamedFieldsets
 from .serializers import AddSerializer
 from .views import AbstractHowItWorksViewSet, ProductViewSet
 
@@ -45,6 +45,20 @@ class HowItWorksEndpoint(Endpoint):
         obj.count += request.validated_data['amount']
         obj.save()
         return Response(self.get_serializer(obj).data)
+
+
+class BaseNamedFieldsetsEndpoint(Endpoint):
+    model = NamedFieldsets
+
+
+class FirstFieldEndpoint(BaseNamedFieldsetsEndpoint):
+    fieldset_name = 'FirstField'
+    url = 'sample/firstfield'
+
+
+class SecondFieldEndpoint(BaseNamedFieldsetsEndpoint):
+    fieldset_name = 'SecondField'
+    url = 'sample/secondfield'
 
 
 router.register(Category)

@@ -41,3 +41,9 @@ class HowItWorks(models.Model):
 
     def __str__(self):
         return self.name
+
+class NamedFieldsets(models.Model):
+
+    first_field = models.CharField(max_length=255)
+    second_field = models.CharField(max_length=255)
+    third_field = models.CharField(max_length=255)
