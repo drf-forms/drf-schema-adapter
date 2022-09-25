@@ -1,4 +1,4 @@
-# DRF-schema-adapter ![Build Status](https://github.com/drf-forms/drf-schema-adapter/workflows/test.yml/badge.svg?branch=master)
+# DRF-schema-adapter ![Build Status](https://github.com/drf-forms/drf-schema-adapter/actions/workflows/test.yml/badge.svg?branch=master)
 
 `drf-schema-adapter` is a set of tools used to make it as straight-forward to declare an API endpoint
 as it is to declare a new `ModelAdmin` in Django and export the corresponding definition to frontend
