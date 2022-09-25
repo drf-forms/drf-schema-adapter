@@ -1,4 +1,7 @@
-from collections import Iterable
+try:
+    from collections import Iterable
+except ImportError:
+    from collections.abc import Iterable
 import json
 import os
 
@@ -517,5 +520,5 @@ class Endpoint(BaseEndpoint, metaclass=EndpointMetaClass):
         if self.model is None:
             try:
                 self.model = self.get_serializer().Meta.model
-            except:
+            except Exception:
                 pass

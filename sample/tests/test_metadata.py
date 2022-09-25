@@ -94,4 +94,3 @@ class TestMetadata(TestCase):
 
         self.assertEqual(len(fieldsets), 2)
         self.assertIn('third_field', [fs.get('key', None) for fs in fieldsets])
-
