@@ -43,15 +43,26 @@ class GetFieldDict():
 
         return False
 
+    def get_write_only(self, name, field_instance):
+        if name == '__str__':
+            return True
+
+        if field_instance.write_only and not isinstance(field_instance, serializers.ManyRelatedField):
+            return True
+
+        return False
+
     def get_base_dict_for_field(self, name, field_instance, serializer, translated_fields,
                                 serializer_instance):
 
         read_only = self.get_read_only(name, field_instance)
+        write_only = self.get_write_only(name, field_instance)
 
         return {
             'key': name,
             'type': settings.WIDGET_MAPPING[field_instance.__class__.__name__],
             'read_only': read_only,
+            'write_only': write_only,
             'ui': {
                 'label': name.title().replace('_', ' ')
                 if name != '__str__'
