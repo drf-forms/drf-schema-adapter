@@ -44,9 +44,6 @@ class GetFieldDict():
         return False
 
     def get_write_only(self, name, field_instance):
-        if name == '__str__':
-            return True
-
         if field_instance.write_only and not isinstance(field_instance, serializers.ManyRelatedField):
             return True
 
