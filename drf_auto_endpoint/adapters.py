@@ -143,7 +143,7 @@ class EmberAdapter(BaseAdapter):
         MetaDataInfo('fields', GETTER, []),
         MetaDataInfo('fieldsets', GETTER, []),
         MetaDataInfo('list_display', GETTER, []),
-        MetaDataInfo('filter_fields', GETTER, []),
+        MetaDataInfo('filterset_fields', GETTER, []),
         MetaDataInfo('languages', GETTER, []),
         MetaDataInfo('ordering_fields', GETTER, []),
         MetaDataInfo('needs', GETTER, []),

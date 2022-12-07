@@ -21,7 +21,7 @@ Here is a list of existing properties and getters that can be used:
 - `'fields', GETTER, []`
 - `'fieldsets', GETTER, []`
 - `'list_display', GETTER, []`
-- `'filter_fields', GETTER, []`
+- `'filterset_fields', GETTER, []`
 - `'languages', GETTER, []`
 - `'ordering_fields', GETTER, []`
 - `'needs', GETTER, []`
@@ -120,7 +120,7 @@ class CustomAdapter(BaseAdapter):
     metadata_info = [
           MetaDataInfo('fields', GETTER, []),
           MetaDataInfo('list_display', GETTER, []),
-          MetaDataInfo('filter_fields', GETTER, []),
+          MetaDataInfo('filterset_fields', GETTER, []),
           MetaDataInfo('search_enabled', PROPERTY, False),
           MetaDataInfo('silly_prop', PROPERTY, 'Not so silly after all'),
           MetaDataInfo('random_array', GETTER, []),

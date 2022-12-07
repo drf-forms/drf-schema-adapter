@@ -15,7 +15,7 @@ This is great for prototyping but as your application progresses you'll probably
 - `include_str`: a boolean indicating whether or not `__str__` should be added to the serialier's fields list
 - `fieldsets`: a tuple containing the list of fields.
 [metadata](./metadata.md).
-- `filter_fields`: a tuple containing a list of fields on which the endpoint will accept filtering
+- `filterset_fields`: a tuple containing a list of fields on which the endpoint will accept filtering
 - `search_fields`: a tuple containing a list of fields on which the endpoint will accept searching
 (text fields only)
 - `ordering_fields`: a tuple containing a list of fields on which the endpoint will accept ordering

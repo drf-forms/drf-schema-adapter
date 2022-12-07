@@ -144,7 +144,7 @@ class BaseEndpoint(object):
     list_editable = None
 
     permission_classes = None
-    filter_fields = None
+    filterset_fields = None
     search_fields = None
     ordering_fields = None
     page_size = None
@@ -227,7 +227,7 @@ class BaseEndpoint(object):
                 self.serializer = self.viewset.get_serializer_class()
 
         if data is None:
-           return self.serializer
+            return self.serializer
 
         return self.serializer(data)
 
@@ -322,8 +322,8 @@ class BaseEndpoint(object):
                 return []
         return value
 
-    def get_filter_fields(self, check_viewset_if_none=True):
-        fields = self._get_endpoint_list('filter_fields', check_viewset_if_none)
+    def get_filterset_fields(self, check_viewset_if_none=True):
+        fields = self._get_endpoint_list('filterset_fields', check_viewset_if_none)
         return fields
 
     def get_search_fields(self, check_viewset_if_none=True):
@@ -490,7 +490,7 @@ class Endpoint(BaseEndpoint, metaclass=EndpointMetaClass):
         if model is not None:
             self.model = model
 
-        arg_names = ('fields', 'serializer', 'permission_classes', 'filter_fields', 'search_fields',
+        arg_names = ('fields', 'serializer', 'permission_classes', 'filterset_fields', 'search_fields',
                      'viewset', 'read_only', 'include_str', 'ordering_fields', 'page_size',
                      'base_viewset', 'fields_annotation', 'fieldsets', 'base_serializer', 'list_me')
         for arg_name in arg_names:
@@ -510,7 +510,7 @@ class Endpoint(BaseEndpoint, metaclass=EndpointMetaClass):
             self.get_serializer()
 
         if self.viewset is not None:
-            for attr in ('permission_classes', 'filter_fields', 'search_fields', 'ordering_fields',
+            for attr in ('permission_classes', 'filterset_fields', 'search_fields', 'ordering_fields',
                          'page_size'):
                 assert getattr(self, attr, None) is None, \
                     'You cannot specify both {} and viewset'.format(attr)

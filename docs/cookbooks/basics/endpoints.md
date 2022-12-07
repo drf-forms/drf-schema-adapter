@@ -230,7 +230,7 @@ class ProductEndpoint(Endpoint):
     model = Product
     read_only = True
     search_fields = ('name', )
-    filter_fields = ('category_id', )
+    filterset_fields = ('category_id', )
     ordering_fields = ('price', 'name', )
 
 
@@ -299,7 +299,7 @@ class ProductEndpoint(Endpoint):
     model = Product
     read_only = True
     search_fields = ('name', )
-    filter_fields = ('category_id', )
+    filterset_fields = ('category_id', )
     ordering_fields = ('price', 'name', )
 
     base_viewset = ProductViewSet
@@ -372,7 +372,7 @@ class ProductEndpoint(Endpoint):
     model = Product
     read_only = True
     search_fields = ('name', )
-    filter_fields = ('category_id', )
+    filterset_fields = ('category_id', )
     ordering_fields = ('price', 'name', )
 
     base_viewset = ProductViewSet
