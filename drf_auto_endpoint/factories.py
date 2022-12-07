@@ -131,7 +131,7 @@ def filter_factory(endpoint):
     meta_attrs = {
         'model': endpoint.model,
         'fields': [field if not isinstance(field, dict) else field.get('key', field['name'])
-                   for field in endpoint.filter_fields]
+                   for field in endpoint.filterset_fields]
     }
 
     meta_parents = (object, )
@@ -167,7 +167,7 @@ def viewset_factory(endpoint):
     }
 
     if 'filter_class' in cls_attrs or 'base_filter_class' in cls_attrs:
-        cls_attrs.pop('filter_fields', None)
+        cls_attrs.pop('filterset_fields', None)
 
     if endpoint.permission_classes is not None:
         cls_attrs['permission_classes'] = endpoint.permission_classes
@@ -179,7 +179,7 @@ def viewset_factory(endpoint):
         filter_backends = list(filter_backends)
 
     for filter_type, backend in (
-        ('filter_fields', DjangoFilterBackend),
+        ('filterset_fields', DjangoFilterBackend),
         ('search_fields', SearchFilter),
         ('ordering_fields', OrderingFilter),
     ):
@@ -195,8 +195,8 @@ def viewset_factory(endpoint):
         if val is not None and val != []:
             filter_backends.append(backend)
 
-            if filter_type == 'filter_fields':
-                cls_attrs['filter_fields'] = [field['name'] if isinstance(field, dict) else field
+            if filter_type == 'filterset_fields':
+                cls_attrs['filterset_fields'] = [field['name'] if isinstance(field, dict) else field
                                               for field in val]
             elif filter_type == 'ordering_fields':
                 cls_attrs['ordering_fields'] = [field['filter'] if isinstance(field, dict) else field

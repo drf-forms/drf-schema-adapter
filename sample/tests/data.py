@@ -21,7 +21,7 @@ class DummyProductViewSet(viewsets.ModelViewSet):
 
     serializer_class = DummyProductSerializer
     queryset = Product.objects.all()
-    filter_fields = ['name', ]
+    filterset_fields = ['name', ]
     search_fields = ['name', ]
 
 

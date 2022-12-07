@@ -18,7 +18,7 @@ class EndpointRouter(DefaultRouter):
         super(EndpointRouter, self).__init__(*args, **kwargs)
 
     def register(self, model=None, endpoint=None, fields=None, permission_classes=None,
-                 serializer=None, filter_fields=None, read_only=False, viewset=None,
+                 serializer=None, filterset_fields=None, read_only=False, viewset=None,
                  search_fields=None, ordering_fields=None, page_size=None, base_viewset=None,
                  base_name=None, fields_annotation=None, fielsets=None, base_serializer=None,
                  list_me=True, prefix='', **kwargs):
@@ -36,7 +36,7 @@ class EndpointRouter(DefaultRouter):
                 'fieldsets': fielsets,
                 'permission_classes': permission_classes,
                 'serializer': serializer,
-                'filter_fields': filter_fields,
+                'filterset_fields': filterset_fields,
                 'read_only': read_only,
                 'viewset': viewset,
                 'search_fields': search_fields,

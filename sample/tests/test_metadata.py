@@ -60,7 +60,7 @@ class TestMetadata(TestCase):
     def test_filter_and_search_fields_defined_on_viewset(self):
         endpoint = ProductEndpoint(viewset=DummyProductViewSet)
         self.assertTrue(endpoint.search_enabled)
-        self.assertIn('name', endpoint.get_filter_fields())
+        self.assertIn('name', endpoint.get_filterset_fields())
 
     def test__all__fields_in_serializer(self):
         metadata_mixin = AutoMetadataMixin()

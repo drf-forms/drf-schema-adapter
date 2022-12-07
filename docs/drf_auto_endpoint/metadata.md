@@ -462,7 +462,7 @@ not just single forms; it looks like this.
         "__str__"
     
   ],
-  "filter_fields": [],
+  "filterset_fields": [],
   "search_enabled": false,
   "languages": [],
   "ordering_fields": [],

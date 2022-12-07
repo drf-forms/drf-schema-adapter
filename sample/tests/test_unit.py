@@ -28,13 +28,13 @@ class EndpointTestCase(TestCase):
         self.fields = tuple([field.name for field in Product._meta.get_fields()])
 
         self.permission_classes = (AllowAny, )
-        self.filter_fields = ('name', 'category_id')
+        self.filterset_fields = ('name', 'category_id')
         self.search_fields = ('id', 'name')
         self.ordering_fields = ('name', )
         self.page_size = 2
 
         self.alternate_endpoint = Endpoint(model=Product, permission_classes=self.permission_classes,
-                                           filter_fields=self.filter_fields,
+                                           filterset_fields=self.filterset_fields,
                                            search_fields=self.search_fields,
                                            ordering_fields=self.ordering_fields,
                                            page_size=self.page_size)
@@ -87,7 +87,7 @@ class EndpointTestCase(TestCase):
     def test_dynamic_params(self):
         endpoint = self.alternate_endpoint
 
-        for attr in ('permission_classes', 'filter_fields', 'search_fields', 'ordering_fields',
+        for attr in ('permission_classes', 'filterset_fields', 'search_fields', 'ordering_fields',
                      'page_size'):
             self.assertEqual(getattr(endpoint, attr), getattr(self, attr))
 
@@ -124,7 +124,7 @@ class EndpointTestCase(TestCase):
 
         viewset = self.alternate_endpoint.get_viewset()
 
-        for attr in ('permission_classes', 'filter_fields', 'search_fields', 'ordering_fields'):
+        for attr in ('permission_classes', 'filterset_fields', 'search_fields', 'ordering_fields'):
             self.assertEqual(list(getattr(viewset, attr)), list(getattr(self, attr)))
 
         for backend in ('DjangoFilterBackend', 'SearchFilter', 'OrderingFilter'):
@@ -148,7 +148,7 @@ class EndpointTestCase(TestCase):
         class DummyEndpoint(Endpoint):
             model = Product
             permission_classes = self.permission_classes
-            filter_fields = self.filter_fields
+            filterset_fields = self.filterset_fields
             search_fields = self.search_fields
             ordering_fields = self.ordering_fields
 
@@ -166,7 +166,7 @@ class EndpointTestCase(TestCase):
 
         viewset = endpoint.get_viewset()
 
-        for attr in ('permission_classes', 'filter_fields', 'search_fields', 'ordering_fields'):
+        for attr in ('permission_classes', 'filterset_fields', 'search_fields', 'ordering_fields'):
             self.assertEqual(list(getattr(viewset, attr)), list(getattr(self, attr)))
 
         for backend in ('DjangoFilterBackend', 'SearchFilter', 'OrderingFilter'):
