@@ -490,11 +490,14 @@ class Endpoint(BaseEndpoint, metaclass=EndpointMetaClass):
         if model is not None:
             self.model = model
 
-        arg_names = ('fields', 'serializer', 'permission_classes', 'filterset_fields', 'search_fields',
+        arg_names = ('fields', 'serializer', 'permission_classes', 'filter_fields', 'filterset_fields', 'search_fields',
                      'viewset', 'read_only', 'include_str', 'ordering_fields', 'page_size',
                      'base_viewset', 'fields_annotation', 'fieldsets', 'base_serializer', 'list_me')
         for arg_name in arg_names:
-            setattr(self, arg_name, kwargs.pop(arg_name, getattr(self, arg_name, None)))
+            if arg_name == 'filter_fields':
+                setattr(self, 'filterset_fields', kwargs.pop(arg_name, getattr(self, arg_name, None)))
+            else:
+                setattr(self, arg_name, kwargs.pop(arg_name, getattr(self, arg_name, None)))
 
         if len(kwargs.keys()) > 0:
             raise Exception('{} got an unexpected keyword argument: "{}"'.format(
@@ -510,7 +513,7 @@ class Endpoint(BaseEndpoint, metaclass=EndpointMetaClass):
             self.get_serializer()
 
         if self.viewset is not None:
-            for attr in ('permission_classes', 'filterset_fields', 'search_fields', 'ordering_fields',
+            for attr in ('permission_classes', 'filter_fields', 'filterset_fields', 'search_fields', 'ordering_fields',
                          'page_size'):
                 assert getattr(self, attr, None) is None, \
                     'You cannot specify both {} and viewset'.format(attr)
