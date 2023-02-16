@@ -40,7 +40,7 @@ setup(
     ],
     install_requires=[
         'Django>=3.2',
-        'djangorestframework>=3.12<4.0',
+        'djangorestframework>=3.12,<4.0',
         'django-filter>=0.13.0',
         'Inflector>=2.0.11',
     ]
