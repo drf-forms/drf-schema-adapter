@@ -59,7 +59,7 @@ router.register(MyModel)
 ```
 
 For more information on `drf_auto_endpoint`'s router and how to customize endpoints, see
-[this section](drf_auto_endpoint/index.md).
+[this section](../../drf_auto_endpoint/index.md).
 
 ### Metadata
 
@@ -85,7 +85,7 @@ REST_FRAMEWORK = {
 ```
 
 For more information about `drf_auto_endpoint`'s metadata and the available adapters,
-see [the metadata section of this documentation](drf_auto_endpoint/metadata.md).
+see [the metadata section of this documentation](../../drf_auto_endpoint/metadata.md).
 
 ### Exporting serializers definition to frontend models
 

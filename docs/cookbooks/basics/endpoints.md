@@ -208,7 +208,7 @@ router.register(Category)
 This is the same Endpoint class to which we can pass different parameters in
 order to customize it.
 For a full list of available parameters/attributes, please see
-[the endpoint attributes section](../drf_auto_endpoint/endpoint.md#atrributes).
+[the endpoint attributes section](../../drf_auto_endpoint/endpoint.md#atrributes).
 
 ## Customizing Endpoints
 
