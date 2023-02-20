@@ -1,6 +1,6 @@
 site_name: DRF-schema-adapter documentation
 repo_url: https://github.com/drf-forms/drf-schema-adapter
-pages:
+nav:
   - Home: index.md
   - 'DRF-auto-endpoint':
     - 'DRF-auto-endpoint': drf_auto_endpoint/index.md
@@ -21,3 +21,12 @@ pages:
       - 'Custom Actions With Specialized Serializers': cookbooks/topics/wizards.md
   - License: LICENSE.md
   - 'Code of conduct': COC.md
+theme:
+  name: readthedocs
+  highlightjs: true
+  hljs_languages:
+    - yaml
+    - python
+    - json
+    - html
+    - javascript
