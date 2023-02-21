@@ -1,4 +1,4 @@
-from django.test import override_settings, TestCase
+from django.test import override_settings, TestCase, RequestFactory
 from django.core.management import call_command
 
 from rest_framework import status
@@ -7,7 +7,7 @@ from rest_framework.test import APITestCase
 from .factories import CategoryFactory, ProductFactory, HowItWorksFactory
 from .base import EndpointAPITestCase
 
-from ..models import HowItWorks
+from ..models import HowItWorks, Product
 
 from urls import router
 
@@ -178,3 +178,35 @@ class PaginationTestCase(APITestCase):
         page_size = 250
         response = self.client.get('{}?page_size={}'.format(self.url, page_size), format='json')
         self.assertEqual(len(self.get_response_data(response)['results']), page_size)
+
+
+class FilterTestCase(APITestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.count = 2
+        for i in range(cls.count):
+            cat = CategoryFactory()
+            cat.save()
+            setattr(cls, f'cat{i}', cat)
+            product = ProductFactory(category=cat)
+            product.save()
+            setattr(cls, f'product{i}', product)
+        cls.url = '/api/sample/products/'
+
+    def setUp(self):
+        from drf_auto_endpoint.endpoints import Endpoint
+
+        self.endpoint = Endpoint(model=Product, filter_fields=('category_id', ))
+        self.factory = RequestFactory()
+
+    def test_unfiltered_count(self):
+        request = self.factory.get(f'{self.url}?format=json')
+        response = self.endpoint.viewset.as_view({'get': 'list'})(request)
+        self.assertEqual(len(response.data['results']), self.count)
+
+    def test_filtered_count(self):
+        request = self.factory.get(f'{self.url}?format=json&category_id={self.cat1.id}')
+        response = self.endpoint.viewset.as_view({'get': 'list'})(request)
+        self.assertEqual(len(response.data['results']), 1)
+

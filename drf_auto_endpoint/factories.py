@@ -196,8 +196,12 @@ def viewset_factory(endpoint):
             filter_backends.append(backend)
 
             if filter_type == 'filter_fields':
-                cls_attrs['filter_fields'] = [field['name'] if isinstance(field, dict) else field
-                                              for field in val]
+                filter_values = [field['name'] if isinstance(field, dict) else field
+                                 for field in val]
+                # Pre django-filters 22.1
+                cls_attrs['filter_fields'] = filter_values
+                # django-filters 22.1+
+                cls_attrs['filterset_fields'] = filter_values
             elif filter_type == 'ordering_fields':
                 cls_attrs['ordering_fields'] = [field['filter'] if isinstance(field, dict) else field
                                                 for field in val]
