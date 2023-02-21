@@ -40,7 +40,7 @@ setup(
     ],
     install_requires=[
         'Django>=3.2',
-        'djangorestframework>=3.12<4.0',
+        'djangorestframework>=3.12,<4.0',
         'django-filter>=0.13.0',
         # This next line is temporary until release of Inflector 3.0.2
         'Inflector @ git+https://github.com/ixmatus/inflector@ef5c19dc2aa8df5e6b4c452ff2d9b54ec41a04a8#egg=Inflector',
