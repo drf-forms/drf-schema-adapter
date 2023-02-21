@@ -10,7 +10,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='drf-schema-adapter',
-    version='3.0.2',
+    version='3.0.3',
     packages=['drf_auto_endpoint', 'export_app', 'export_app.management',
               'export_app.management.commands'],
     include_package_data=True,
