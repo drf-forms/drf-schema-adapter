@@ -49,8 +49,7 @@ class GetFieldDict():
 
         return False
 
-    def get_base_dict_for_field(self, name, field_instance, serializer, translated_fields,
-                                serializer_instance):
+    def get_base_dict_for_field(self, name, field_instance, translated_fields, serializer_instance):
 
         read_only = self.get_read_only(name, field_instance)
         write_only = self.get_write_only(name, field_instance)
@@ -204,12 +203,11 @@ class GetFieldDict():
             } for k, v in field_instance.choices.items()
         ]
 
-    def dict_for_field(self, field, serializer, translated_fields=None, fields_annotation=False,
+    def dict_for_field(self, field, serializer_instance, translated_fields=None, fields_annotation=False,
                        model=None, foreign_key_as_list=False):
         if translated_fields is None:
             translated_fields = []
 
-        serializer_instance = serializer()
         name = field['name'] if isinstance(field, dict) else field
         try:
             field_instance = serializer_instance.fields[name]
@@ -218,7 +216,7 @@ class GetFieldDict():
 
         model_field = self.get_model_field(field_instance, model)
 
-        rv = self.get_base_dict_for_field(name, field_instance, serializer, translated_fields, serializer_instance)
+        rv = self.get_base_dict_for_field(name, field_instance, translated_fields, serializer_instance)
         self.update_annotations(rv, name, field_instance, fields_annotation)
 
         self.update_default_from_model(rv, model_field)
