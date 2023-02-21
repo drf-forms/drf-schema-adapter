@@ -53,7 +53,7 @@ As well as add its urls to your `urlpatterns` in `urls.py`, the same way you wou
 ```python
 urlpatterns = [
     ...
-    url(r'^api/', include(router.urls)),
+    path("api/", include(router.urls)),
     ...
 ]
 ```
@@ -65,6 +65,7 @@ an optional keyword argument for the `url` associated to that endpoint. By defau
 endpoint willbe `app_label/verbose_name_plural`
 
 ```python
+from django.urls import include, path
 from drf_auto_endpoint.router import router
 from my_app.models import MyModel, OtherModel
 
@@ -72,7 +73,7 @@ router.register(MyModel)
 router.register(OtherModel, url='my_custom_url')
 
 urlpatterns = [
-    url(r'^api/', include(router.urls)),
+    path("api/", include(router.urls)),
 ]
 ```
 
