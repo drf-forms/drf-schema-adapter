@@ -78,7 +78,7 @@ def wizard(target_model, serializer=None, icon_class=None, btn_class=None, text=
                 'singular': model._meta.model_name.lower(),
                 'plural': inflector.pluralize(model._meta.model_name.lower()),
             })
-        fields.append(Adapter.adapt_field(get_field_dict(field_name, serializer)))
+        fields.append(Adapter.adapt_field(get_field_dict(field_name, serializer_instance)))
     kwargs['params']['needs'] = needs
     kwargs['params']['fields'] = fields
     kwargs['languages'] = get_languages()

@@ -45,6 +45,8 @@ class ItRendersAPITest(APITestCase):
         self._do_test()
 
 
+# We exclude request_aware_endpoint because it requires request to operate, and during export there is no such thing.
+@override_settings(EXPORTER_EXCLUDE=('sample/request_aware_categories',))
 class ItExportsTest(TestCase):
 
     def _do_test(self):
@@ -152,13 +154,7 @@ class HowItWorksAPITest(EndpointAPITestCase, APITestCase):
         self.assertEqual(self.test_model.count, 42)
 
 
-class PaginationTestCase(APITestCase):
-
-    @classmethod
-    def setUpTestData(cls):
-        for i in range(251):
-            CategoryFactory().save()
-        cls.url = '/api/sample/categories/'
+class ResponseDataMixin:
 
     def get_response_data(self, response):
         import django
@@ -169,6 +165,15 @@ class PaginationTestCase(APITestCase):
         if LooseVersion(django.get_version()) >= LooseVersion('1.9'):
             return response.json()
         return response.data
+
+
+class PaginationTestCase(ResponseDataMixin, APITestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        for i in range(251):
+            CategoryFactory().save()
+        cls.url = '/api/sample/categories/'
 
     def test_default_page_size(self):
         response = self.client.get(self.url, format='json')
@@ -209,3 +214,15 @@ class FilterTestCase(APITestCase):
         request = self.factory.get(f'{self.url}?format=json&category_id={self.cat1.id}')
         response = self.endpoint.viewset.as_view({'get': 'list'})(request)
         self.assertEqual(len(response.data['results']), 1)
+
+
+class RequestAwareEndpointTestCase(ResponseDataMixin, APITestCase):
+    url = '/api/sample/request_aware_categories/'
+
+    def test_options_depend_on_request(self):
+        """Serializer fields (reported in OPTIONS) is based on incoming request"""
+        response = self.client.options(self.url, USERNAME='Joe')
+        self.assertNotIn('name', (field['key'] for field in self.get_response_data(response)))
+
+        response = self.client.options(self.url, USERNAME='Pirx')
+        self.assertIn('name', (field['key'] for field in self.get_response_data(response)))
