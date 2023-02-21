@@ -209,4 +209,3 @@ class FilterTestCase(APITestCase):
         request = self.factory.get(f'{self.url}?format=json&category_id={self.cat1.id}')
         response = self.endpoint.viewset.as_view({'get': 'list'})(request)
         self.assertEqual(len(response.data['results']), 1)
-

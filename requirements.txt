@@ -1,7 +1,7 @@
 Django>=2.0
 djangorestframework>=3.8
 django-filter>=2.0
-Inflector>=2.0.11
+git+https://github.com/ixmatus/inflector@ef5c19dc2aa8df5e6b4c452ff2d9b54ec41a04a8#egg=Inflector
 factory-boy>=2.8.1
 pytz
 pytzdata

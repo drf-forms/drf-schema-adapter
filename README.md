@@ -8,11 +8,11 @@ frameworks and libraries.
 
 **DRF-schema-adapter** is compatible with the following matrix
 
-|                 | Py 3.8       | Py 3.9       | Py 3.10      |
-| --------------- | ------------ | ------------ | ------------ |
-| **Django 3.2**  | DRF 3.12+    | DRF 3.12+    | N/A          |
-| **Django 4.0**  | DRF 3.12+    | DRF 3.12+    | DRF 3.12+    |
-| **Django 4.1**  | DRF 3.12+    | DRF 3.12+    | DRF 3.12+    |
+|                 | Py 3.8       | Py 3.9       | Py 3.10      | Py 3.11      |
+| --------------- | ------------ | ------------ | ------------ | ------------ |
+| **Django 3.2**  | DRF 3.12+    | DRF 3.12+    | N/A          | N/A          |
+| **Django 4.0**  | DRF 3.12+    | DRF 3.12+    | DRF 3.12+    | N/A          |
+| **Django 4.1**  | DRF 3.12+    | DRF 3.12+    | DRF 3.12+    | DRF 3.12+    |
 
 :warning: For Python 2.7 or Django 1.x support, please use versions 1.x or prior
 :warning: For Django Version 3.1 or prior, use version 2.x
