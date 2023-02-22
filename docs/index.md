@@ -18,11 +18,17 @@ frontend tools it can even help you to build a full-fledge admin.
 :warning: For Python 2.7 or Django 1.x support, use version 1.0 or prior
 :warning: For Django Version 3.1 or prior, use version 2.x
 
+
 ## Installation
 
 ### With pip
 
 `pip install drf-schema-adapter`
+
+:warning: For Python 3.11 compatibility, you will have (for now) to install Inflector directly from the repo:
+```bash
+pip install git+https://github.com/ixmatus/inflector@ef5c19dc2aa8df5e6b4c452ff2d9b54ec41a04a8#egg=Inflector
+```
 
 ### From source
 

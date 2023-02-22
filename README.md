@@ -17,12 +17,23 @@ frameworks and libraries.
 :warning: For Python 2.7 or Django 1.x support, please use versions 1.x or prior
 :warning: For Django Version 3.1 or prior, use version 2.x
 
+:warning: For Python 3.11 compatibility, you will have (for now) to install Inflector directly from the repo:
+```bash
+pip install git+https://github.com/ixmatus/inflector@ef5c19dc2aa8df5e6b4c452ff2d9b54ec41a04a8#egg=Inflector
+```
+
 ## Installation
 
 ### With pip
 
 ```bash
 pip install drf-schema-adapter
+```
+
+If you are using python 3.11, you will have to also install Inflector directly from the repo, pending the release of Inflector 3.0.2
+
+```bash
+pip install git+https://github.com/ixmatus/inflector@ef5c19dc2aa8df5e6b4c452ff2d9b54ec41a04a8#egg=Inflector
 ```
 
 ### From source
