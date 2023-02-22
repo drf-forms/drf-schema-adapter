@@ -20,7 +20,19 @@ Thanks to `drf_auto_endpoint`, **DRF-schema-adapter** helps you register endpoin
 easily as registering basic admin classes.
 
 In order to register endpoints, you'll have to import `drf_auto_endpoint`'s router as
-well as the models you want to register inside your `urls.py`.
+well as the models you want to register inside your `urls.py`. For admin-style
+registration (auto-discovery) to work, you will also have to add `def_auto_endpoint`
+to your `INSTALLED_APPS`
+
+```python
+#settings.py
+
+INSTALLED_APPS = [
+    ...
+
+    `drf_auto_endpoint`,
+]
+```
 
 ```
 ## urls.py
@@ -39,6 +51,9 @@ urlpatterns = [
 If you don't want to import your models directly in your `urls.py`, you can also take 
 advantage of `drf_auto_endpoint`'s auto-discovery capabilities and add your registrations
 to an `endpoints.py` file in your app.
+
+:warning: For auto-discovery to work, you will need to have `def_auto_endpoint` in your
+`INSTALLED_APPS`
 
 ```
 ## urls.py
