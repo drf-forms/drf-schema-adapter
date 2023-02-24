@@ -10,7 +10,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='drf-schema-adapter',
-    version='3.0.4',
+    version='3.0.5',
     packages=['drf_auto_endpoint', 'export_app', 'export_app.management',
               'export_app.management.commands'],
     include_package_data=True,
@@ -44,6 +44,6 @@ setup(
         'django-filter>=0.13.0',
         'Inflector>=3.0.1',
         # This is the actual requirement for python 3.11 until release of Inflector 3.0.2
-        'Inflector @ git+https://github.com/ixmatus/inflector@ef5c19dc2aa8df5e6b4c452ff2d9b54ec41a04a8#egg=Inflector',
+        # 'Inflector @ git+https://github.com/ixmatus/inflector@ef5c19dc2aa8df5e6b4c452ff2d9b54ec41a04a8#egg=Inflector',
     ]
 )
