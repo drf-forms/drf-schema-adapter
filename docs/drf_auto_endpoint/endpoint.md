@@ -228,7 +228,7 @@ Example:
 }
 ```
 
-### `cutom_actions` :warning: Only used by [metadata](./metadata.md)
+### `custom_actions` :warning: Only used by [metadata](./metadata.md)
 
 *defaults to an empty list*
 
@@ -278,7 +278,7 @@ root.
 A dictionary with keys corresponding to css class names and values being a list
 of condition dictionaries to be ealuated on the frontend.
 
-## Decorators for cutom `Endpoint`'s
+## Decorators for custom `Endpoint`'s
 
 All decorators accept any number of keyword arguments. Those arguments will be
 translated into a dictionary and made available as such for `OPTIONS` call to
