@@ -1,4 +1,5 @@
 from rest_framework import viewsets, serializers
+from django_filters.rest_framework import FilterSet
 
 from ..models import Product, ProductChoice
 
@@ -49,3 +50,10 @@ class ProductChoiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductChoice
         fields = '__all__'
+
+
+class ProductFilterSet(FilterSet):
+
+    class Meta:
+        model = Product
+        fields = ['category_id']

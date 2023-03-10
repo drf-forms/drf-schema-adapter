@@ -6,6 +6,7 @@ from rest_framework.test import APITestCase
 
 from .factories import CategoryFactory, ProductFactory, HowItWorksFactory
 from .base import EndpointAPITestCase
+from .data import ProductFilterSet
 
 from ..models import HowItWorks, Product
 
@@ -214,6 +215,31 @@ class FilterTestCase(APITestCase):
         request = self.factory.get(f'{self.url}?format=json&category_id={self.cat1.id}')
         response = self.endpoint.viewset.as_view({'get': 'list'})(request)
         self.assertEqual(len(response.data['results']), 1)
+
+class FilterClassTestCase(FilterTestCase):
+
+    def setUp(self):
+        from drf_auto_endpoint.endpoints import Endpoint
+
+        class ProductEndpoint(Endpoint):
+            model = Product
+            filter_class = ProductFilterSet
+
+        self.endpoint = ProductEndpoint()
+        self.factory = RequestFactory()
+
+class BaseFilterClassTestCase(FilterTestCase):
+
+    def setUp(self):
+        from drf_auto_endpoint.endpoints import Endpoint
+
+        class ProductEndpoint(Endpoint):
+            model = Product
+            base_filter_class = ProductFilterSet
+            filter_fields = ['category_id']
+
+        self.endpoint = ProductEndpoint()
+        self.factory = RequestFactory()
 
 
 class RequestAwareEndpointTestCase(ResponseDataMixin, APITestCase):
