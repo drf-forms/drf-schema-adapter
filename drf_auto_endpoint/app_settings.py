@@ -29,6 +29,7 @@ DEFAULT_SETTINGS = {
         'ManyToManyRel': 'manytomany-lists',
         'GenericRelatedField': 'generic-foreignkey',
         'DurationField': 'duration',
+        'MultipleChoiceField': 'select',
     },
     'DEFAULT_WIDGET': 'text',
     'METADATA_ADAPTER': 'drf_auto_endpoint.adapters.BaseAdapter',

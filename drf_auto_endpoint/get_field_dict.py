@@ -3,7 +3,7 @@ from django.db.models.fields import NOT_PROVIDED
 from django.utils.module_loading import import_string
 
 from rest_framework import serializers, relations
-from rest_framework.fields import empty
+from rest_framework.fields import empty, ChoiceField
 
 from inflector import Inflector
 
@@ -186,7 +186,7 @@ class GetFieldDict():
             self.set_choices_from_qs(rv, field_instance.queryset)
 
     def update_choices_from_serializer(self, rv, field_instance, force=False):
-        if field_instance.__class__.__name__ != 'ChoiceField' and force is False:
+        if not isinstance(field_instance, ChoiceField) and force is False:
             return
 
         if not hasattr(field_instance, 'choices'):

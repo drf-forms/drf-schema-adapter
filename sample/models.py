@@ -52,3 +52,9 @@ class NamedFieldsets(models.Model):
     first_field = models.CharField(max_length=255)
     second_field = models.CharField(max_length=255)
     third_field = models.CharField(max_length=255)
+
+
+class ProductChoice(models.Model):
+
+    name = models.CharField(max_length=255)
+    products = models.ManyToManyField(Product, related_name='chosen')

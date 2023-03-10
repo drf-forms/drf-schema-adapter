@@ -1,10 +1,13 @@
 from django.test import TestCase
 
+from drf_auto_endpoint.endpoints import Endpoint
 from drf_auto_endpoint.metadata import AutoMetadataMixin
 
 from sample.endpoints import ProductEndpoint, HowItWorksEndpoint, FirstFieldEndpoint, SecondFieldEndpoint
 
-from .data import DummyProductSerializer, DummyProductViewSet, DummyProductSerializerWithAllFields
+from ..models import ProductChoice
+from .data import (DummyProductSerializer, DummyProductViewSet, DummyProductSerializerWithAllFields,
+                   DummyChoicesSerializer, ProductChoiceSerializer)
 
 
 class TestMetadata(TestCase):
@@ -94,3 +97,20 @@ class TestMetadata(TestCase):
 
         self.assertEqual(len(fieldsets), 2)
         self.assertIn('third_field', [fs.get('key', None) for fs in fieldsets])
+
+    def test_choices_in_metadata_from_serializer_only(self):
+        metadata_mixin = AutoMetadataMixin()
+        request = None
+
+        class MockView(object):
+            serializer_class = DummyChoicesSerializer
+
+            def get_serializer_class(self):
+                return self.serializer_class
+
+        view = MockView()
+        metadata = metadata_mixin.determine_metadata(request, view)
+
+        for i in range(2):
+            # There are 2 fields in DummyChoiesSerializer and both should have choices
+            self.assertIn('choices', metadata[i])

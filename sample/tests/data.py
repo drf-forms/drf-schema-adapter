@@ -1,6 +1,6 @@
 from rest_framework import viewsets, serializers
 
-from ..models import Product
+from ..models import Product, ProductChoice
 
 
 class DummyProductSerializer(serializers.ModelSerializer):
@@ -33,4 +33,19 @@ class DummyProductSerializerWithField(serializers.ModelSerializer):
 class DummyProductSerializerWithAllFields(serializers.ModelSerializer):
     class Meta:
         model = Product
+        fields = '__all__'
+
+
+class DummyChoicesSerializer(serializers.Serializer):
+
+    simple = serializers.ChoiceField(choices=tuple((x, x) for x in 'abcdef'))
+    multiple = serializers.MultipleChoiceField(choices=tuple((x, x) for x in 'abcdef'))
+
+
+class ProductChoiceSerializer(serializers.ModelSerializer):
+
+    products = serializers.MultipleChoiceField(choices=tuple(Product.objects.all().values_list('id', 'name')))
+
+    class Meta:
+        model = ProductChoice
         fields = '__all__'

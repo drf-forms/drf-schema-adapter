@@ -77,6 +77,16 @@ automatically-generated list of fields.
 
 Boolean indicating whether this `Endpoint` should be a read-only `Endpoint` or not.
 
+### `foreign_key_as_list`
+
+*default:* `False`
+
+This can be either a Boolean or a list. Set to `True` if you want all relationships,
+when exported via [Metadata](./metadata.md), to include a list of records in the
+metadata's `choice` property.
+
+To include only certain fields, provide a list of field names instead of a Boolean.
+
 ### `permission_classes`
 
 *default*: `None`

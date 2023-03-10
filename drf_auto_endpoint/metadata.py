@@ -81,9 +81,9 @@ class AutoMetadataMixin(object):
                 type_ = settings.WIDGET_MAPPING.get(instance_field.__class__.__name__)
 
                 if type_ is None:
-                    raise NotImplementedError()
+                    raise NotImplementedError((settings.WIDGET_MAPPING.keys(), instance_field.__class__.__name__))
 
-                field_metadata = self.get_field_dict(field, serializer)
+                field_metadata = self.get_field_dict(field, serializer_instance)
 
                 fields_metadata.append(field_metadata)
 

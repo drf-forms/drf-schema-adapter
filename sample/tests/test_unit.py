@@ -111,7 +111,11 @@ class EndpointTestCase(TestCase):
         self.assertEqual(endpoint.get_serializer(), DummyProductSerializer)
 
         endpoint = Endpoint(model=Product, serializer=AllFieldDummyProductSerializer)
-        self.assertEqual(len(endpoint.get_fields_for_serializer()), len(self.fields))
+        endpoint_fields = endpoint.get_fields_for_serializer()
+        self.assertNotIn('chosen', endpoint_fields)
+        self.assertIn('chosen', self.fields)
+        self.assertEqual(len(endpoint_fields) + 1, len(self.fields),
+                         (endpoint_fields, 'Vs', self.fields))
 
     def test_viewset_factory(self):
         viewset = self.endpoint.get_viewset()
@@ -177,8 +181,13 @@ class EndpointTestCase(TestCase):
         self.assertEqual(endpoint.get_url(), 'sample/categories')
 
         needs = self.endpoint.get_needs()
-        self.assertEqual(len(needs), 1)
-        self.assertEqual(needs[0]['plural'], 'categories')
+        self.assertEqual(len(needs), 2)
+        found_categories = False
+        for need in needs:
+            if need['plural'] == 'categories':
+                found_categories = True
+                break
+        self.assertTrue(found_categories)
 
     def test_get_base_viewset(self):
 
